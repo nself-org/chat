@@ -231,7 +231,7 @@ export function Sidebar() {
           )}
           
           {isReordering && (user?.role === 'owner' || user?.role === 'admin') && (
-            <div className="cursor-move p-0.5" style={{ marginLeft: `${depth * 20}px` }}>
+            <div className="cursor-move p-0.5" style={{ marginLeft: `${depth * 20}px` }} aria-label="Reorder channel">
               <GripVertical className="h-3 w-3 text-zinc-400" />
             </div>
           )}
@@ -240,7 +240,7 @@ export function Sidebar() {
             href={`/chat/channel/${channel.slug}`}
             className={cn(
               'flex-1 flex items-center rounded-md px-2 py-0.5 text-sm transition-colors',
-              'text-zinc-600 dark:text-zinc-400',
+              'text-zinc-700 dark:text-zinc-300',
               'hover:bg-zinc-100 dark:hover:bg-zinc-800',
               isActive && 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium'
             )}
@@ -266,6 +266,7 @@ export function Sidebar() {
                   toggleChannel(channel.id)
                 }}
                 className="ml-auto p-0.5 hover:bg-zinc-300 dark:hover:bg-zinc-700 rounded transition-colors"
+                aria-label={isCollapsed ? "Expand channel" : "Collapse channel"}
               >
                 {isCollapsed ? (
                   <ChevronRight className="h-3 w-3 text-zinc-500" />
@@ -322,7 +323,7 @@ export function Sidebar() {
             <div className="flex items-center gap-1">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded transition-colors">
+                  <button className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded transition-colors" aria-label="Sort channels">
                     <ArrowUpDown className="h-3.5 w-3.5 text-zinc-500" />
                   </button>
                 </DropdownMenuTrigger>
@@ -354,7 +355,7 @@ export function Sidebar() {
                 </DropdownMenuContent>
               </DropdownMenu>
               {(user?.role === 'owner' || user?.role === 'admin') && (
-                <button className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded transition-colors">
+                <button className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded transition-colors" aria-label="Add new channel">
                   <Plus className="h-3.5 w-3.5 text-zinc-500" />
                 </button>
               )}

@@ -27,7 +27,7 @@ export function HeroSection() {
           </h1>
           
           {branding.tagline && (
-            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="mt-6 text-lg leading-8 text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
               {branding.tagline}
             </p>
           )}

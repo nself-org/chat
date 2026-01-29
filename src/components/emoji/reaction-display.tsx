@@ -223,6 +223,7 @@ export function ReactionDisplay({
                 <button
                   type="button"
                   disabled={disabled}
+                  aria-label="Add reaction"
                   className={cn(
                     'inline-flex items-center justify-center rounded-full',
                     'border border-dashed border-muted-foreground/30',

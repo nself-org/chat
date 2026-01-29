@@ -161,7 +161,7 @@ export function AvatarUpload({
 
         {/* Loading indicator */}
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60">
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60" aria-label="Uploading" role="status">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
           </div>
         )}
@@ -207,6 +207,7 @@ export function AvatarUpload({
         onChange={handleFileSelect}
         className="hidden"
         disabled={disabled || isUploading}
+        aria-label="Upload profile picture"
       />
     </div>
   )

@@ -20,7 +20,7 @@ export function Header() {
       </div>
       
       <div className="flex items-center space-x-2">
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" aria-label="Search">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -36,7 +36,7 @@ export function Header() {
             <path d="m21 21-4.35-4.35" />
           </svg>
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" aria-label="Filter">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"

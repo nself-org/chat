@@ -39,6 +39,7 @@ export function DevModeBanner() {
         <button
           onClick={() => setIsVisible(false)}
           className="hover:bg-yellow-600 rounded p-1"
+          aria-label="Close banner"
         >
           <X className="h-4 w-4" />
         </button>
