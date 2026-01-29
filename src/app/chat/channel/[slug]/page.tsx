@@ -9,6 +9,7 @@ import { MemberList } from '@/components/layout/member-list'
 import { PinnedMessages } from '@/components/layout/pinned-messages'
 import { ChatContainer } from '@/components/chat/chat-container'
 import { ChatLoading } from '@/components/chat/chat-loading'
+import { ThreadPanel } from '@/components/thread/thread-panel'
 import { useAuth } from '@/contexts/auth-context'
 import { useChannelStore, type Channel } from '@/stores/channel-store'
 import { useMessageStore } from '@/stores/message-store'
@@ -166,9 +167,13 @@ export default function ChannelPage({ params }: ChannelPageProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [showMemberList, setShowMemberList] = useState(false)
   const [showPinnedMessages, setShowPinnedMessages] = useState(false)
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(null)
+  const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null)
   const [isMuted, setIsMuted] = useState(false)
   const [isStarred, setIsStarred] = useState(false)
   const [pinnedMessages, setPinnedMessages] = useState<Message[]>([])
+  const [hasMore, setHasMore] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Store actions
   const {
@@ -360,15 +365,25 @@ export default function ChannelPage({ params }: ChannelPageProps) {
   )
 
   // Handle load more messages
-  const handleLoadMore = useCallback(() => {
-    // TODO: Implement pagination
-    console.log('Load more messages')
-  }, [])
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return
+
+    setIsLoadingMore(true)
+
+    // Simulate API call for pagination
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // In a real app, this would fetch older messages from the backend
+    // For now, we'll just mark hasMore as false since we have all messages
+    setHasMore(false)
+    setIsLoadingMore(false)
+  }, [isLoadingMore, hasMore])
 
   // Handle open thread
   const handleOpenThread = useCallback((messageId: string) => {
-    // TODO: Implement thread panel
-    console.log('Open thread for message:', messageId)
+    setActiveThreadId(messageId)
+    setShowPinnedMessages(false)
+    setShowMemberList(false)
   }, [])
 
   // Handle toggle mute
@@ -399,9 +414,20 @@ export default function ChannelPage({ params }: ChannelPageProps) {
 
   // Handle jump to message
   const handleJumpToMessage = useCallback((messageId: string) => {
-    // TODO: Scroll to message and highlight it
-    console.log('Jump to message:', messageId)
+    // Set highlighted message ID for visual feedback
+    setHighlightedMessageId(messageId)
     setShowPinnedMessages(false)
+
+    // Scroll to the message element
+    const messageElement = document.getElementById(`message-${messageId}`)
+    if (messageElement) {
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+
+    // Clear highlight after animation
+    setTimeout(() => {
+      setHighlightedMessageId(null)
+    }, 2000)
   }, [])
 
   // Error state
@@ -444,7 +470,7 @@ export default function ChannelPage({ params }: ChannelPageProps) {
           channel={channel}
           messages={messages}
           loading={loading}
-          hasMore={false}
+          hasMore={hasMore}
           typingUsers={formattedTypingUsers}
           onSendMessage={handleSendMessage}
           onEditMessage={handleEditMessage}
@@ -469,13 +495,23 @@ export default function ChannelPage({ params }: ChannelPageProps) {
       )}
 
       {/* Member List Panel */}
-      {showMemberList && !showPinnedMessages && (
+      {showMemberList && !showPinnedMessages && !activeThreadId && (
         <MemberList
           members={mockMembers}
           onClose={() => setShowMemberList(false)}
           onMemberClick={(member) => console.log('View profile:', member.id)}
           onStartDM={(member) => console.log('Start DM with:', member.id)}
           className="w-64"
+        />
+      )}
+
+      {/* Thread Panel */}
+      {activeThreadId && !showPinnedMessages && !showMemberList && (
+        <ThreadPanel
+          threadId={activeThreadId}
+          onClose={() => setActiveThreadId(null)}
+          standalone
+          className="w-96"
         />
       )}
     </div>

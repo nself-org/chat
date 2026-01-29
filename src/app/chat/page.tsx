@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/contexts/auth-context'
 import { useAppConfig } from '@/contexts/app-config-context'
+import { CreateChannelModal } from '@/components/channel/create-channel-modal'
+import { CreateDmModal } from '@/components/channel/create-dm-modal'
+import { SearchModal } from '@/components/search/search-modal'
 import {
   Hash,
   Plus,
@@ -122,6 +125,11 @@ export default function ChatPage() {
   const { user } = useAuth()
   const { config } = useAppConfig()
 
+  // Modal state
+  const [showCreateChannel, setShowCreateChannel] = React.useState(false)
+  const [showCreateDm, setShowCreateDm] = React.useState(false)
+  const [showSearch, setShowSearch] = React.useState(false)
+
   // Mock recent activity data
   const recentChannels: RecentChannelProps[] = [
     {
@@ -181,28 +189,19 @@ export default function ChatPage() {
               icon={<Plus className="h-5 w-5" />}
               title="Create Channel"
               description="Start a new channel for your team"
-              onClick={() => {
-                // TODO: Open create channel modal
-                console.log('Create channel')
-              }}
+              onClick={() => setShowCreateChannel(true)}
             />
             <QuickAction
               icon={<MessageSquare className="h-5 w-5" />}
               title="Start a Conversation"
               description="Send a direct message to a teammate"
-              onClick={() => {
-                // TODO: Open DM modal
-                console.log('Start DM')
-              }}
+              onClick={() => setShowCreateDm(true)}
             />
             <QuickAction
               icon={<Search className="h-5 w-5" />}
               title="Search Messages"
               description="Find messages, files, or conversations"
-              onClick={() => {
-                // TODO: Open search
-                console.log('Open search')
-              }}
+              onClick={() => setShowSearch(true)}
             />
           </div>
         </div>
@@ -284,6 +283,20 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <CreateChannelModal
+        open={showCreateChannel}
+        onOpenChange={setShowCreateChannel}
+      />
+      <CreateDmModal
+        open={showCreateDm}
+        onOpenChange={setShowCreateDm}
+      />
+      <SearchModal
+        open={showSearch}
+        onOpenChange={setShowSearch}
+      />
     </div>
   )
 }
