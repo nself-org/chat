@@ -11,8 +11,8 @@ import { getApiCache, type CacheOptions, CACHE_TTL } from './cache-manager'
 // Types
 // =============================================================================
 
-export interface FetchOptions extends RequestInit {
-  cache?: CacheOptions
+export interface FetchOptions extends Omit<RequestInit, 'cache'> {
+  cacheOptions?: CacheOptions
   baseURL?: string
 }
 
@@ -34,7 +34,7 @@ export async function cachedFetch<T = unknown>(
   options: FetchOptions = {}
 ): Promise<CachedResponse<T>> {
   const cache = getApiCache()
-  const { cache: cacheOptions, baseURL, ...fetchOptions } = options
+  const { cacheOptions, baseURL, ...fetchOptions } = options
 
   // Build full URL
   const fullURL = baseURL ? `${baseURL}${url}` : url
@@ -204,7 +204,7 @@ export async function warmCache(options: {
   if (userId) {
     promises.push(
       cachedGet(`/api/users/${userId}`, {
-        cache: { ttl: CACHE_TTL.USER_PROFILE, tags: ['user', `user:${userId}`] },
+        cacheOptions: { ttl: CACHE_TTL.USER_PROFILE, tags: ['user', `user:${userId}`] },
       })
     )
   }
@@ -214,7 +214,7 @@ export async function warmCache(options: {
     for (const channelId of channelIds) {
       promises.push(
         cachedGet(`/api/channels/${channelId}`, {
-          cache: { ttl: CACHE_TTL.CHANNEL_LIST, tags: ['channel', `channel:${channelId}`] },
+          cacheOptions: { ttl: CACHE_TTL.CHANNEL_LIST, tags: ['channel', `channel:${channelId}`] },
         })
       )
     }
@@ -229,7 +229,7 @@ export async function warmCache(options: {
 export async function prefetchData(urls: string[], ttl?: number): Promise<void> {
   const promises = urls.map((url) =>
     cachedGet(url, {
-      cache: { ttl: ttl ?? CACHE_TTL.STATIC },
+      cacheOptions: { ttl: ttl ?? CACHE_TTL.STATIC },
     })
   )
 

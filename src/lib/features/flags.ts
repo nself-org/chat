@@ -61,7 +61,7 @@ export interface FeatureFlagConfig {
   rolloutPercentage?: number
 
   /** Only enabled in specific environments */
-  environments?: Array<'development' | 'staging' | 'production'>
+  environments?: Array<'development' | 'staging' | 'production' | 'test'>
 
   /** User IDs to enable for (beta testers) */
   enabledForUsers?: string[]

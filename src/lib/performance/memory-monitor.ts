@@ -229,29 +229,29 @@ export class MemoryMonitor {
   /**
    * Track timer (call when creating setTimeout)
    */
-  trackTimer(id: number): void {
-    this.timers.add(id)
+  trackTimer(id: number | NodeJS.Timeout): void {
+    this.timers.add(id as unknown as number)
   }
 
   /**
    * Untrack timer (call when clearing setTimeout)
    */
-  untrackTimer(id: number): void {
-    this.timers.delete(id)
+  untrackTimer(id: number | NodeJS.Timeout): void {
+    this.timers.delete(id as unknown as number)
   }
 
   /**
    * Track interval (call when creating setInterval)
    */
-  trackInterval(id: number): void {
-    this.intervals.add(id)
+  trackInterval(id: number | NodeJS.Timeout): void {
+    this.intervals.add(id as unknown as number)
   }
 
   /**
    * Untrack interval (call when clearing setInterval)
    */
-  untrackInterval(id: number): void {
-    this.intervals.delete(id)
+  untrackInterval(id: number | NodeJS.Timeout): void {
+    this.intervals.delete(id as unknown as number)
   }
 
   /**
@@ -302,8 +302,10 @@ export function useTrackedTimeout(
   callback: () => void,
   delay: number,
   monitor: MemoryMonitor
-): void {
-  if (typeof window === 'undefined') return
+): () => void {
+  if (typeof window === 'undefined') {
+    return () => {}
+  }
 
   const id = setTimeout(() => {
     callback()
@@ -326,8 +328,10 @@ export function useTrackedInterval(
   callback: () => void,
   delay: number,
   monitor: MemoryMonitor
-): void {
-  if (typeof window === 'undefined') return
+): () => void {
+  if (typeof window === 'undefined') {
+    return () => {}
+  }
 
   const id = setInterval(callback, delay)
   monitor.trackInterval(id)
@@ -347,8 +351,10 @@ export function useTrackedEventListener(
   handler: EventListener,
   target: EventTarget,
   monitor: MemoryMonitor
-): void {
-  if (typeof window === 'undefined') return
+): () => void {
+  if (typeof window === 'undefined') {
+    return () => {}
+  }
 
   target.addEventListener(event, handler)
   monitor.trackEventListener(event, handler)

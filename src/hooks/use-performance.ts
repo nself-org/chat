@@ -70,7 +70,7 @@ export function useRenderCount(): number {
  * ```
  */
 export function useWhyDidYouUpdate(name: string, props: Record<string, unknown>): void {
-  const previousProps = useRef<Record<string, unknown>>()
+  const previousProps = useRef<Record<string, unknown> | undefined>(undefined)
 
   useEffect(() => {
     if (previousProps.current && isDevelopment()) {
@@ -92,7 +92,7 @@ export function useWhyDidYouUpdate(name: string, props: Record<string, unknown>)
     }
 
     previousProps.current = props
-  })
+  }, [name, props])
 }
 
 // ============================================================================
@@ -154,7 +154,7 @@ export function usePerformanceMetrics(componentName: string): PerformanceMetrics
         })
       }
     }
-  })
+  }, [componentName])
 
   return metrics
 }
@@ -295,7 +295,7 @@ export function useThrottle<T>(value: T, interval: number): T {
  * ```
  */
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>()
+  const ref = useRef<T | undefined>(undefined)
 
   useEffect(() => {
     ref.current = value
@@ -379,8 +379,8 @@ export function useMemoryLeakDetector(componentName: string): void {
  */
 export function useIntersectionPerformance<T extends HTMLElement = HTMLDivElement>(
   options?: IntersectionObserverInit
-): [React.RefObject<T>, boolean, { timeToVisible: number | null }] {
-  const ref = useRef<T>(null)
+): [React.RefObject<T | null>, boolean, { timeToVisible: number | null }] {
+  const ref = useRef<T | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [metrics, setMetrics] = useState({ timeToVisible: null as number | null })
   const mountTime = useRef(performance.now())

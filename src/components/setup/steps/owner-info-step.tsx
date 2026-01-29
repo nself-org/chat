@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { type AppConfig } from '@/config/app-config'
 import { EnhancedInput } from '@/components/ui/enhanced-input'
 import { User, Mail, UserCheck } from 'lucide-react'
-import { isDevelopment, getHostname } from '@/lib/environment'
+import { isDevelopment } from '@/lib/environment'
 
 interface OwnerInfoStepProps {
   config: AppConfig
@@ -39,7 +39,7 @@ export function OwnerInfoStep({ config, onUpdate, onValidate }: OwnerInfoStepPro
 
   console.log('🚀 OwnerInfoStep:', {
     isDev,
-    hostname: getHostname(),
+    hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown',
     initialValues,
     configOwner: config.owner
   })

@@ -34,7 +34,6 @@ import {
   PIN_CHANNEL,
   UNPIN_CHANNEL,
   UPDATE_CHANNEL_NOTIFICATIONS,
-  MARK_CHANNEL_READ,
   UPDATE_CHANNEL_PRIVACY,
   ADD_MULTIPLE_MEMBERS,
   REMOVE_MULTIPLE_MEMBERS,
@@ -43,6 +42,9 @@ import {
   type ChannelMemberInput,
   type BulkMemberInput,
 } from '@/graphql/mutations/channels'
+import {
+  MARK_CHANNEL_READ,
+} from '@/graphql/mutations/read-receipts'
 
 interface Channel {
   id: string

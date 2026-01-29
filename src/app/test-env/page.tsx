@@ -1,6 +1,6 @@
 'use client'
 
-import { isDevelopment, getHostname, isLocalDomain } from '@/lib/environment'
+import { isDevelopment } from '@/lib/environment'
 import { useEffect, useState } from 'react'
 
 export default function TestEnvPage() {
@@ -9,8 +9,8 @@ export default function TestEnvPage() {
   useEffect(() => {
     const info = {
       isDevelopment: isDevelopment(),
-      hostname: getHostname(),
-      isLocalDomain: isLocalDomain(),
+      hostname: window.location.hostname,
+      isLocalDomain: ['localhost', '127.0.0.1'].includes(window.location.hostname),
       windowLocation: {
         hostname: window.location.hostname,
         port: window.location.port,
@@ -39,8 +39,8 @@ export default function TestEnvPage() {
           <h2 className="font-semibold mb-2">Detection Results:</h2>
           <div className="space-y-2 font-mono text-sm">
             <div>isDevelopment(): <span className={clientInfo.isDevelopment ? 'text-green-600' : 'text-red-600'}>{String(clientInfo.isDevelopment)}</span></div>
-            <div>hostname: {clientInfo.hostname}</div>
-            <div>isLocalDomain(): {String(clientInfo.isLocalDomain)}</div>
+            <div>hostname (direct): {clientInfo.hostname}</div>
+            <div>isLocalDomain (direct): {String(clientInfo.isLocalDomain)}</div>
           </div>
         </div>
 

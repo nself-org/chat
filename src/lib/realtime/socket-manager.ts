@@ -30,6 +30,7 @@ class SocketManager {
   private socket: Socket | null = null
   private listeners: Map<string, Set<Function>> = new Map()
   private pool: Map<string, Socket> = new Map()
+  private poolTimestamps: Map<string, number> = new Map()
   private poolOptions: Required<SocketPoolOptions>
   private stats: SocketStats = {
     totalConnections: 0,
@@ -229,6 +230,7 @@ class SocketManager {
     for (const [id, socket] of this.pool.entries()) {
       if (socket.connected) {
         this.pool.delete(id)
+        this.poolTimestamps.delete(id)
         this.stats.idleConnections--
         return socket
       }
@@ -242,6 +244,7 @@ class SocketManager {
   private returnToPool(socket: Socket): void {
     if (socket.id && !this.pool.has(socket.id)) {
       this.pool.set(socket.id, socket)
+      this.poolTimestamps.set(socket.id, Date.now())
       this.stats.idleConnections++
     }
   }
@@ -273,11 +276,13 @@ class SocketManager {
 
     for (const [id, socket] of this.pool.entries()) {
       // Check if socket hasn't been used recently
-      const idleTime = now - (socket.io.opts.timestamp || now)
+      const lastUsed = this.poolTimestamps.get(id) || now
+      const idleTime = now - lastUsed
 
       if (idleTime > this.poolOptions.idleTimeout) {
         socket.disconnect()
         this.pool.delete(id)
+        this.poolTimestamps.delete(id)
         this.stats.idleConnections--
         console.log('[Socket] Cleaned up idle connection:', id)
       }

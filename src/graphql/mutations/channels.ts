@@ -298,21 +298,6 @@ export const UPDATE_CHANNEL_NOTIFICATIONS = gql`
   }
 `
 
-export const MARK_CHANNEL_READ = gql`
-  mutation MarkChannelRead($channelId: uuid!, $userId: uuid!) {
-    update_nchat_channel_members(
-      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
-      _set: { last_read_at: "now()" }
-    ) {
-      affected_rows
-      returning {
-        channel_id
-        last_read_at
-      }
-    }
-  }
-`
-
 export const UPDATE_CHANNEL_PRIVACY = gql`
   mutation UpdateChannelPrivacy($channelId: uuid!, $isPrivate: Boolean!) {
     update_nchat_channels_by_pk(
