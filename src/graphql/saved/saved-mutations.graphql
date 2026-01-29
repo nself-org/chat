@@ -1,0 +1,291 @@
+# Saved Messages GraphQL Mutations
+# These mutations are for managing saved/starred messages and collections
+
+# Save a message
+mutation SaveMessage(
+  $userId: uuid!
+  $messageId: uuid!
+  $channelId: uuid!
+  $note: String
+  $tags: [String!] = []
+  $isStarred: Boolean = false
+  $reminderAt: timestamptz
+) {
+  insert_nchat_saved_messages_one(
+    object: {
+      user_id: $userId
+      message_id: $messageId
+      channel_id: $channelId
+      note: $note
+      tags: $tags
+      is_starred: $isStarred
+      reminder_at: $reminderAt
+    }
+    on_conflict: {
+      constraint: saved_messages_user_id_message_id_key
+      update_columns: []
+    }
+  ) {
+    id
+    user_id
+    message_id
+    channel_id
+    saved_at
+    note
+    tags
+    is_starred
+    reminder_at
+    message {
+      id
+      content
+      type
+      created_at
+      user {
+        id
+        display_name
+        avatar_url
+      }
+      channel {
+        id
+        name
+        slug
+      }
+    }
+  }
+}
+
+# Unsave a message by saved ID
+mutation UnsaveMessageById($savedId: uuid!) {
+  delete_nchat_saved_messages_by_pk(id: $savedId) {
+    id
+    message_id
+  }
+}
+
+# Unsave a message by message ID
+mutation UnsaveMessageByMessageId($userId: uuid!, $messageId: uuid!) {
+  delete_nchat_saved_messages(
+    where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }
+  ) {
+    affected_rows
+    returning {
+      id
+      message_id
+    }
+  }
+}
+
+# Update saved message (note, tags, starred, reminder)
+mutation UpdateSavedMessage(
+  $savedId: uuid!
+  $note: String
+  $tags: [String!]
+  $isStarred: Boolean
+  $reminderAt: timestamptz
+) {
+  update_nchat_saved_messages_by_pk(
+    pk_columns: { id: $savedId }
+    _set: {
+      note: $note
+      tags: $tags
+      is_starred: $isStarred
+      reminder_at: $reminderAt
+    }
+  ) {
+    id
+    note
+    tags
+    is_starred
+    reminder_at
+  }
+}
+
+# Toggle star status
+mutation ToggleStar($savedId: uuid!, $isStarred: Boolean!) {
+  update_nchat_saved_messages_by_pk(
+    pk_columns: { id: $savedId }
+    _set: { is_starred: $isStarred }
+  ) {
+    id
+    is_starred
+  }
+}
+
+# Mark reminder as triggered
+mutation TriggerReminder($savedId: uuid!) {
+  update_nchat_saved_messages_by_pk(
+    pk_columns: { id: $savedId }
+    _set: { reminder_triggered: true }
+  ) {
+    id
+    reminder_triggered
+  }
+}
+
+# Add tag to saved message
+mutation AddTagToSaved($savedId: uuid!, $tag: String!) {
+  update_nchat_saved_messages_by_pk(
+    pk_columns: { id: $savedId }
+    _append: { tags: [$tag] }
+  ) {
+    id
+    tags
+  }
+}
+
+# Remove tag from saved message
+mutation RemoveTagFromSaved($savedId: uuid!, $tag: String!) {
+  update_nchat_saved_messages_by_pk(
+    pk_columns: { id: $savedId }
+    _delete_elem: { tags: $tag }
+  ) {
+    id
+    tags
+  }
+}
+
+# ============================================================================
+# Collection Mutations
+# ============================================================================
+
+# Create a new collection
+mutation CreateCollection(
+  $userId: uuid!
+  $name: String!
+  $description: String
+  $icon: String
+  $color: String
+  $position: Int!
+) {
+  insert_nchat_saved_collections_one(
+    object: {
+      user_id: $userId
+      name: $name
+      description: $description
+      icon: $icon
+      color: $color
+      position: $position
+    }
+  ) {
+    id
+    user_id
+    name
+    description
+    icon
+    color
+    position
+    is_shared
+    created_at
+    updated_at
+  }
+}
+
+# Update a collection
+mutation UpdateCollection(
+  $collectionId: uuid!
+  $name: String
+  $description: String
+  $icon: String
+  $color: String
+  $position: Int
+) {
+  update_nchat_saved_collections_by_pk(
+    pk_columns: { id: $collectionId }
+    _set: {
+      name: $name
+      description: $description
+      icon: $icon
+      color: $color
+      position: $position
+      updated_at: "now()"
+    }
+  ) {
+    id
+    name
+    description
+    icon
+    color
+    position
+    updated_at
+  }
+}
+
+# Delete a collection
+mutation DeleteCollection($collectionId: uuid!) {
+  delete_nchat_saved_collections_by_pk(id: $collectionId) {
+    id
+  }
+}
+
+# Reorder collections
+mutation ReorderCollections($updates: [nchat_saved_collections_updates!]!) {
+  update_nchat_saved_collections_many(updates: $updates) {
+    affected_rows
+    returning {
+      id
+      position
+    }
+  }
+}
+
+# Add saved message to collection
+mutation AddToCollection($savedId: uuid!, $collectionId: uuid!) {
+  insert_nchat_collection_memberships_one(
+    object: { saved_message_id: $savedId, collection_id: $collectionId }
+    on_conflict: {
+      constraint: collection_memberships_pkey
+      update_columns: []
+    }
+  ) {
+    saved_message_id
+    collection_id
+  }
+}
+
+# Remove saved message from collection
+mutation RemoveFromCollection($savedId: uuid!, $collectionId: uuid!) {
+  delete_nchat_collection_memberships_by_pk(
+    saved_message_id: $savedId
+    collection_id: $collectionId
+  ) {
+    saved_message_id
+    collection_id
+  }
+}
+
+# Share a collection
+mutation ShareCollection(
+  $collectionId: uuid!
+  $isShared: Boolean!
+  $shareLink: String
+  $shareVisibility: String
+) {
+  update_nchat_saved_collections_by_pk(
+    pk_columns: { id: $collectionId }
+    _set: {
+      is_shared: $isShared
+      share_link: $shareLink
+      share_visibility: $shareVisibility
+      updated_at: "now()"
+    }
+  ) {
+    id
+    is_shared
+    share_link
+    share_visibility
+  }
+}
+
+# Clear all saved messages (user action)
+mutation ClearAllSaved($userId: uuid!) {
+  delete_nchat_saved_messages(where: { user_id: { _eq: $userId } }) {
+    affected_rows
+  }
+}
+
+# Clear all collections (user action)
+mutation ClearAllCollections($userId: uuid!) {
+  delete_nchat_saved_collections(where: { user_id: { _eq: $userId } }) {
+    affected_rows
+  }
+}

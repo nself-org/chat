@@ -1,0 +1,565 @@
+/* ============================================================================
+   Mobile-Specific Styles for nself-chat
+   ============================================================================ */
+
+/* ============================================================================
+   Safe Area Handling
+   ============================================================================ */
+
+/* Set safe area CSS variables */
+:root {
+  /* Safe area insets as CSS variables */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  /* Mobile-specific spacing */
+  --mobile-header-height: 56px;
+  --mobile-nav-height: 64px;
+  --mobile-input-min-height: 44px;
+
+  /* Touch target sizes (Apple HIG recommends 44px minimum) */
+  --touch-target-min: 44px;
+  --touch-target-comfortable: 48px;
+}
+
+/* Safe area utility classes */
+.safe-area-top {
+  padding-top: var(--sat);
+}
+
+.safe-area-bottom {
+  padding-bottom: var(--sab);
+}
+
+.safe-area-left {
+  padding-left: var(--sal);
+}
+
+.safe-area-right {
+  padding-right: var(--sar);
+}
+
+.safe-area-all {
+  padding-top: var(--sat);
+  padding-right: var(--sar);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+}
+
+/* ============================================================================
+   Touch-Friendly Interactions
+   ============================================================================ */
+
+/* Disable text selection on interactive elements */
+.touch-none {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling with momentum */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Prevent pull-to-refresh on specific elements */
+.prevent-pull-refresh {
+  overscroll-behavior-y: contain;
+}
+
+/* Touch manipulation for buttons */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Larger touch targets */
+.touch-target {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+}
+
+.touch-target-comfortable {
+  min-height: var(--touch-target-comfortable);
+  min-width: var(--touch-target-comfortable);
+}
+
+/* ============================================================================
+   Mobile Typography
+   ============================================================================ */
+
+/* Prevent font scaling issues on iOS */
+@supports (-webkit-touch-callout: none) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* Responsive text that scales well on mobile */
+@media (max-width: 639px) {
+  .text-mobile-xs {
+    font-size: 0.6875rem; /* 11px */
+    line-height: 1.4;
+  }
+
+  .text-mobile-sm {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5;
+  }
+
+  .text-mobile-base {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5;
+  }
+
+  .text-mobile-lg {
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.4;
+  }
+}
+
+/* ============================================================================
+   Mobile Navigation
+   ============================================================================ */
+
+/* Bottom navigation styling */
+.mobile-nav {
+  height: calc(var(--mobile-nav-height) + var(--sab));
+  padding-bottom: var(--sab);
+}
+
+/* Fixed header with safe area */
+.mobile-header {
+  height: calc(var(--mobile-header-height) + var(--sat));
+  padding-top: var(--sat);
+}
+
+/* Full height minus nav and header */
+.mobile-content {
+  min-height: calc(100vh - var(--mobile-header-height) - var(--mobile-nav-height) - var(--sat) - var(--sab));
+  min-height: calc(100dvh - var(--mobile-header-height) - var(--mobile-nav-height) - var(--sat) - var(--sab));
+}
+
+/* ============================================================================
+   Mobile Scrolling
+   ============================================================================ */
+
+/* Hide scrollbars on mobile */
+@media (max-width: 767px) {
+  .mobile-hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Thin scrollbar for mobile */
+.mobile-scrollbar::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.mobile-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+}
+
+/* ============================================================================
+   Mobile Input Styles
+   ============================================================================ */
+
+/* Prevent zoom on input focus (iOS) */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile input styling */
+.mobile-input {
+  min-height: var(--mobile-input-min-height);
+  font-size: 16px;
+  border-radius: 22px;
+  padding: 10px 16px;
+}
+
+/* ============================================================================
+   Mobile Animations
+   ============================================================================ */
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Slide animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+.animate-slide-left {
+  animation: slide-left 0.3s ease-out;
+}
+
+.animate-slide-right {
+  animation: slide-right 0.3s ease-out;
+}
+
+/* Pull to refresh spinner */
+@keyframes pull-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-pull-spin {
+  animation: pull-spin 1s linear infinite;
+}
+
+/* ============================================================================
+   Mobile Specific Layouts
+   ============================================================================ */
+
+/* Full viewport height accounting for mobile browser chrome */
+.h-mobile-full {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.min-h-mobile-full {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Sticky footer pattern for mobile */
+.mobile-sticky-footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+/* Fixed bottom container */
+.mobile-fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding-bottom: var(--sab);
+}
+
+/* ============================================================================
+   Mobile Cards and List Items
+   ============================================================================ */
+
+/* Card optimized for touch */
+.mobile-card {
+  padding: 16px;
+  border-radius: 12px;
+  margin: 8px;
+}
+
+/* List item with swipe support */
+.mobile-list-item {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  padding: 12px 16px;
+  gap: 12px;
+}
+
+/* Active state for list items */
+.mobile-list-item:active {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+/* ============================================================================
+   Mobile Dialogs and Sheets
+   ============================================================================ */
+
+/* Bottom sheet base */
+.mobile-bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  border-radius: 16px 16px 0 0;
+  padding-bottom: var(--sab);
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+
+/* Action sheet item */
+.mobile-action-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+/* Drawer handle */
+.mobile-drawer-handle {
+  width: 36px;
+  height: 5px;
+  border-radius: 2.5px;
+  background-color: rgba(128, 128, 128, 0.3);
+  margin: 8px auto;
+}
+
+/* ============================================================================
+   Mobile Utilities
+   ============================================================================ */
+
+/* Disable hover states on touch devices */
+@media (hover: none) {
+  .hover\:bg-muted:hover {
+    background-color: inherit;
+  }
+
+  .hover\:bg-accent:hover {
+    background-color: inherit;
+  }
+}
+
+/* Active states for touch */
+@media (hover: none) {
+  .mobile-active:active {
+    opacity: 0.7;
+  }
+
+  .mobile-active-scale:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Backdrop blur fallback */
+@supports not (backdrop-filter: blur(8px)) {
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* ============================================================================
+   Responsive Breakpoints
+   ============================================================================ */
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 479px) {
+  .xs\:hidden {
+    display: none;
+  }
+
+  .xs\:block {
+    display: block;
+  }
+
+  .xs\:flex {
+    display: flex;
+  }
+}
+
+/* Small devices (phones in landscape, small tablets) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .sm-only\:hidden {
+    display: none;
+  }
+
+  .sm-only\:block {
+    display: block;
+  }
+}
+
+/* Mobile only (all phones) */
+@media (max-width: 767px) {
+  .mobile\:hidden {
+    display: none;
+  }
+
+  .mobile\:block {
+    display: block;
+  }
+
+  .mobile\:flex {
+    display: flex;
+  }
+
+  .mobile\:grid {
+    display: grid;
+  }
+
+  /* Mobile-specific padding */
+  .mobile\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .mobile\:py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .tablet\:hidden {
+    display: none;
+  }
+
+  .tablet\:block {
+    display: block;
+  }
+
+  .tablet\:flex {
+    display: flex;
+  }
+}
+
+/* ============================================================================
+   Dark Mode Mobile Adjustments
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .mobile-bottom-sheet {
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.dark .mobile-bottom-sheet {
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================================
+   iOS Specific Fixes
+   ============================================================================ */
+
+/* Fix for iOS momentum scrolling */
+@supports (-webkit-touch-callout: none) {
+  .ios-scroll-fix {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix 100vh on iOS */
+  .h-mobile-full {
+    height: -webkit-fill-available;
+  }
+
+  .min-h-mobile-full {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* ============================================================================
+   Android Specific Fixes
+   ============================================================================ */
+
+/* Fix for Android Chrome address bar */
+@supports not (-webkit-touch-callout: none) {
+  .android-address-bar-fix {
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+  }
+}
+
+/* ============================================================================
+   PWA Styles
+   ============================================================================ */
+
+/* Standalone mode (installed PWA) */
+@media (display-mode: standalone) {
+  .pwa\:hidden {
+    display: none;
+  }
+
+  .pwa\:block {
+    display: block;
+  }
+
+  /* Remove extra padding in standalone mode */
+  .pwa-standalone .mobile-header {
+    padding-top: var(--sat);
+  }
+}

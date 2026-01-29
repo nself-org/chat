@@ -1,0 +1,125 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "nchat",
+  "version": "0.1.0",
+  "identifier": "org.nself.nchat",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:3000",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../out"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "nchat",
+        "label": "main",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false,
+        "center": true,
+        "visible": true,
+        "focus": true,
+        "titleBarStyle": "Transparent",
+        "hiddenTitle": true
+      }
+    ],
+    "trayIcon": {
+      "iconPath": "icons/tray.png",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false
+    },
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "externalBin": [],
+    "copyright": "Copyright 2024 nself",
+    "category": "Productivity",
+    "shortDescription": "Team communication platform",
+    "longDescription": "nchat is a white-label team communication platform with Slack-like features and Telegram capabilities.",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null,
+      "minimumSystemVersion": "10.15"
+    },
+    "linux": {
+      "deb": {
+        "depends": []
+      },
+      "appimage": {
+        "bundleMediaFramework": true
+      }
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  },
+  "plugins": {
+    "shell": {
+      "open": true
+    },
+    "notification": {
+      "all": true
+    },
+    "fs": {
+      "all": true
+    },
+    "dialog": {
+      "all": true
+    },
+    "http": {
+      "all": true,
+      "request": true
+    },
+    "window-state": {
+      "all": true
+    },
+    "deep-link": {
+      "desktop": {
+        "schemes": ["nchat"]
+      }
+    },
+    "autostart": {
+      "all": true
+    },
+    "updater": {
+      "active": true,
+      "pubkey": "",
+      "endpoints": [
+        "https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"
+      ]
+    },
+    "global-shortcut": {
+      "all": true
+    },
+    "store": {
+      "all": true
+    },
+    "log": {
+      "all": true
+    }
+  }
+}

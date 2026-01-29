@@ -1,0 +1,222 @@
+# Location Subscriptions for nself-chat
+# Real-time subscriptions for location updates
+
+# Subscribe to all active live locations in a channel
+subscription ChannelLiveLocations($channelId: uuid!) {
+  nchat_location_shares(
+    where: {
+      channel_id: { _eq: $channelId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { last_updated_at: desc }
+  ) {
+    id
+    type
+    user_id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to a specific live location updates
+subscription LiveLocationUpdates($locationId: uuid!) {
+  nchat_location_shares_by_pk(id: $locationId) {
+    id
+    type
+    user_id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to a user's active live location
+subscription UserLiveLocation($userId: uuid!) {
+  nchat_location_shares(
+    where: {
+      user_id: { _eq: $userId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    limit: 1
+    order_by: { started_at: desc }
+  ) {
+    id
+    type
+    channel_id
+    message_id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+  }
+}
+
+# Subscribe to location sharing status changes in a channel
+# (useful for showing who is currently sharing)
+subscription ChannelLocationSharers($channelId: uuid!) {
+  nchat_location_shares(
+    where: {
+      channel_id: { _eq: $channelId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { started_at: desc }
+  ) {
+    id
+    user_id
+    started_at
+    expires_at
+    duration_minutes
+    is_active
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to all location shares for a message
+# (static and live)
+subscription MessageLocations($messageId: uuid!) {
+  nchat_location_shares(
+    where: { message_id: { _eq: $messageId } }
+    order_by: { created_at: desc }
+  ) {
+    id
+    type
+    user_id
+    latitude
+    longitude
+    address_formatted
+    label
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    created_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to new location shares in a channel
+# (useful for notifications)
+subscription NewChannelLocations($channelId: uuid!, $since: timestamptz!) {
+  nchat_location_shares(
+    where: {
+      channel_id: { _eq: $channelId }
+      created_at: { _gt: $since }
+    }
+    order_by: { created_at: desc }
+  ) {
+    id
+    type
+    user_id
+    latitude
+    longitude
+    address_formatted
+    label
+    started_at
+    expires_at
+    is_active
+    created_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+    channel {
+      id
+      name
+    }
+  }
+}
+
+# Subscribe to count of active location sharers in a channel
+subscription ChannelLocationSharerCount($channelId: uuid!) {
+  nchat_location_shares_aggregate(
+    where: {
+      channel_id: { _eq: $channelId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Subscribe to multiple users' live locations (for map view)
+subscription MultipleUserLocations($userIds: [uuid!]!) {
+  nchat_location_shares(
+    where: {
+      user_id: { _in: $userIds }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { last_updated_at: desc }
+  ) {
+    id
+    user_id
+    latitude
+    longitude
+    heading
+    speed
+    last_updated_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}

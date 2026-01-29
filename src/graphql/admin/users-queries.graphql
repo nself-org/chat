@@ -1,0 +1,483 @@
+# Admin User Management Queries
+
+# Get paginated list of users with filters
+query GetAdminUsers(
+  $limit: Int!
+  $offset: Int!
+  $search: String
+  $roleId: uuid
+  $isBanned: Boolean
+  $isActive: Boolean
+  $orderBy: [nchat_users_order_by!]
+) {
+  nchat_users(
+    limit: $limit
+    offset: $offset
+    where: {
+      _and: [
+        {
+          _or: [
+            { username: { _ilike: $search } }
+            { display_name: { _ilike: $search } }
+            { email: { _ilike: $search } }
+          ]
+        }
+        { role_id: { _eq: $roleId } }
+        { is_banned: { _eq: $isBanned } }
+        { is_active: { _eq: $isActive } }
+      ]
+    }
+    order_by: $orderBy
+  ) {
+    id
+    username
+    display_name
+    email
+    avatar_url
+    cover_url
+    bio
+    location
+    website
+    pronouns
+    is_active
+    is_banned
+    is_verified
+    banned_at
+    banned_until
+    ban_reason
+    created_at
+    updated_at
+    last_seen_at
+    last_login_at
+    role {
+      id
+      name
+      permissions
+    }
+    messages_aggregate {
+      aggregate {
+        count
+      }
+    }
+    channel_members_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+  nchat_users_aggregate(
+    where: {
+      _and: [
+        {
+          _or: [
+            { username: { _ilike: $search } }
+            { display_name: { _ilike: $search } }
+            { email: { _ilike: $search } }
+          ]
+        }
+        { role_id: { _eq: $roleId } }
+        { is_banned: { _eq: $isBanned } }
+        { is_active: { _eq: $isActive } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get single user by ID
+query GetAdminUserById($id: uuid!) {
+  nchat_users_by_pk(id: $id) {
+    id
+    username
+    display_name
+    email
+    avatar_url
+    cover_url
+    bio
+    location
+    website
+    pronouns
+    is_active
+    is_banned
+    is_verified
+    banned_at
+    banned_until
+    ban_reason
+    suspended_at
+    suspended_until
+    suspend_reason
+    created_at
+    updated_at
+    last_seen_at
+    last_login_at
+    metadata
+    role {
+      id
+      name
+      description
+      permissions
+    }
+    messages_aggregate {
+      aggregate {
+        count
+      }
+    }
+    channel_members_aggregate {
+      aggregate {
+        count
+      }
+    }
+    channel_members {
+      channel {
+        id
+        name
+        slug
+      }
+      role
+      joined_at
+    }
+  }
+}
+
+# Get all roles
+query GetRoles {
+  nchat_roles(order_by: { name: asc }) {
+    id
+    name
+    description
+    permissions
+    is_default
+  }
+}
+
+# Get user activity log
+query GetUserActivity($userId: uuid!, $limit: Int!, $offset: Int!) {
+  nchat_activity_logs(
+    where: { user_id: { _eq: $userId } }
+    limit: $limit
+    offset: $offset
+    order_by: { created_at: desc }
+  ) {
+    id
+    type
+    action
+    description
+    metadata
+    ip_address
+    user_agent
+    created_at
+    target_type
+    target_id
+    target_name
+  }
+  nchat_activity_logs_aggregate(where: { user_id: { _eq: $userId } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get user sessions
+query GetUserSessions($userId: uuid!) {
+  nchat_user_sessions(
+    where: { user_id: { _eq: $userId } }
+    order_by: { last_active_at: desc }
+  ) {
+    id
+    user_id
+    status
+    device_type
+    device_name
+    browser
+    os
+    ip_address
+    location
+    created_at
+    last_active_at
+    expires_at
+  }
+}
+
+# Get user devices
+query GetUserDevices($userId: uuid!) {
+  nchat_user_devices(
+    where: { user_id: { _eq: $userId } }
+    order_by: { last_seen_at: desc }
+  ) {
+    id
+    user_id
+    device_type
+    device_name
+    device_id
+    browser
+    os
+    last_ip_address
+    last_location
+    first_seen_at
+    last_seen_at
+    is_verified
+    is_trusted
+  }
+}
+
+# Get banned users list
+query GetBannedUsers($limit: Int!, $offset: Int!) {
+  nchat_users(
+    where: { is_banned: { _eq: true } }
+    limit: $limit
+    offset: $offset
+    order_by: { banned_at: desc }
+  ) {
+    id
+    username
+    display_name
+    email
+    avatar_url
+    is_banned
+    banned_at
+    banned_until
+    ban_reason
+    role {
+      id
+      name
+    }
+  }
+  nchat_users_aggregate(where: { is_banned: { _eq: true } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get user ban history
+query GetUserBanHistory($userId: uuid!) {
+  nchat_user_bans(
+    where: { user_id: { _eq: $userId } }
+    order_by: { banned_at: desc }
+  ) {
+    id
+    user_id
+    type
+    reason
+    notes
+    banned_at
+    banned_until
+    unbanned_at
+    is_active
+    banned_by_user {
+      id
+      username
+      display_name
+    }
+    unbanned_by_user {
+      id
+      username
+      display_name
+    }
+  }
+}
+
+# Get pending invites
+query GetPendingInvites($limit: Int!, $offset: Int!) {
+  nchat_user_invites(
+    where: { status: { _eq: "pending" } }
+    limit: $limit
+    offset: $offset
+    order_by: { created_at: desc }
+  ) {
+    id
+    email
+    role
+    status
+    invite_code
+    message
+    expires_at
+    created_at
+    invited_by_user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+  nchat_user_invites_aggregate(where: { status: { _eq: "pending" } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get all invites with filters
+query GetInvites($status: String, $limit: Int!, $offset: Int!) {
+  nchat_user_invites(
+    where: { status: { _eq: $status } }
+    limit: $limit
+    offset: $offset
+    order_by: { created_at: desc }
+  ) {
+    id
+    email
+    role
+    status
+    invite_code
+    message
+    expires_at
+    created_at
+    accepted_at
+    revoked_at
+    invited_by_user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+    accepted_by_user {
+      id
+      username
+      display_name
+    }
+  }
+  nchat_user_invites_aggregate(where: { status: { _eq: $status } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get invite links
+query GetInviteLinks {
+  nchat_invite_links(order_by: { created_at: desc }) {
+    id
+    code
+    role
+    max_uses
+    current_uses
+    expires_at
+    created_at
+    is_active
+    created_by_user {
+      id
+      username
+      display_name
+    }
+  }
+}
+
+# Get user statistics
+query GetUserStats {
+  total: nchat_users_aggregate {
+    aggregate {
+      count
+    }
+  }
+  active: nchat_users_aggregate(where: { is_active: { _eq: true } }) {
+    aggregate {
+      count
+    }
+  }
+  inactive: nchat_users_aggregate(where: { is_active: { _eq: false } }) {
+    aggregate {
+      count
+    }
+  }
+  banned: nchat_users_aggregate(where: { is_banned: { _eq: true } }) {
+    aggregate {
+      count
+    }
+  }
+  verified: nchat_users_aggregate(where: { is_verified: { _eq: true } }) {
+    aggregate {
+      count
+    }
+  }
+  pending_invites: nchat_user_invites_aggregate(where: { status: { _eq: "pending" } }) {
+    aggregate {
+      count
+    }
+  }
+  owner: nchat_users_aggregate(where: { role: { name: { _eq: "owner" } } }) {
+    aggregate {
+      count
+    }
+  }
+  admin: nchat_users_aggregate(where: { role: { name: { _eq: "admin" } } }) {
+    aggregate {
+      count
+    }
+  }
+  moderator: nchat_users_aggregate(where: { role: { name: { _eq: "moderator" } } }) {
+    aggregate {
+      count
+    }
+  }
+  member: nchat_users_aggregate(where: { role: { name: { _eq: "member" } } }) {
+    aggregate {
+      count
+    }
+  }
+  guest: nchat_users_aggregate(where: { role: { name: { _eq: "guest" } } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get user growth data
+query GetUserGrowth($startDate: timestamptz!, $endDate: timestamptz!) {
+  nchat_users(
+    where: {
+      created_at: { _gte: $startDate, _lte: $endDate }
+    }
+    order_by: { created_at: asc }
+  ) {
+    id
+    created_at
+  }
+}
+
+# Get impersonation history
+query GetImpersonationHistory($limit: Int!, $offset: Int!) {
+  nchat_impersonation_sessions(
+    limit: $limit
+    offset: $offset
+    order_by: { started_at: desc }
+  ) {
+    id
+    reason
+    started_at
+    ended_at
+    is_active
+    admin_user {
+      id
+      username
+      display_name
+    }
+    target_user {
+      id
+      username
+      display_name
+    }
+  }
+  nchat_impersonation_sessions_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Check if username exists
+query CheckUsernameExists($username: String!) {
+  nchat_users(where: { username: { _eq: $username } }) {
+    id
+  }
+}
+
+# Check if email exists
+query CheckEmailExists($email: String!) {
+  nchat_users(where: { email: { _eq: $email } }) {
+    id
+  }
+}

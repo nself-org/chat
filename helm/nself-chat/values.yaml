@@ -1,0 +1,232 @@
+# ============================================================================
+# nself-chat Helm Chart - Default Values
+# ============================================================================
+# This file contains default values for the nself-chat Helm chart.
+# Override these values in values-production.yaml or values-staging.yaml
+# ============================================================================
+
+# Global configuration
+global:
+  # Image pull secrets for private registries
+  imagePullSecrets: []
+  # - name: nself-chat-registry
+
+# Application configuration
+app:
+  name: nchat
+  environment: production
+
+# Container image configuration
+image:
+  repository: ghcr.io/nself/nself-chat
+  tag: ""  # Defaults to Chart.appVersion
+  pullPolicy: IfNotPresent
+
+# Replica configuration
+replicaCount: 2
+
+# Service account
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# Pod annotations
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "3000"
+  prometheus.io/path: "/api/metrics"
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+
+# Container security context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+  annotations: {}
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/websocket-services: "nself-chat"
+  hosts:
+    - host: chat.nself.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: nself-chat-tls
+      hosts:
+        - chat.nself.io
+
+# Resource limits and requests
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# Horizontal Pod Autoscaler
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: nself-chat
+          topologyKey: kubernetes.io/hostname
+
+# Topology spread constraints
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: nself-chat
+
+# Health probes
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/ready
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+startupProbe:
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 30
+
+# Environment variables from ConfigMap
+config:
+  NODE_ENV: production
+  NEXT_PUBLIC_ENV: production
+  NEXT_PUBLIC_USE_DEV_AUTH: "false"
+  NEXT_PUBLIC_APP_NAME: nchat
+  LOG_LEVEL: info
+  LOG_FORMAT: json
+
+# External service URLs (configure based on your infrastructure)
+externalServices:
+  graphql:
+    url: ""  # e.g., https://api.nself.io/v1/graphql
+  auth:
+    url: ""  # e.g., https://auth.nself.io
+  storage:
+    url: ""  # e.g., https://storage.nself.io
+
+# Secrets configuration
+secrets:
+  # Create secrets from values (NOT recommended for production)
+  create: false
+  # External secret name to use
+  existingSecret: nself-chat-secrets
+
+# Network policies
+networkPolicy:
+  enabled: true
+  allowIngressFrom:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+  allowEgressTo:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+
+# PostgreSQL subchart configuration
+postgresql:
+  enabled: false
+  auth:
+    username: nchat
+    database: nchat
+    existingSecret: nself-chat-secrets
+    secretKeys:
+      adminPasswordKey: POSTGRES_PASSWORD
+      userPasswordKey: POSTGRES_PASSWORD
+  primary:
+    persistence:
+      size: 10Gi
+
+# Redis subchart configuration
+redis:
+  enabled: false
+  auth:
+    enabled: true
+    existingSecret: nself-chat-secrets
+    existingSecretPasswordKey: REDIS_PASSWORD
+  master:
+    persistence:
+      size: 1Gi
+
+# Extra volumes
+extraVolumes:
+  - name: tmp
+    emptyDir: {}
+  - name: next-cache
+    emptyDir: {}
+
+# Extra volume mounts
+extraVolumeMounts:
+  - name: tmp
+    mountPath: /tmp
+  - name: next-cache
+    mountPath: /app/.next/cache

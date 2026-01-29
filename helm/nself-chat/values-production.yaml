@@ -1,0 +1,97 @@
+# ============================================================================
+# nself-chat Helm Chart - Production Values
+# ============================================================================
+# Production-specific overrides
+#
+# Usage:
+#   helm upgrade --install nself-chat ./helm/nself-chat \
+#     -f ./helm/nself-chat/values.yaml \
+#     -f ./helm/nself-chat/values-production.yaml \
+#     --namespace nself-chat
+# ============================================================================
+
+app:
+  environment: production
+
+image:
+  pullPolicy: Always
+
+# Higher replica count for production
+replicaCount: 3
+
+# Production ingress
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/rate-limit: "20"
+    nginx.ingress.kubernetes.io/rate-limit-connections: "10"
+  hosts:
+    - host: chat.nself.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: nself-chat-prod-tls
+      hosts:
+        - chat.nself.io
+
+# Higher resource limits for production
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+
+# Aggressive autoscaling for production
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# Production environment config
+config:
+  NODE_ENV: production
+  NEXT_PUBLIC_ENV: production
+  NEXT_PUBLIC_USE_DEV_AUTH: "false"
+  NEXT_PUBLIC_APP_NAME: nchat
+  LOG_LEVEL: warn
+  LOG_FORMAT: json
+
+# Production service URLs
+externalServices:
+  graphql:
+    url: https://api.nself.io/v1/graphql
+  auth:
+    url: https://auth.nself.io
+  storage:
+    url: https://storage.nself.io
+
+# Use existing secrets managed by external secret manager
+secrets:
+  create: false
+  existingSecret: nself-chat-production-secrets
+
+# Enable network policies in production
+networkPolicy:
+  enabled: true
+
+# PostgreSQL - use managed database in production
+postgresql:
+  enabled: false
+
+# Redis - use managed Redis in production
+redis:
+  enabled: false

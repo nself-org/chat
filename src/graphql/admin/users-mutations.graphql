@@ -1,0 +1,526 @@
+# Admin User Management Mutations
+
+# Create a new user
+mutation CreateUser(
+  $username: String!
+  $displayName: String!
+  $email: String!
+  $roleId: uuid!
+  $avatarUrl: String
+  $bio: String
+) {
+  insert_nchat_users_one(
+    object: {
+      username: $username
+      display_name: $displayName
+      email: $email
+      role_id: $roleId
+      avatar_url: $avatarUrl
+      bio: $bio
+      is_active: true
+      is_banned: false
+    }
+  ) {
+    id
+    username
+    display_name
+    email
+    role {
+      id
+      name
+    }
+    created_at
+  }
+}
+
+# Update user profile
+mutation UpdateUser(
+  $id: uuid!
+  $username: String
+  $displayName: String
+  $email: String
+  $avatarUrl: String
+  $coverUrl: String
+  $bio: String
+  $location: String
+  $website: String
+  $pronouns: String
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      username: $username
+      display_name: $displayName
+      email: $email
+      avatar_url: $avatarUrl
+      cover_url: $coverUrl
+      bio: $bio
+      location: $location
+      website: $website
+      pronouns: $pronouns
+      updated_at: "now()"
+    }
+  ) {
+    id
+    username
+    display_name
+    email
+    avatar_url
+    cover_url
+    bio
+    location
+    website
+    pronouns
+    updated_at
+  }
+}
+
+# Change user role
+mutation ChangeUserRole($userId: uuid!, $roleId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { role_id: $roleId, updated_at: "now()" }
+  ) {
+    id
+    role {
+      id
+      name
+    }
+    updated_at
+  }
+}
+
+# Deactivate user
+mutation DeactivateUser($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { is_active: false, updated_at: "now()" }
+  ) {
+    id
+    is_active
+    updated_at
+  }
+}
+
+# Reactivate user
+mutation ReactivateUser($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { is_active: true, updated_at: "now()" }
+  ) {
+    id
+    is_active
+    updated_at
+  }
+}
+
+# Ban user
+mutation BanUser(
+  $userId: uuid!
+  $reason: String!
+  $bannedUntil: timestamptz
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      is_banned: true
+      banned_at: "now()"
+      banned_until: $bannedUntil
+      ban_reason: $reason
+      updated_at: "now()"
+    }
+  ) {
+    id
+    is_banned
+    banned_at
+    banned_until
+    ban_reason
+  }
+}
+
+# Unban user
+mutation UnbanUser($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      is_banned: false
+      banned_at: null
+      banned_until: null
+      ban_reason: null
+      updated_at: "now()"
+    }
+  ) {
+    id
+    is_banned
+    banned_at
+    banned_until
+    ban_reason
+  }
+}
+
+# Create ban record
+mutation CreateBanRecord(
+  $userId: uuid!
+  $type: String!
+  $reason: String!
+  $notes: String
+  $bannedUntil: timestamptz
+  $bannedById: uuid!
+) {
+  insert_nchat_user_bans_one(
+    object: {
+      user_id: $userId
+      type: $type
+      reason: $reason
+      notes: $notes
+      banned_until: $bannedUntil
+      banned_by: $bannedById
+      is_active: true
+    }
+  ) {
+    id
+    user_id
+    type
+    reason
+    banned_at
+    banned_until
+    is_active
+  }
+}
+
+# Update ban record (for unban)
+mutation UpdateBanRecord($banId: uuid!, $unbannedById: uuid!) {
+  update_nchat_user_bans_by_pk(
+    pk_columns: { id: $banId }
+    _set: {
+      is_active: false
+      unbanned_at: "now()"
+      unbanned_by: $unbannedById
+    }
+  ) {
+    id
+    is_active
+    unbanned_at
+  }
+}
+
+# Delete user
+mutation DeleteUser($userId: uuid!) {
+  delete_nchat_users_by_pk(id: $userId) {
+    id
+    username
+    email
+  }
+}
+
+# Soft delete user (mark as deleted)
+mutation SoftDeleteUser($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      is_active: false
+      deleted_at: "now()"
+      updated_at: "now()"
+    }
+  ) {
+    id
+    is_active
+    deleted_at
+  }
+}
+
+# Create user invite
+mutation CreateUserInvite(
+  $email: String!
+  $role: String!
+  $inviteCode: String!
+  $message: String
+  $expiresAt: timestamptz!
+  $invitedById: uuid!
+) {
+  insert_nchat_user_invites_one(
+    object: {
+      email: $email
+      role: $role
+      invite_code: $inviteCode
+      message: $message
+      expires_at: $expiresAt
+      invited_by: $invitedById
+      status: "pending"
+    }
+  ) {
+    id
+    email
+    role
+    invite_code
+    status
+    expires_at
+    created_at
+  }
+}
+
+# Create bulk invites
+mutation CreateBulkInvites($invites: [nchat_user_invites_insert_input!]!) {
+  insert_nchat_user_invites(objects: $invites) {
+    affected_rows
+    returning {
+      id
+      email
+      invite_code
+      status
+    }
+  }
+}
+
+# Revoke invite
+mutation RevokeInvite($inviteId: uuid!) {
+  update_nchat_user_invites_by_pk(
+    pk_columns: { id: $inviteId }
+    _set: { status: "revoked", revoked_at: "now()" }
+  ) {
+    id
+    status
+    revoked_at
+  }
+}
+
+# Accept invite
+mutation AcceptInvite($inviteId: uuid!, $acceptedByUserId: uuid!) {
+  update_nchat_user_invites_by_pk(
+    pk_columns: { id: $inviteId }
+    _set: {
+      status: "accepted"
+      accepted_at: "now()"
+      accepted_by: $acceptedByUserId
+    }
+  ) {
+    id
+    status
+    accepted_at
+  }
+}
+
+# Delete invite
+mutation DeleteInvite($inviteId: uuid!) {
+  delete_nchat_user_invites_by_pk(id: $inviteId) {
+    id
+    email
+  }
+}
+
+# Create invite link
+mutation CreateInviteLink(
+  $code: String!
+  $role: String!
+  $maxUses: Int
+  $expiresAt: timestamptz!
+  $createdById: uuid!
+) {
+  insert_nchat_invite_links_one(
+    object: {
+      code: $code
+      role: $role
+      max_uses: $maxUses
+      expires_at: $expiresAt
+      created_by: $createdById
+      is_active: true
+    }
+  ) {
+    id
+    code
+    role
+    max_uses
+    current_uses
+    expires_at
+    is_active
+  }
+}
+
+# Increment invite link usage
+mutation IncrementInviteLinkUsage($linkId: uuid!) {
+  update_nchat_invite_links_by_pk(
+    pk_columns: { id: $linkId }
+    _inc: { current_uses: 1 }
+  ) {
+    id
+    current_uses
+    max_uses
+  }
+}
+
+# Deactivate invite link
+mutation DeactivateInviteLink($linkId: uuid!) {
+  update_nchat_invite_links_by_pk(
+    pk_columns: { id: $linkId }
+    _set: { is_active: false }
+  ) {
+    id
+    is_active
+  }
+}
+
+# Delete invite link
+mutation DeleteInviteLink($linkId: uuid!) {
+  delete_nchat_invite_links_by_pk(id: $linkId) {
+    id
+    code
+  }
+}
+
+# Revoke user session
+mutation RevokeUserSession($sessionId: uuid!) {
+  update_nchat_user_sessions_by_pk(
+    pk_columns: { id: $sessionId }
+    _set: { status: "revoked" }
+  ) {
+    id
+    status
+  }
+}
+
+# Revoke all user sessions
+mutation RevokeAllUserSessions($userId: uuid!) {
+  update_nchat_user_sessions(
+    where: { user_id: { _eq: $userId }, status: { _eq: "active" } }
+    _set: { status: "revoked" }
+  ) {
+    affected_rows
+  }
+}
+
+# Start impersonation session
+mutation StartImpersonation(
+  $adminId: uuid!
+  $targetUserId: uuid!
+  $reason: String!
+) {
+  insert_nchat_impersonation_sessions_one(
+    object: {
+      admin_id: $adminId
+      target_user_id: $targetUserId
+      reason: $reason
+      is_active: true
+    }
+  ) {
+    id
+    admin_id
+    target_user_id
+    reason
+    started_at
+    is_active
+  }
+}
+
+# End impersonation session
+mutation EndImpersonation($sessionId: uuid!) {
+  update_nchat_impersonation_sessions_by_pk(
+    pk_columns: { id: $sessionId }
+    _set: { is_active: false, ended_at: "now()" }
+  ) {
+    id
+    is_active
+    ended_at
+  }
+}
+
+# Log activity
+mutation LogUserActivity(
+  $userId: uuid!
+  $type: String!
+  $action: String!
+  $description: String!
+  $metadata: jsonb
+  $ipAddress: String
+  $userAgent: String
+  $targetType: String
+  $targetId: String
+  $targetName: String
+) {
+  insert_nchat_activity_logs_one(
+    object: {
+      user_id: $userId
+      type: $type
+      action: $action
+      description: $description
+      metadata: $metadata
+      ip_address: $ipAddress
+      user_agent: $userAgent
+      target_type: $targetType
+      target_id: $targetId
+      target_name: $targetName
+    }
+  ) {
+    id
+    type
+    action
+    created_at
+  }
+}
+
+# Bulk update users
+mutation BulkUpdateUsers($userIds: [uuid!]!, $updates: nchat_users_set_input!) {
+  update_nchat_users(
+    where: { id: { _in: $userIds } }
+    _set: $updates
+  ) {
+    affected_rows
+    returning {
+      id
+      username
+    }
+  }
+}
+
+# Bulk delete users
+mutation BulkDeleteUsers($userIds: [uuid!]!) {
+  delete_nchat_users(where: { id: { _in: $userIds } }) {
+    affected_rows
+    returning {
+      id
+      username
+      email
+    }
+  }
+}
+
+# Update last seen
+mutation UpdateLastSeen($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { last_seen_at: "now()" }
+  ) {
+    id
+    last_seen_at
+  }
+}
+
+# Verify user email
+mutation VerifyUserEmail($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { is_verified: true, updated_at: "now()" }
+  ) {
+    id
+    is_verified
+    updated_at
+  }
+}
+
+# Remove user device
+mutation RemoveUserDevice($deviceId: uuid!) {
+  delete_nchat_user_devices_by_pk(id: $deviceId) {
+    id
+    device_name
+  }
+}
+
+# Trust user device
+mutation TrustUserDevice($deviceId: uuid!) {
+  update_nchat_user_devices_by_pk(
+    pk_columns: { id: $deviceId }
+    _set: { is_trusted: true }
+  ) {
+    id
+    is_trusted
+  }
+}

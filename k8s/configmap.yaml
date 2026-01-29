@@ -1,0 +1,32 @@
+# ============================================================================
+# nself-chat Kubernetes ConfigMap
+# ============================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nself-chat-config
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: nself-chat
+    app.kubernetes.io/component: config
+data:
+  # Application settings
+  NODE_ENV: "production"
+  NEXT_PUBLIC_ENV: "production"
+  NEXT_PUBLIC_USE_DEV_AUTH: "false"
+
+  # Application branding
+  NEXT_PUBLIC_APP_NAME: "nchat"
+
+  # Service URLs (internal cluster DNS)
+  NEXT_PUBLIC_GRAPHQL_URL: "http://hasura.nself-chat.svc.cluster.local:8080/v1/graphql"
+  NEXT_PUBLIC_AUTH_URL: "http://auth.nself-chat.svc.cluster.local:4000"
+  NEXT_PUBLIC_STORAGE_URL: "http://storage.nself-chat.svc.cluster.local:8000"
+
+  # Health check configuration
+  HEALTH_URL: "http://localhost:3000/api/health"
+  HEALTH_TIMEOUT: "5"
+
+  # Logging
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"

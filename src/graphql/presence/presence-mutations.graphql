@@ -1,0 +1,190 @@
+# =============================================================================
+# Presence Mutations
+# =============================================================================
+
+# Update user presence status
+mutation UpdatePresenceStatus($userId: uuid!, $status: String!, $device: String) {
+  insert_nchat_user_presence_one(
+    object: { user_id: $userId, status: $status, device: $device, last_seen_at: "now()" }
+    on_conflict: {
+      constraint: nchat_user_presence_user_id_key
+      update_columns: [status, device, last_seen_at]
+    }
+  ) {
+    id
+    user_id
+    status
+    device
+    last_seen_at
+  }
+}
+
+# Update custom status
+mutation UpdateCustomStatus(
+  $userId: uuid!
+  $customStatus: String
+  $customEmoji: String
+  $expiresAt: timestamptz
+) {
+  update_nchat_user_presence(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      custom_status: $customStatus
+      custom_emoji: $customEmoji
+      custom_status_expires_at: $expiresAt
+      last_seen_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      user_id
+      status
+      custom_status
+      custom_emoji
+      custom_status_expires_at
+    }
+  }
+}
+
+# Clear custom status
+mutation ClearCustomStatus($userId: uuid!) {
+  update_nchat_user_presence(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      custom_status: null
+      custom_emoji: null
+      custom_status_expires_at: null
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      user_id
+      status
+      custom_status
+      custom_emoji
+    }
+  }
+}
+
+# Set user offline
+mutation SetUserOffline($userId: uuid!) {
+  update_nchat_user_presence(
+    where: { user_id: { _eq: $userId } }
+    _set: { status: "offline", last_seen_at: "now()" }
+  ) {
+    affected_rows
+    returning {
+      id
+      status
+      last_seen_at
+    }
+  }
+}
+
+# Heartbeat - update last seen without changing status
+mutation PresenceHeartbeat($userId: uuid!) {
+  update_nchat_user_presence(
+    where: { user_id: { _eq: $userId } }
+    _set: { last_seen_at: "now()" }
+  ) {
+    affected_rows
+    returning {
+      id
+      last_seen_at
+    }
+  }
+}
+
+# Start typing indicator
+mutation StartTyping($userId: uuid!, $channelId: uuid!, $threadId: uuid) {
+  insert_nchat_typing_indicators_one(
+    object: {
+      user_id: $userId
+      channel_id: $channelId
+      thread_id: $threadId
+      started_at: "now()"
+      expires_at: "now() + interval '5 seconds'"
+    }
+    on_conflict: {
+      constraint: nchat_typing_indicators_user_channel_thread_key
+      update_columns: [started_at, expires_at]
+    }
+  ) {
+    id
+    user_id
+    channel_id
+    thread_id
+    started_at
+    expires_at
+  }
+}
+
+# Stop typing indicator
+mutation StopTyping($userId: uuid!, $channelId: uuid!, $threadId: uuid) {
+  delete_nchat_typing_indicators(
+    where: {
+      user_id: { _eq: $userId }
+      channel_id: { _eq: $channelId }
+      thread_id: { _eq: $threadId }
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Clear all typing indicators for a user (on disconnect)
+mutation ClearUserTypingIndicators($userId: uuid!) {
+  delete_nchat_typing_indicators(where: { user_id: { _eq: $userId } }) {
+    affected_rows
+  }
+}
+
+# Update presence settings
+mutation UpdatePresenceSettings($userId: uuid!, $settings: jsonb!) {
+  insert_nchat_user_settings_one(
+    object: { user_id: $userId, presence_settings: $settings }
+    on_conflict: {
+      constraint: nchat_user_settings_user_id_key
+      update_columns: [presence_settings]
+    }
+  ) {
+    id
+    user_id
+    presence_settings
+  }
+}
+
+# Bulk update presence (for admin or system use)
+mutation BulkSetOffline($userIds: [uuid!]!) {
+  update_nchat_user_presence(
+    where: { user_id: { _in: $userIds } }
+    _set: { status: "offline", last_seen_at: "now()" }
+  ) {
+    affected_rows
+  }
+}
+
+# Clean up expired typing indicators
+mutation CleanupExpiredTypingIndicators {
+  delete_nchat_typing_indicators(where: { expires_at: { _lt: "now()" } }) {
+    affected_rows
+  }
+}
+
+# Clean up expired custom statuses
+mutation CleanupExpiredCustomStatuses {
+  update_nchat_user_presence(
+    where: {
+      custom_status_expires_at: { _lt: "now()", _is_null: false }
+    }
+    _set: {
+      custom_status: null
+      custom_emoji: null
+      custom_status_expires_at: null
+    }
+  ) {
+    affected_rows
+  }
+}

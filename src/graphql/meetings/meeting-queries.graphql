@@ -1,0 +1,439 @@
+# Meeting Queries
+# GraphQL queries for fetching meeting data
+
+# ============================================================================
+# Fragments
+# ============================================================================
+
+fragment MeetingUserBasic on nchat_users {
+  id
+  username
+  display_name
+  avatar_url
+  status
+  last_seen_at
+}
+
+fragment MeetingParticipantFull on nchat_meeting_participants {
+  id
+  meeting_id
+  user_id
+  role
+  status
+  invited_at
+  responded_at
+  joined_at
+  left_at
+  user {
+    ...MeetingUserBasic
+  }
+}
+
+fragment MeetingBasic on nchat_meetings {
+  id
+  title
+  description
+  type
+  status
+  room_type
+  scheduled_start_at
+  scheduled_end_at
+  timezone
+  duration
+  is_recurring
+  host_id
+  channel_id
+  is_private
+  meeting_link
+  meeting_code
+  participant_count
+  max_participants
+  created_at
+  updated_at
+}
+
+fragment MeetingFull on nchat_meetings {
+  ...MeetingBasic
+  actual_start_at
+  actual_end_at
+  recurrence_rule
+  parent_meeting_id
+  requires_approval
+  password
+  settings
+  created_by
+  host {
+    ...MeetingUserBasic
+  }
+  channel {
+    id
+    name
+    slug
+  }
+  participants {
+    ...MeetingParticipantFull
+  }
+}
+
+fragment MeetingReminderFull on nchat_meeting_reminders {
+  id
+  meeting_id
+  user_id
+  timing
+  sent_at
+  is_enabled
+  created_at
+}
+
+# ============================================================================
+# Queries
+# ============================================================================
+
+# Get all meetings for a user (as host or participant)
+query GetUserMeetings(
+  $userId: uuid!
+  $status: [String!]
+  $limit: Int = 50
+  $offset: Int = 0
+) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      status: { _in: $status }
+    }
+    order_by: { scheduled_start_at: asc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...MeetingFull
+  }
+  nchat_meetings_aggregate(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      status: { _in: $status }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get a single meeting by ID
+query GetMeeting($id: uuid!) {
+  nchat_meetings_by_pk(id: $id) {
+    ...MeetingFull
+    reminders(where: { is_enabled: { _eq: true } }) {
+      ...MeetingReminderFull
+    }
+  }
+}
+
+# Get a meeting by code (for joining)
+query GetMeetingByCode($code: String!) {
+  nchat_meetings(
+    where: { meeting_code: { _eq: $code } }
+    limit: 1
+  ) {
+    ...MeetingFull
+  }
+}
+
+# Get upcoming meetings for a user
+query GetUpcomingMeetings(
+  $userId: uuid!
+  $startFrom: timestamptz!
+  $limit: Int = 10
+) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      status: { _eq: "scheduled" }
+      scheduled_start_at: { _gte: $startFrom }
+    }
+    order_by: { scheduled_start_at: asc }
+    limit: $limit
+  ) {
+    ...MeetingBasic
+    host {
+      ...MeetingUserBasic
+    }
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+
+# Get meetings in a date range (for calendar view)
+query GetMeetingsInRange(
+  $userId: uuid!
+  $startDate: timestamptz!
+  $endDate: timestamptz!
+) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      scheduled_start_at: { _gte: $startDate, _lt: $endDate }
+      status: { _neq: "cancelled" }
+    }
+    order_by: { scheduled_start_at: asc }
+  ) {
+    ...MeetingBasic
+    host {
+      ...MeetingUserBasic
+    }
+  }
+}
+
+# Get meetings for a specific day
+query GetMeetingsForDay($userId: uuid!, $date: date!) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      scheduled_start_at: { _gte: $date, _lt: $date }
+      status: { _neq: "cancelled" }
+    }
+    order_by: { scheduled_start_at: asc }
+  ) {
+    ...MeetingFull
+  }
+}
+
+# Get meetings for a channel
+query GetChannelMeetings($channelId: uuid!, $status: [String!], $limit: Int = 20) {
+  nchat_meetings(
+    where: {
+      channel_id: { _eq: $channelId }
+      status: { _in: $status }
+    }
+    order_by: { scheduled_start_at: asc }
+    limit: $limit
+  ) {
+    ...MeetingBasic
+    host {
+      ...MeetingUserBasic
+    }
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+
+# Get live meetings
+query GetLiveMeetings($userId: uuid!) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      status: { _eq: "live" }
+    }
+    order_by: { actual_start_at: desc }
+  ) {
+    ...MeetingFull
+  }
+}
+
+# Get past meetings
+query GetPastMeetings(
+  $userId: uuid!
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      status: { _eq: "ended" }
+    }
+    order_by: { scheduled_start_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...MeetingBasic
+    actual_start_at
+    actual_end_at
+    host {
+      ...MeetingUserBasic
+    }
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+
+# Get meeting participants
+query GetMeetingParticipants($meetingId: uuid!) {
+  nchat_meeting_participants(
+    where: { meeting_id: { _eq: $meetingId } }
+    order_by: [{ role: asc }, { invited_at: asc }]
+  ) {
+    ...MeetingParticipantFull
+  }
+}
+
+# Get user's meeting reminders
+query GetUserMeetingReminders($userId: uuid!, $meetingIds: [uuid!]!) {
+  nchat_meeting_reminders(
+    where: {
+      user_id: { _eq: $userId }
+      meeting_id: { _in: $meetingIds }
+    }
+  ) {
+    ...MeetingReminderFull
+  }
+}
+
+# Get upcoming reminders to send
+query GetPendingReminders($beforeTime: timestamptz!, $limit: Int = 100) {
+  nchat_meeting_reminders(
+    where: {
+      is_enabled: { _eq: true }
+      sent_at: { _is_null: true }
+      meeting: {
+        status: { _eq: "scheduled" }
+        scheduled_start_at: { _lte: $beforeTime }
+      }
+    }
+    limit: $limit
+  ) {
+    ...MeetingReminderFull
+    meeting {
+      ...MeetingBasic
+    }
+  }
+}
+
+# Search meetings
+query SearchMeetings(
+  $userId: uuid!
+  $query: String!
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  nchat_meetings(
+    where: {
+      _or: [
+        { host_id: { _eq: $userId } }
+        { participants: { user_id: { _eq: $userId } } }
+      ]
+      _and: [
+        {
+          _or: [
+            { title: { _ilike: $query } }
+            { description: { _ilike: $query } }
+          ]
+        }
+      ]
+    }
+    order_by: { scheduled_start_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...MeetingBasic
+    host {
+      ...MeetingUserBasic
+    }
+  }
+}
+
+# Get recurring meeting instances
+query GetRecurringMeetingInstances($parentMeetingId: uuid!, $limit: Int = 10) {
+  nchat_meetings(
+    where: { parent_meeting_id: { _eq: $parentMeetingId } }
+    order_by: { scheduled_start_at: asc }
+    limit: $limit
+  ) {
+    ...MeetingBasic
+  }
+}
+
+# ============================================================================
+# Huddle Queries
+# ============================================================================
+
+fragment HuddleParticipantFull on nchat_huddle_participants {
+  user_id
+  joined_at
+  is_muted
+  is_video_on
+  is_speaking
+  is_screen_sharing
+  user {
+    ...MeetingUserBasic
+  }
+}
+
+fragment HuddleFull on nchat_huddles {
+  id
+  channel_id
+  room_type
+  status
+  host_id
+  started_at
+  ended_at
+  participant_count
+  max_participants
+  host {
+    ...MeetingUserBasic
+  }
+  participants {
+    ...HuddleParticipantFull
+  }
+}
+
+# Get active huddle in a channel
+query GetChannelHuddle($channelId: uuid!) {
+  nchat_huddles(
+    where: {
+      channel_id: { _eq: $channelId }
+      status: { _eq: "active" }
+    }
+    limit: 1
+  ) {
+    ...HuddleFull
+  }
+}
+
+# Get all active huddles for a user's channels
+query GetActiveHuddles($channelIds: [uuid!]!) {
+  nchat_huddles(
+    where: {
+      channel_id: { _in: $channelIds }
+      status: { _eq: "active" }
+    }
+  ) {
+    ...HuddleFull
+  }
+}
+
+# Get huddle by ID
+query GetHuddle($id: uuid!) {
+  nchat_huddles_by_pk(id: $id) {
+    ...HuddleFull
+  }
+}

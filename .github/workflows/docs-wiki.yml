@@ -1,0 +1,62 @@
+name: Sync Docs to Wiki
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout wiki
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Initialize wiki if needed
+        run: |
+          if [ ! -d "wiki/.git" ]; then
+            mkdir -p wiki
+            cd wiki
+            git init
+            git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git
+          fi
+
+      - name: Sync docs to wiki
+        run: |
+          # Copy all markdown files from docs/ to wiki/
+          cp -r main/docs/* wiki/ 2>/dev/null || true
+
+          # Ensure _Sidebar.md exists
+          if [ ! -f wiki/_Sidebar.md ]; then
+            echo "Creating sidebar..."
+          fi
+
+          # Ensure Home.md exists
+          if [ ! -f wiki/Home.md ]; then
+            cp main/docs/Home.md wiki/Home.md 2>/dev/null || echo "# nself-chat Documentation" > wiki/Home.md
+          fi
+
+      - name: Push to wiki
+        run: |
+          cd wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "Sync docs from main repo"
+          git push origin HEAD:master --force || git push origin HEAD:main --force || echo "Wiki push failed - may need manual wiki initialization"

@@ -1,0 +1,244 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      image_tag:
+        description: 'Image tag to deploy'
+        required: false
+        default: 'latest'
+        type: string
+      replicas:
+        description: 'Number of replicas'
+        required: false
+        default: '2'
+        type: string
+  workflow_call:
+    inputs:
+      environment:
+        required: false
+        type: string
+        default: 'staging'
+      image_tag:
+        required: false
+        type: string
+        default: 'latest'
+      replicas:
+        required: false
+        type: string
+        default: '2'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy:
+    name: Deploy to Kubernetes
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: Set namespace
+        id: namespace
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            echo "namespace=nself-chat-prod" >> $GITHUB_OUTPUT
+          else
+            echo "namespace=nself-chat-staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create namespace if not exists
+        run: |
+          kubectl create namespace ${{ steps.namespace.outputs.namespace }} --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create image pull secret
+        run: |
+          kubectl create secret docker-registry ghcr-secret \
+            --docker-server=${{ env.REGISTRY }} \
+            --docker-username=${{ github.actor }} \
+            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --namespace=${{ steps.namespace.outputs.namespace }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy ConfigMap
+        run: |
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: nself-chat-config
+            namespace: ${{ steps.namespace.outputs.namespace }}
+          data:
+            NODE_ENV: "production"
+            NEXT_PUBLIC_USE_DEV_AUTH: "false"
+          EOF
+
+      - name: Deploy application
+        run: |
+          kubectl apply -f - <<EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nself-chat
+            namespace: ${{ steps.namespace.outputs.namespace }}
+            labels:
+              app: nself-chat
+          spec:
+            replicas: ${{ inputs.replicas || 2 }}
+            selector:
+              matchLabels:
+                app: nself-chat
+            template:
+              metadata:
+                labels:
+                  app: nself-chat
+                annotations:
+                  deployment-timestamp: "$(date -u +%Y%m%d%H%M%S)"
+              spec:
+                imagePullSecrets:
+                  - name: ghcr-secret
+                containers:
+                  - name: nself-chat
+                    image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag || 'latest' }}
+                    ports:
+                      - containerPort: 3000
+                    envFrom:
+                      - configMapRef:
+                          name: nself-chat-config
+                      - secretRef:
+                          name: nself-chat-secrets
+                          optional: true
+                    resources:
+                      requests:
+                        memory: "256Mi"
+                        cpu: "100m"
+                      limits:
+                        memory: "512Mi"
+                        cpu: "500m"
+                    readinessProbe:
+                      httpGet:
+                        path: /api/health
+                        port: 3000
+                      initialDelaySeconds: 10
+                      periodSeconds: 5
+                    livenessProbe:
+                      httpGet:
+                        path: /api/health
+                        port: 3000
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: nself-chat
+            namespace: ${{ steps.namespace.outputs.namespace }}
+          spec:
+            selector:
+              app: nself-chat
+            ports:
+              - port: 80
+                targetPort: 3000
+            type: ClusterIP
+          ---
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            name: nself-chat
+            namespace: ${{ steps.namespace.outputs.namespace }}
+            annotations:
+              kubernetes.io/ingress.class: nginx
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+          spec:
+            tls:
+              - hosts:
+                  - ${{ inputs.environment == 'production' && 'chat.nself.org' || 'chat-staging.nself.org' }}
+                secretName: nself-chat-tls
+            rules:
+              - host: ${{ inputs.environment == 'production' && 'chat.nself.org' || 'chat-staging.nself.org' }}
+                http:
+                  paths:
+                    - path: /
+                      pathType: Prefix
+                      backend:
+                        service:
+                          name: nself-chat
+                          port:
+                            number: 80
+          EOF
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/nself-chat \
+            --namespace=${{ steps.namespace.outputs.namespace }} \
+            --timeout=300s
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n ${{ steps.namespace.outputs.namespace }} -l app=nself-chat
+          kubectl get svc -n ${{ steps.namespace.outputs.namespace }}
+          kubectl get ingress -n ${{ steps.namespace.outputs.namespace }}
+
+      - name: Create deployment summary
+        run: |
+          echo "## Kubernetes Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ inputs.environment }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Namespace | ${{ steps.namespace.outputs.namespace }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image_tag || 'latest' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Replicas | ${{ inputs.replicas || 2 }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+
+  rollback:
+    name: Rollback (on failure)
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: failure()
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: Set namespace
+        id: namespace
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            echo "namespace=nself-chat-prod" >> $GITHUB_OUTPUT
+          else
+            echo "namespace=nself-chat-staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rollback deployment
+        run: |
+          kubectl rollout undo deployment/nself-chat \
+            --namespace=${{ steps.namespace.outputs.namespace }}
+
+      - name: Wait for rollback
+        run: |
+          kubectl rollout status deployment/nself-chat \
+            --namespace=${{ steps.namespace.outputs.namespace }} \
+            --timeout=300s

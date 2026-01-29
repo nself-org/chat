@@ -1,0 +1,318 @@
+# =============================================================================
+# Disappearing Messages - GraphQL Mutations
+# =============================================================================
+
+# =============================================================================
+# Channel Settings Mutations
+# =============================================================================
+
+# Enable disappearing messages for a channel
+mutation EnableDisappearingMessages(
+  $channelId: uuid!
+  $duration: Int!
+  $userId: uuid!
+) {
+  insert_nchat_disappearing_settings_one(
+    object: {
+      channel_id: $channelId
+      enabled: true
+      default_duration: $duration
+      updated_by: $userId
+    }
+    on_conflict: {
+      constraint: disappearing_settings_pkey
+      update_columns: [enabled, default_duration, updated_at, updated_by]
+    }
+  ) {
+    channel_id
+    enabled
+    default_duration
+    updated_at
+    updated_by
+  }
+}
+
+# Disable disappearing messages for a channel
+mutation DisableDisappearingMessages($channelId: uuid!, $userId: uuid!) {
+  update_nchat_disappearing_settings_by_pk(
+    pk_columns: { channel_id: $channelId }
+    _set: { enabled: false, updated_by: $userId }
+  ) {
+    channel_id
+    enabled
+    updated_at
+  }
+}
+
+# Update disappearing settings
+mutation UpdateDisappearingSettings(
+  $channelId: uuid!
+  $settings: nchat_disappearing_settings_set_input!
+) {
+  update_nchat_disappearing_settings_by_pk(
+    pk_columns: { channel_id: $channelId }
+    _set: $settings
+  ) {
+    channel_id
+    enabled
+    default_duration
+    can_modify
+    show_banner
+    is_secret_chat
+    is_encrypted
+    screenshot_warning
+    prevent_forwarding
+    prevent_copying
+    hide_notification_content
+    updated_at
+    updated_by
+  }
+}
+
+# Create secret chat settings
+mutation CreateSecretChat($channelId: uuid!, $userId: uuid!, $duration: Int!) {
+  insert_nchat_disappearing_settings_one(
+    object: {
+      channel_id: $channelId
+      enabled: true
+      default_duration: $duration
+      is_secret_chat: true
+      is_encrypted: true
+      screenshot_warning: true
+      prevent_forwarding: true
+      prevent_copying: true
+      hide_notification_content: true
+      updated_by: $userId
+    }
+    on_conflict: {
+      constraint: disappearing_settings_pkey
+      update_columns: [
+        enabled
+        default_duration
+        is_secret_chat
+        is_encrypted
+        screenshot_warning
+        prevent_forwarding
+        prevent_copying
+        hide_notification_content
+        updated_at
+        updated_by
+      ]
+    }
+  ) {
+    channel_id
+    enabled
+    default_duration
+    is_secret_chat
+    updated_at
+  }
+}
+
+# =============================================================================
+# Message Mutations
+# =============================================================================
+
+# Send a disappearing message
+mutation SendDisappearingMessage(
+  $channelId: uuid!
+  $userId: uuid!
+  $content: String!
+  $type: String = "text"
+  $disappearingType: String!
+  $disappearingDuration: Int
+  $disappearingBurnTimer: Int
+  $expiresAt: timestamptz
+) {
+  insert_nchat_messages_one(
+    object: {
+      channel_id: $channelId
+      user_id: $userId
+      content: $content
+      type: $type
+      disappearing_type: $disappearingType
+      disappearing_duration: $disappearingDuration
+      disappearing_burn_timer: $disappearingBurnTimer
+      disappearing_expires_at: $expiresAt
+      disappearing_viewed: false
+    }
+  ) {
+    id
+    channel_id
+    user_id
+    content
+    type
+    disappearing_type
+    disappearing_duration
+    disappearing_burn_timer
+    disappearing_expires_at
+    created_at
+  }
+}
+
+# Mark view-once message as viewed
+mutation MarkViewOnceViewed($messageId: uuid!, $viewerId: uuid!) {
+  update_nchat_messages_by_pk(
+    pk_columns: { id: $messageId }
+    _set: {
+      disappearing_viewed: true
+      disappearing_viewed_at: "now()"
+      disappearing_viewed_by: $viewerId
+    }
+  ) {
+    id
+    disappearing_viewed
+    disappearing_viewed_at
+    disappearing_viewed_by
+    content
+    attachments {
+      id
+      url
+      type
+      name
+    }
+  }
+}
+
+# Start burn-after-reading timer
+mutation StartBurnTimer($messageId: uuid!, $expiresAt: timestamptz!) {
+  update_nchat_messages_by_pk(
+    pk_columns: { id: $messageId }
+    _set: {
+      disappearing_is_reading: true
+      disappearing_reading_started_at: "now()"
+      disappearing_expires_at: $expiresAt
+    }
+  ) {
+    id
+    disappearing_is_reading
+    disappearing_reading_started_at
+    disappearing_expires_at
+  }
+}
+
+# Delete expired message
+mutation DeleteExpiredMessage($messageId: uuid!) {
+  update_nchat_messages_by_pk(
+    pk_columns: { id: $messageId }
+    _set: {
+      is_deleted: true
+      deleted_at: "now()"
+      content: ""
+    }
+  ) {
+    id
+    is_deleted
+    deleted_at
+  }
+}
+
+# Bulk delete expired messages
+mutation BulkDeleteExpiredMessages($messageIds: [uuid!]!) {
+  update_nchat_messages(
+    where: { id: { _in: $messageIds } }
+    _set: {
+      is_deleted: true
+      deleted_at: "now()"
+      content: ""
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      channel_id
+    }
+  }
+}
+
+# Clear message content (for security)
+mutation ClearMessageContent($messageId: uuid!) {
+  update_nchat_messages_by_pk(
+    pk_columns: { id: $messageId }
+    _set: { content: "" }
+  ) {
+    id
+  }
+}
+
+# =============================================================================
+# User Preferences Mutations
+# =============================================================================
+
+# Update user disappearing preferences
+mutation UpdateDisappearingPreferences(
+  $userId: uuid!
+  $preferences: nchat_users_set_input!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: $preferences
+  ) {
+    id
+    disappearing_dm_default
+    disappearing_group_default
+    disappearing_show_indicators
+    disappearing_show_countdown
+    disappearing_warning_seconds
+    disappearing_sound_before_expiry
+  }
+}
+
+# =============================================================================
+# Security Mutations
+# =============================================================================
+
+# Log screenshot detection
+mutation LogScreenshotDetection(
+  $channelId: uuid!
+  $userId: uuid!
+  $messageId: uuid
+) {
+  insert_nchat_screenshot_logs_one(
+    object: {
+      channel_id: $channelId
+      user_id: $userId
+      message_id: $messageId
+      detected_at: "now()"
+    }
+  ) {
+    id
+    channel_id
+    user_id
+    message_id
+    detected_at
+  }
+}
+
+# =============================================================================
+# History/Audit Mutations
+# =============================================================================
+
+# Record message expiration (for audit log)
+mutation RecordMessageExpiration(
+  $messageId: uuid!
+  $channelId: uuid!
+  $userId: uuid!
+  $disappearingType: String!
+  $duration: Int
+  $sentAt: timestamptz!
+  $viewedBy: uuid
+  $viewedAt: timestamptz
+) {
+  insert_nchat_disappearing_history_one(
+    object: {
+      message_id: $messageId
+      channel_id: $channelId
+      user_id: $userId
+      disappearing_type: $disappearingType
+      duration: $duration
+      sent_at: $sentAt
+      expired_at: "now()"
+      viewed_by: $viewedBy
+      viewed_at: $viewedAt
+    }
+  ) {
+    id
+    message_id
+    expired_at
+  }
+}

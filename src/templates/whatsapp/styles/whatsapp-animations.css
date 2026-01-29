@@ -1,0 +1,550 @@
+/* ===============================================================================
+ * WhatsApp Animations
+ * ===============================================================================
+ * Smooth, subtle animations that match WhatsApp's feel
+ * =============================================================================== */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Message Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/* New message appearing */
+.wa-message-enter {
+  animation: wa-message-slide-in 200ms ease-out;
+}
+
+@keyframes wa-message-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Own message sending */
+.wa-message-sending {
+  opacity: 0.7;
+}
+
+.wa-message-sent {
+  animation: wa-message-confirm 200ms ease-out;
+}
+
+@keyframes wa-message-confirm {
+  0% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Message deletion */
+.wa-message-delete {
+  animation: wa-message-fade-out 200ms ease-out forwards;
+}
+
+@keyframes wa-message-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Message highlight (when scrolling to a reply) */
+.wa-message-highlight {
+  animation: wa-message-pulse 1s ease-out;
+}
+
+@keyframes wa-message-pulse {
+  0% {
+    background-color: rgba(37, 211, 102, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Typing Indicator
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 16px;
+  background: var(--wa-bubble-incoming);
+  border-radius: 18px;
+  border-top-left-radius: 0;
+  box-shadow: var(--wa-bubble-shadow);
+}
+
+.wa-typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--wa-text-secondary);
+  border-radius: 50%;
+  animation: wa-typing-bounce 1.4s infinite ease-in-out;
+}
+
+.wa-typing-dot:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.wa-typing-dot:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+.wa-typing-dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+@keyframes wa-typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Recording Audio Animation
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--wa-status-recording);
+}
+
+.wa-recording-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--wa-status-recording);
+  border-radius: 50%;
+  animation: wa-recording-pulse 1s ease-in-out infinite;
+}
+
+@keyframes wa-recording-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.wa-recording-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 20px;
+}
+
+.wa-recording-bar {
+  width: 3px;
+  background: var(--wa-status-recording);
+  border-radius: 2px;
+  animation: wa-recording-wave 0.5s ease-in-out infinite alternate;
+}
+
+.wa-recording-bar:nth-child(1) { animation-delay: 0ms; height: 8px; }
+.wa-recording-bar:nth-child(2) { animation-delay: 100ms; height: 14px; }
+.wa-recording-bar:nth-child(3) { animation-delay: 200ms; height: 10px; }
+.wa-recording-bar:nth-child(4) { animation-delay: 300ms; height: 16px; }
+.wa-recording-bar:nth-child(5) { animation-delay: 400ms; height: 12px; }
+
+@keyframes wa-recording-wave {
+  from {
+    transform: scaleY(0.5);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Voice Note Playback
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-voice-waveform {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 26px;
+}
+
+.wa-voice-bar {
+  width: 3px;
+  background: var(--wa-text-secondary);
+  border-radius: 2px;
+  transition: background-color 100ms;
+}
+
+.wa-voice-bar-played {
+  background: var(--wa-check-blue);
+}
+
+/* Animated progress */
+.wa-voice-bar-playing {
+  animation: wa-voice-pulse 200ms ease-out;
+}
+
+@keyframes wa-voice-pulse {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.15);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Status (Stories) Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/* Status ring animation */
+.wa-status-ring {
+  position: relative;
+}
+
+.wa-status-ring::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid var(--wa-primary-green);
+}
+
+.wa-status-ring-unseen::before {
+  border-color: var(--wa-primary-green);
+}
+
+.wa-status-ring-seen::before {
+  border-color: var(--wa-text-secondary);
+  opacity: 0.4;
+}
+
+/* Segmented ring for multiple statuses */
+.wa-status-ring-segmented {
+  position: relative;
+}
+
+.wa-status-ring-segmented svg {
+  position: absolute;
+  inset: -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  transform: rotate(-90deg);
+}
+
+/* Status progress bar */
+.wa-status-progress {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.wa-status-progress-bar {
+  height: 100%;
+  background: white;
+  transition: width 100ms linear;
+}
+
+/* Auto-play animation */
+.wa-status-progress-auto {
+  animation: wa-status-progress 5s linear;
+}
+
+@keyframes wa-status-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Chat List Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/* Swipe actions */
+.wa-chat-swipe {
+  transition: transform 200ms ease-out;
+}
+
+.wa-chat-swipe-left {
+  transform: translateX(-80px);
+}
+
+.wa-chat-swipe-right {
+  transform: translateX(80px);
+}
+
+/* Unread indicator bounce */
+.wa-unread-badge {
+  animation: wa-unread-appear 300ms ease-out;
+}
+
+@keyframes wa-unread-appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* New message in chat list */
+.wa-chat-new-message {
+  animation: wa-chat-highlight 300ms ease-out;
+}
+
+@keyframes wa-chat-highlight {
+  0% {
+    background-color: rgba(37, 211, 102, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Reaction Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-reaction-appear {
+  animation: wa-reaction-pop 300ms ease-out;
+}
+
+@keyframes wa-reaction-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.wa-reaction-picker-appear {
+  animation: wa-picker-slide 200ms ease-out;
+}
+
+@keyframes wa-picker-slide {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Modal & Drawer Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/* Slide from right (contact info, etc.) */
+.wa-slide-right-enter {
+  animation: wa-slide-right 300ms ease-out;
+}
+
+@keyframes wa-slide-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.wa-slide-right-exit {
+  animation: wa-slide-right-out 300ms ease-in;
+}
+
+@keyframes wa-slide-right-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Slide from bottom (action sheets) */
+.wa-slide-up-enter {
+  animation: wa-slide-up 300ms ease-out;
+}
+
+@keyframes wa-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Fade overlay */
+.wa-overlay-enter {
+  animation: wa-fade-in 200ms ease-out;
+}
+
+@keyframes wa-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.wa-overlay-exit {
+  animation: wa-fade-out 200ms ease-in;
+}
+
+@keyframes wa-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Scale modal */
+.wa-modal-enter {
+  animation: wa-modal-scale 200ms ease-out;
+}
+
+@keyframes wa-modal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Call Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/* Ringing animation */
+.wa-call-ring {
+  animation: wa-ring-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes wa-ring-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(37, 211, 102, 0);
+  }
+}
+
+/* Call connecting dots */
+.wa-call-connecting-dot {
+  animation: wa-call-dot-pulse 1.4s ease-in-out infinite;
+}
+
+.wa-call-connecting-dot:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+.wa-call-connecting-dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+@keyframes wa-call-dot-pulse {
+  0%, 60%, 100% {
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Loading States
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--wa-border-light);
+  border-top-color: var(--wa-primary-green);
+  border-radius: 50%;
+  animation: wa-spin 800ms linear infinite;
+}
+
+@keyframes wa-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton loading */
+.wa-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--wa-border-light) 25%,
+    var(--wa-bg-input) 50%,
+    var(--wa-border-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: wa-skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes wa-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Reduced Motion
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

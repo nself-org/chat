@@ -1,0 +1,525 @@
+# Meeting Mutations
+# GraphQL mutations for creating, updating, and managing meetings
+
+# ============================================================================
+# Meeting CRUD
+# ============================================================================
+
+# Create a new meeting
+mutation CreateMeeting(
+  $title: String!
+  $description: String
+  $type: String!
+  $roomType: String!
+  $scheduledStartAt: timestamptz!
+  $scheduledEndAt: timestamptz!
+  $timezone: String!
+  $hostId: uuid!
+  $channelId: uuid
+  $isPrivate: Boolean = false
+  $requiresApproval: Boolean = false
+  $password: String
+  $isRecurring: Boolean = false
+  $recurrenceRule: jsonb
+  $settings: jsonb!
+  $meetingCode: String!
+  $meetingLink: String!
+  $maxParticipants: Int
+) {
+  insert_nchat_meetings_one(
+    object: {
+      title: $title
+      description: $description
+      type: $type
+      room_type: $roomType
+      status: "scheduled"
+      scheduled_start_at: $scheduledStartAt
+      scheduled_end_at: $scheduledEndAt
+      timezone: $timezone
+      host_id: $hostId
+      channel_id: $channelId
+      is_private: $isPrivate
+      requires_approval: $requiresApproval
+      password: $password
+      is_recurring: $isRecurring
+      recurrence_rule: $recurrenceRule
+      settings: $settings
+      meeting_code: $meetingCode
+      meeting_link: $meetingLink
+      max_participants: $maxParticipants
+    }
+  ) {
+    id
+    title
+    meeting_code
+    meeting_link
+    scheduled_start_at
+    scheduled_end_at
+    created_at
+  }
+}
+
+# Update a meeting
+mutation UpdateMeeting(
+  $id: uuid!
+  $title: String
+  $description: String
+  $scheduledStartAt: timestamptz
+  $scheduledEndAt: timestamptz
+  $timezone: String
+  $isPrivate: Boolean
+  $requiresApproval: Boolean
+  $password: String
+  $settings: jsonb
+  $maxParticipants: Int
+) {
+  update_nchat_meetings_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      title: $title
+      description: $description
+      scheduled_start_at: $scheduledStartAt
+      scheduled_end_at: $scheduledEndAt
+      timezone: $timezone
+      is_private: $isPrivate
+      requires_approval: $requiresApproval
+      password: $password
+      settings: $settings
+      max_participants: $maxParticipants
+    }
+  ) {
+    id
+    title
+    scheduled_start_at
+    scheduled_end_at
+    updated_at
+  }
+}
+
+# Delete a meeting
+mutation DeleteMeeting($id: uuid!) {
+  delete_nchat_meetings_by_pk(id: $id) {
+    id
+  }
+}
+
+# Start a meeting (change status to live)
+mutation StartMeeting($id: uuid!) {
+  update_nchat_meetings_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      status: "live"
+      actual_start_at: "now()"
+    }
+  ) {
+    id
+    status
+    actual_start_at
+  }
+}
+
+# End a meeting
+mutation EndMeeting($id: uuid!) {
+  update_nchat_meetings_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      status: "ended"
+      actual_end_at: "now()"
+    }
+  ) {
+    id
+    status
+    actual_end_at
+  }
+}
+
+# Cancel a meeting
+mutation CancelMeeting($id: uuid!) {
+  update_nchat_meetings_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      status: "cancelled"
+    }
+  ) {
+    id
+    status
+    updated_at
+  }
+}
+
+# Update meeting settings
+mutation UpdateMeetingSettings($id: uuid!, $settings: jsonb!) {
+  update_nchat_meetings_by_pk(
+    pk_columns: { id: $id }
+    _set: { settings: $settings }
+  ) {
+    id
+    settings
+    updated_at
+  }
+}
+
+# ============================================================================
+# Participant Management
+# ============================================================================
+
+# Invite participants to a meeting
+mutation InviteParticipants($participants: [nchat_meeting_participants_insert_input!]!) {
+  insert_nchat_meeting_participants(
+    objects: $participants
+    on_conflict: {
+      constraint: meeting_participants_meeting_id_user_id_key
+      update_columns: [role, status, invited_at]
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      meeting_id
+      user_id
+      role
+      status
+      invited_at
+    }
+  }
+}
+
+# Remove a participant from a meeting
+mutation RemoveParticipant($meetingId: uuid!, $userId: uuid!) {
+  delete_nchat_meeting_participants(
+    where: {
+      meeting_id: { _eq: $meetingId }
+      user_id: { _eq: $userId }
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Update participant response (RSVP)
+mutation UpdateParticipantResponse(
+  $meetingId: uuid!
+  $userId: uuid!
+  $status: String!
+) {
+  update_nchat_meeting_participants(
+    where: {
+      meeting_id: { _eq: $meetingId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      status: $status
+      responded_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      status
+      responded_at
+    }
+  }
+}
+
+# Update participant role
+mutation UpdateParticipantRole(
+  $meetingId: uuid!
+  $userId: uuid!
+  $role: String!
+) {
+  update_nchat_meeting_participants(
+    where: {
+      meeting_id: { _eq: $meetingId }
+      user_id: { _eq: $userId }
+    }
+    _set: { role: $role }
+  ) {
+    affected_rows
+    returning {
+      id
+      role
+    }
+  }
+}
+
+# Record participant joining the meeting
+mutation RecordParticipantJoin($meetingId: uuid!, $userId: uuid!) {
+  update_nchat_meeting_participants(
+    where: {
+      meeting_id: { _eq: $meetingId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      status: "joined"
+      joined_at: "now()"
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Record participant leaving the meeting
+mutation RecordParticipantLeave($meetingId: uuid!, $userId: uuid!) {
+  update_nchat_meeting_participants(
+    where: {
+      meeting_id: { _eq: $meetingId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      status: "left"
+      left_at: "now()"
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# ============================================================================
+# Reminder Management
+# ============================================================================
+
+# Create reminder for a meeting
+mutation CreateMeetingReminder(
+  $meetingId: uuid!
+  $userId: uuid!
+  $timing: String!
+  $isEnabled: Boolean = true
+) {
+  insert_nchat_meeting_reminders_one(
+    object: {
+      meeting_id: $meetingId
+      user_id: $userId
+      timing: $timing
+      is_enabled: $isEnabled
+    }
+    on_conflict: {
+      constraint: meeting_reminders_meeting_id_user_id_timing_key
+      update_columns: [is_enabled]
+    }
+  ) {
+    id
+    meeting_id
+    user_id
+    timing
+    is_enabled
+  }
+}
+
+# Update reminder
+mutation UpdateMeetingReminder($id: uuid!, $isEnabled: Boolean!) {
+  update_nchat_meeting_reminders_by_pk(
+    pk_columns: { id: $id }
+    _set: { is_enabled: $isEnabled }
+  ) {
+    id
+    is_enabled
+  }
+}
+
+# Delete reminder
+mutation DeleteMeetingReminder($id: uuid!) {
+  delete_nchat_meeting_reminders_by_pk(id: $id) {
+    id
+  }
+}
+
+# Mark reminder as sent
+mutation MarkReminderSent($id: uuid!) {
+  update_nchat_meeting_reminders_by_pk(
+    pk_columns: { id: $id }
+    _set: { sent_at: "now()" }
+  ) {
+    id
+    sent_at
+  }
+}
+
+# Bulk create reminders
+mutation CreateMeetingReminders($reminders: [nchat_meeting_reminders_insert_input!]!) {
+  insert_nchat_meeting_reminders(objects: $reminders) {
+    affected_rows
+    returning {
+      id
+      timing
+      is_enabled
+    }
+  }
+}
+
+# ============================================================================
+# Huddle Mutations
+# ============================================================================
+
+# Start a new huddle
+mutation StartHuddle(
+  $channelId: uuid!
+  $roomType: String!
+  $hostId: uuid!
+  $maxParticipants: Int = 15
+) {
+  insert_nchat_huddles_one(
+    object: {
+      channel_id: $channelId
+      room_type: $roomType
+      host_id: $hostId
+      status: "active"
+      max_participants: $maxParticipants
+    }
+  ) {
+    id
+    channel_id
+    room_type
+    status
+    host_id
+    started_at
+    max_participants
+  }
+}
+
+# Join a huddle
+mutation JoinHuddle($huddleId: uuid!, $userId: uuid!) {
+  insert_nchat_huddle_participants_one(
+    object: {
+      huddle_id: $huddleId
+      user_id: $userId
+      is_muted: true
+      is_video_on: false
+      is_speaking: false
+      is_screen_sharing: false
+    }
+    on_conflict: {
+      constraint: huddle_participants_huddle_id_user_id_key
+      update_columns: [joined_at]
+    }
+  ) {
+    huddle_id
+    user_id
+    joined_at
+  }
+  update_nchat_huddles_by_pk(
+    pk_columns: { id: $huddleId }
+    _inc: { participant_count: 1 }
+  ) {
+    id
+    participant_count
+  }
+}
+
+# Leave a huddle
+mutation LeaveHuddle($huddleId: uuid!, $userId: uuid!) {
+  delete_nchat_huddle_participants(
+    where: {
+      huddle_id: { _eq: $huddleId }
+      user_id: { _eq: $userId }
+    }
+  ) {
+    affected_rows
+  }
+  update_nchat_huddles_by_pk(
+    pk_columns: { id: $huddleId }
+    _inc: { participant_count: -1 }
+  ) {
+    id
+    participant_count
+  }
+}
+
+# End a huddle
+mutation EndHuddle($huddleId: uuid!) {
+  update_nchat_huddles_by_pk(
+    pk_columns: { id: $huddleId }
+    _set: {
+      status: "ended"
+      ended_at: "now()"
+    }
+  ) {
+    id
+    status
+    ended_at
+  }
+}
+
+# Update huddle participant state
+mutation UpdateHuddleParticipantState(
+  $huddleId: uuid!
+  $userId: uuid!
+  $isMuted: Boolean
+  $isVideoOn: Boolean
+  $isSpeaking: Boolean
+  $isScreenSharing: Boolean
+) {
+  update_nchat_huddle_participants(
+    where: {
+      huddle_id: { _eq: $huddleId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      is_muted: $isMuted
+      is_video_on: $isVideoOn
+      is_speaking: $isSpeaking
+      is_screen_sharing: $isScreenSharing
+    }
+  ) {
+    affected_rows
+    returning {
+      user_id
+      is_muted
+      is_video_on
+      is_speaking
+      is_screen_sharing
+    }
+  }
+}
+
+# ============================================================================
+# Recurring Meeting Management
+# ============================================================================
+
+# Create recurring meeting instance
+mutation CreateRecurringMeetingInstance(
+  $parentMeetingId: uuid!
+  $scheduledStartAt: timestamptz!
+  $scheduledEndAt: timestamptz!
+) {
+  insert_nchat_meetings_one(
+    object: {
+      parent_meeting_id: $parentMeetingId
+      scheduled_start_at: $scheduledStartAt
+      scheduled_end_at: $scheduledEndAt
+      type: "scheduled"
+      status: "scheduled"
+    }
+  ) {
+    id
+    scheduled_start_at
+    scheduled_end_at
+  }
+}
+
+# Cancel all future recurring instances
+mutation CancelFutureRecurringInstances($parentMeetingId: uuid!, $fromDate: timestamptz!) {
+  update_nchat_meetings(
+    where: {
+      parent_meeting_id: { _eq: $parentMeetingId }
+      scheduled_start_at: { _gte: $fromDate }
+      status: { _eq: "scheduled" }
+    }
+    _set: { status: "cancelled" }
+  ) {
+    affected_rows
+  }
+}
+
+# Delete recurring meeting and all instances
+mutation DeleteRecurringMeeting($id: uuid!) {
+  delete_nchat_meetings(
+    where: {
+      _or: [
+        { id: { _eq: $id } }
+        { parent_meeting_id: { _eq: $id } }
+      ]
+    }
+  ) {
+    affected_rows
+  }
+}

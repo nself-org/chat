@@ -1,0 +1,370 @@
+# Message Edit History GraphQL Queries and Mutations
+# These operations handle message version tracking and history management
+
+# ============================================================================
+# Fragments
+# ============================================================================
+
+fragment MessageVersionFields on nchat_message_versions {
+  id
+  message_id
+  version_number
+  content
+  created_at
+  editor {
+    id
+    username
+    display_name
+    avatar_url
+    role
+  }
+  is_original
+  is_current
+}
+
+fragment EditHistoryFields on nchat_messages {
+  id
+  channel_id
+  content
+  created_at
+  updated_at
+  is_edited
+  user {
+    id
+    username
+    display_name
+    avatar_url
+    role
+  }
+  versions(order_by: { version_number: asc }) {
+    ...MessageVersionFields
+  }
+  versions_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
+
+# ============================================================================
+# Queries
+# ============================================================================
+
+# Get edit history for a single message
+query GetMessageEditHistory($messageId: uuid!) {
+  nchat_messages_by_pk(id: $messageId) {
+    ...EditHistoryFields
+  }
+}
+
+# Get edit history for multiple messages
+query GetMessagesEditHistory($messageIds: [uuid!]!) {
+  nchat_messages(where: { id: { _in: $messageIds } }) {
+    ...EditHistoryFields
+  }
+}
+
+# Get a specific version of a message
+query GetMessageVersion($messageId: uuid!, $versionNumber: Int!) {
+  nchat_message_versions(
+    where: {
+      message_id: { _eq: $messageId }
+      version_number: { _eq: $versionNumber }
+    }
+    limit: 1
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# Get all versions for a message
+query GetMessageVersions($messageId: uuid!) {
+  nchat_message_versions(
+    where: { message_id: { _eq: $messageId } }
+    order_by: { version_number: asc }
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# Get the original version of a message
+query GetOriginalVersion($messageId: uuid!) {
+  nchat_message_versions(
+    where: { message_id: { _eq: $messageId }, is_original: { _eq: true } }
+    limit: 1
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# Get the current (latest) version of a message
+query GetCurrentVersion($messageId: uuid!) {
+  nchat_message_versions(
+    where: { message_id: { _eq: $messageId }, is_current: { _eq: true } }
+    limit: 1
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# ============================================================================
+# Admin Queries
+# ============================================================================
+
+# Get edit history list for admin view
+query GetAdminEditHistoryList(
+  $limit: Int = 50
+  $offset: Int = 0
+  $channelId: uuid
+  $authorId: uuid
+  $minEdits: Int = 1
+  $dateFrom: timestamptz
+  $dateTo: timestamptz
+) {
+  nchat_messages(
+    where: {
+      _and: [
+        { is_edited: { _eq: true } }
+        { channel_id: { _eq: $channelId } }
+        { user_id: { _eq: $authorId } }
+        { created_at: { _gte: $dateFrom, _lte: $dateTo } }
+        { versions_aggregate: { count: { predicate: { _gte: $minEdits } } } }
+      ]
+    }
+    order_by: { updated_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    channel_id
+    content
+    created_at
+    updated_at
+    channel {
+      id
+      name
+    }
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+    versions_aggregate {
+      aggregate {
+        count
+      }
+    }
+    versions(order_by: { version_number: desc }, limit: 1) {
+      editor {
+        id
+        username
+        display_name
+      }
+      created_at
+    }
+  }
+}
+
+# Get total count for admin history list
+query GetAdminEditHistoryCount(
+  $channelId: uuid
+  $authorId: uuid
+  $minEdits: Int = 1
+  $dateFrom: timestamptz
+  $dateTo: timestamptz
+) {
+  nchat_messages_aggregate(
+    where: {
+      _and: [
+        { is_edited: { _eq: true } }
+        { channel_id: { _eq: $channelId } }
+        { user_id: { _eq: $authorId } }
+        { created_at: { _gte: $dateFrom, _lte: $dateTo } }
+        { versions_aggregate: { count: { predicate: { _gte: $minEdits } } } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Search in edit history
+query SearchEditHistory(
+  $searchQuery: String!
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  nchat_message_versions(
+    where: { content: { _ilike: $searchQuery } }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...MessageVersionFields
+    message {
+      id
+      channel_id
+      channel {
+        id
+        name
+      }
+      user {
+        id
+        username
+        display_name
+      }
+    }
+  }
+}
+
+# ============================================================================
+# Mutations
+# ============================================================================
+
+# Create a new version when a message is edited
+mutation CreateMessageVersion(
+  $messageId: uuid!
+  $content: String!
+  $editorId: uuid!
+  $versionNumber: Int!
+) {
+  # First, update existing current version to not be current
+  update_nchat_message_versions(
+    where: { message_id: { _eq: $messageId }, is_current: { _eq: true } }
+    _set: { is_current: false }
+  ) {
+    affected_rows
+  }
+
+  # Then insert the new version
+  insert_nchat_message_versions_one(
+    object: {
+      message_id: $messageId
+      content: $content
+      editor_id: $editorId
+      version_number: $versionNumber
+      is_original: false
+      is_current: true
+    }
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# Restore a message to a previous version
+mutation RestoreMessageVersion(
+  $messageId: uuid!
+  $content: String!
+  $restoredByUserId: uuid!
+  $newVersionNumber: Int!
+  $reason: String
+) {
+  # Update the message content
+  update_nchat_messages_by_pk(
+    pk_columns: { id: $messageId }
+    _set: { content: $content, updated_at: "now()" }
+  ) {
+    id
+    content
+    updated_at
+  }
+
+  # Update existing current version
+  update_nchat_message_versions(
+    where: { message_id: { _eq: $messageId }, is_current: { _eq: true } }
+    _set: { is_current: false }
+  ) {
+    affected_rows
+  }
+
+  # Create new version with restored content
+  insert_nchat_message_versions_one(
+    object: {
+      message_id: $messageId
+      content: $content
+      editor_id: $restoredByUserId
+      version_number: $newVersionNumber
+      is_original: false
+      is_current: true
+      metadata: { restored: true, reason: $reason }
+    }
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# Clear edit history for a message
+mutation ClearEditHistory($messageId: uuid!, $keepOriginal: Boolean = true) {
+  # If keeping original, delete all but first version
+  delete_nchat_message_versions(
+    where: {
+      message_id: { _eq: $messageId }
+      is_original: { _neq: $keepOriginal }
+    }
+  ) {
+    affected_rows
+  }
+
+  # If keeping original, mark it as current
+  update_nchat_message_versions(
+    where: { message_id: { _eq: $messageId }, is_original: { _eq: true } }
+    _set: { is_current: true }
+  ) @include(if: $keepOriginal) {
+    affected_rows
+  }
+
+  # Reset the message edit count
+  update_nchat_messages_by_pk(
+    pk_columns: { id: $messageId }
+    _set: { is_edited: false }
+  ) @include(if: $keepOriginal) {
+    id
+  }
+}
+
+# Delete specific versions from history
+mutation DeleteMessageVersions($versionIds: [uuid!]!) {
+  delete_nchat_message_versions(where: { id: { _in: $versionIds } }) {
+    affected_rows
+    returning {
+      id
+      message_id
+      version_number
+    }
+  }
+}
+
+# ============================================================================
+# Subscriptions
+# ============================================================================
+
+# Subscribe to edit history changes for a message
+subscription SubscribeToEditHistory($messageId: uuid!) {
+  nchat_message_versions(
+    where: { message_id: { _eq: $messageId } }
+    order_by: { version_number: asc }
+  ) {
+    ...MessageVersionFields
+  }
+}
+
+# Subscribe to new edits across all messages (for admin)
+subscription SubscribeToNewEdits($channelId: uuid) {
+  nchat_message_versions(
+    where: { message: { channel_id: { _eq: $channelId } } }
+    order_by: { created_at: desc }
+    limit: 10
+  ) {
+    ...MessageVersionFields
+    message {
+      id
+      channel_id
+      channel {
+        name
+      }
+    }
+  }
+}

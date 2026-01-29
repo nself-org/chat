@@ -1,0 +1,384 @@
+# Saved Messages GraphQL Queries
+# These queries are for fetching saved/starred messages data
+
+# Get all saved messages for a user
+query GetSavedMessages(
+  $userId: uuid!
+  $limit: Int = 50
+  $offset: Int = 0
+  $orderBy: [nchat_saved_messages_order_by!] = [{ saved_at: desc }]
+) {
+  nchat_saved_messages(
+    where: { user_id: { _eq: $userId } }
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    user_id
+    message_id
+    channel_id
+    saved_at
+    note
+    tags
+    is_starred
+    reminder_at
+    reminder_triggered
+    collection_memberships {
+      collection_id
+    }
+    message {
+      id
+      content
+      type
+      created_at
+      updated_at
+      is_edited
+      user_id
+      user {
+        id
+        username
+        display_name
+        avatar_url
+        role
+      }
+      attachments {
+        id
+        type
+        url
+        name
+        size
+        mime_type
+        thumbnail_url
+      }
+      channel {
+        id
+        name
+        slug
+      }
+    }
+  }
+  nchat_saved_messages_aggregate(where: { user_id: { _eq: $userId } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get saved messages by collection
+query GetSavedMessagesByCollection(
+  $userId: uuid!
+  $collectionId: uuid!
+  $limit: Int = 50
+  $offset: Int = 0
+) {
+  nchat_saved_messages(
+    where: {
+      user_id: { _eq: $userId }
+      collection_memberships: { collection_id: { _eq: $collectionId } }
+    }
+    order_by: { saved_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    user_id
+    message_id
+    channel_id
+    saved_at
+    note
+    tags
+    is_starred
+    message {
+      id
+      content
+      type
+      created_at
+      user {
+        id
+        display_name
+        avatar_url
+      }
+      channel {
+        id
+        name
+        slug
+      }
+    }
+  }
+}
+
+# Get starred messages
+query GetStarredMessages($userId: uuid!, $limit: Int = 50) {
+  nchat_saved_messages(
+    where: { user_id: { _eq: $userId }, is_starred: { _eq: true } }
+    order_by: { saved_at: desc }
+    limit: $limit
+  ) {
+    id
+    message_id
+    channel_id
+    saved_at
+    note
+    tags
+    is_starred
+    message {
+      id
+      content
+      type
+      created_at
+      user {
+        id
+        display_name
+        avatar_url
+      }
+      channel {
+        id
+        name
+        slug
+      }
+    }
+  }
+}
+
+# Check if a message is saved
+query IsMessageSaved($userId: uuid!, $messageId: uuid!) {
+  nchat_saved_messages(
+    where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }
+    limit: 1
+  ) {
+    id
+    is_starred
+  }
+}
+
+# Get saved message by message ID
+query GetSavedByMessageId($userId: uuid!, $messageId: uuid!) {
+  nchat_saved_messages(
+    where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }
+    limit: 1
+  ) {
+    id
+    user_id
+    message_id
+    channel_id
+    saved_at
+    note
+    tags
+    is_starred
+    reminder_at
+    collection_memberships {
+      collection_id
+    }
+  }
+}
+
+# Get user's saved messages stats
+query GetSavedStats($userId: uuid!) {
+  total: nchat_saved_messages_aggregate(where: { user_id: { _eq: $userId } }) {
+    aggregate {
+      count
+    }
+  }
+  starred: nchat_saved_messages_aggregate(
+    where: { user_id: { _eq: $userId }, is_starred: { _eq: true } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  with_reminders: nchat_saved_messages_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      reminder_at: { _is_null: false }
+      reminder_triggered: { _eq: false }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get all user's collections
+query GetCollections($userId: uuid!) {
+  nchat_saved_collections(
+    where: { user_id: { _eq: $userId } }
+    order_by: { position: asc }
+  ) {
+    id
+    user_id
+    name
+    description
+    icon
+    color
+    position
+    is_shared
+    share_link
+    share_visibility
+    created_at
+    updated_at
+    saved_messages_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+
+# Get a single collection with its messages
+query GetCollectionWithMessages(
+  $collectionId: uuid!
+  $limit: Int = 50
+  $offset: Int = 0
+) {
+  nchat_saved_collections_by_pk(id: $collectionId) {
+    id
+    user_id
+    name
+    description
+    icon
+    color
+    position
+    is_shared
+    share_link
+    share_visibility
+    created_at
+    updated_at
+    saved_messages(limit: $limit, offset: $offset) {
+      saved_message {
+        id
+        message_id
+        saved_at
+        note
+        tags
+        is_starred
+        message {
+          id
+          content
+          type
+          created_at
+          user {
+            id
+            display_name
+            avatar_url
+          }
+          channel {
+            id
+            name
+          }
+        }
+      }
+    }
+    saved_messages_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+
+# Search saved messages
+query SearchSavedMessages(
+  $userId: uuid!
+  $searchQuery: String!
+  $limit: Int = 20
+) {
+  nchat_saved_messages(
+    where: {
+      user_id: { _eq: $userId }
+      _or: [
+        { message: { content: { _ilike: $searchQuery } } }
+        { note: { _ilike: $searchQuery } }
+        { tags: { _contains: [$searchQuery] } }
+      ]
+    }
+    order_by: { saved_at: desc }
+    limit: $limit
+  ) {
+    id
+    message_id
+    saved_at
+    note
+    tags
+    is_starred
+    message {
+      id
+      content
+      created_at
+      user {
+        id
+        display_name
+      }
+      channel {
+        id
+        name
+      }
+    }
+  }
+}
+
+# Get pending reminders
+query GetPendingReminders($userId: uuid!, $now: timestamptz!) {
+  nchat_saved_messages(
+    where: {
+      user_id: { _eq: $userId }
+      reminder_at: { _lte: $now }
+      reminder_triggered: { _eq: false }
+    }
+    order_by: { reminder_at: asc }
+  ) {
+    id
+    message_id
+    channel_id
+    reminder_at
+    note
+    message {
+      id
+      content
+      user {
+        display_name
+      }
+      channel {
+        name
+      }
+    }
+  }
+}
+
+# Get shared collection by share link
+query GetSharedCollection($shareLink: String!) {
+  nchat_saved_collections(
+    where: { share_link: { _eq: $shareLink }, is_shared: { _eq: true } }
+    limit: 1
+  ) {
+    id
+    name
+    description
+    icon
+    color
+    share_visibility
+    user {
+      id
+      display_name
+      avatar_url
+    }
+    saved_messages {
+      saved_message {
+        message {
+          id
+          content
+          created_at
+          user {
+            display_name
+          }
+        }
+      }
+    }
+    saved_messages_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}

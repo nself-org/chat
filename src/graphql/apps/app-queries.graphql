@@ -1,0 +1,468 @@
+# ============================================================================
+# App Directory GraphQL Queries
+# ============================================================================
+
+# Fragment for basic app information
+fragment AppBasic on nchat_apps {
+  id
+  name
+  slug
+  short_description
+  type
+  status
+  pricing
+  icon
+  developer_name
+  verified
+  built_in
+  rating
+  rating_count
+  install_count
+}
+
+# Fragment for full app details
+fragment AppFull on nchat_apps {
+  id
+  name
+  slug
+  short_description
+  long_description
+  type
+  status
+  visibility
+  pricing
+  price
+  icon
+  banner
+  developer_id
+  developer_name
+  developer_email
+  developer_website
+  developer_verified
+  categories {
+    category {
+      id
+      name
+      slug
+      icon
+      color
+    }
+  }
+  tags {
+    tag {
+      id
+      name
+      slug
+    }
+  }
+  permissions
+  screenshots
+  current_version
+  versions
+  features
+  links
+  requirements
+  rating
+  rating_count
+  review_count
+  install_count
+  active_install_count
+  verified
+  featured
+  built_in
+  created_at
+  updated_at
+  published_at
+}
+
+# Fragment for app installations
+fragment AppInstallation on nchat_app_installations {
+  id
+  app_id
+  user_id
+  workspace_id
+  installed_version
+  status
+  granted_permissions
+  settings
+  installed_at
+  updated_at
+  last_used_at
+  app {
+    ...AppBasic
+  }
+}
+
+# Fragment for app ratings
+fragment AppRating on nchat_app_ratings {
+  id
+  app_id
+  user_id
+  rating
+  review
+  helpful_count
+  reported
+  developer_response
+  developer_response_at
+  created_at
+  updated_at
+  user {
+    id
+    username
+    display_name
+    avatar_url
+  }
+}
+
+# ============================================================================
+# Queries
+# ============================================================================
+
+# Get all apps with optional filtering
+query GetApps(
+  $where: nchat_apps_bool_exp
+  $orderBy: [nchat_apps_order_by!]
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  nchat_apps(
+    where: $where
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+        slug
+      }
+    }
+  }
+  nchat_apps_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get a single app by ID or slug
+query GetApp($id: uuid, $slug: String) {
+  nchat_apps(
+    where: {
+      _or: [
+        { id: { _eq: $id } }
+        { slug: { _eq: $slug } }
+      ]
+    }
+    limit: 1
+  ) {
+    ...AppFull
+  }
+}
+
+# Get featured apps
+query GetFeaturedApps($limit: Int = 6) {
+  nchat_apps(
+    where: {
+      featured: { _eq: true }
+      status: { _eq: "active" }
+      visibility: { _eq: "public" }
+    }
+    order_by: { install_count: desc }
+    limit: $limit
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+      }
+    }
+  }
+}
+
+# Get popular apps
+query GetPopularApps($limit: Int = 10) {
+  nchat_apps(
+    where: {
+      status: { _eq: "active" }
+      visibility: { _eq: "public" }
+    }
+    order_by: { active_install_count: desc }
+    limit: $limit
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+      }
+    }
+  }
+}
+
+# Get recently updated apps
+query GetRecentApps($limit: Int = 10) {
+  nchat_apps(
+    where: {
+      status: { _eq: "active" }
+      visibility: { _eq: "public" }
+    }
+    order_by: { updated_at: desc }
+    limit: $limit
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+      }
+    }
+  }
+}
+
+# Get apps by category
+query GetAppsByCategory($categoryId: uuid!, $limit: Int = 20, $offset: Int = 0) {
+  nchat_apps(
+    where: {
+      categories: { category_id: { _eq: $categoryId } }
+      status: { _eq: "active" }
+      visibility: { _eq: "public" }
+    }
+    order_by: { active_install_count: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+      }
+    }
+  }
+  nchat_apps_aggregate(
+    where: {
+      categories: { category_id: { _eq: $categoryId } }
+      status: { _eq: "active" }
+      visibility: { _eq: "public" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Search apps
+query SearchApps(
+  $query: String!
+  $categories: [uuid!]
+  $types: [String!]
+  $pricing: [String!]
+  $minRating: numeric
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  nchat_apps(
+    where: {
+      _and: [
+        {
+          _or: [
+            { name: { _ilike: $query } }
+            { short_description: { _ilike: $query } }
+            { long_description: { _ilike: $query } }
+            { tags: { tag: { name: { _ilike: $query } } } }
+          ]
+        }
+        { status: { _eq: "active" } }
+        { visibility: { _eq: "public" } }
+        { categories: { category_id: { _in: $categories } } }
+        { type: { _in: $types } }
+        { pricing: { _in: $pricing } }
+        { rating: { _gte: $minRating } }
+      ]
+    }
+    order_by: { active_install_count: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+      }
+    }
+  }
+  nchat_apps_aggregate(
+    where: {
+      _and: [
+        {
+          _or: [
+            { name: { _ilike: $query } }
+            { short_description: { _ilike: $query } }
+            { long_description: { _ilike: $query } }
+          ]
+        }
+        { status: { _eq: "active" } }
+        { visibility: { _eq: "public" } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get all app categories
+query GetAppCategories {
+  nchat_app_categories(order_by: { name: asc }) {
+    id
+    name
+    slug
+    description
+    icon
+    color
+    apps_aggregate(
+      where: {
+        app: { status: { _eq: "active" }, visibility: { _eq: "public" } }
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+
+# Get user's installed apps
+query GetInstalledApps($userId: uuid!) {
+  nchat_app_installations(
+    where: {
+      user_id: { _eq: $userId }
+      status: { _eq: "active" }
+    }
+    order_by: { installed_at: desc }
+  ) {
+    ...AppInstallation
+  }
+}
+
+# Get a specific installation
+query GetInstallation($appId: uuid!, $userId: uuid!) {
+  nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    limit: 1
+  ) {
+    ...AppInstallation
+  }
+}
+
+# Get app ratings
+query GetAppRatings(
+  $appId: uuid!
+  $limit: Int = 10
+  $offset: Int = 0
+  $orderBy: [nchat_app_ratings_order_by!] = [{ created_at: desc }]
+) {
+  nchat_app_ratings(
+    where: { app_id: { _eq: $appId } }
+    order_by: $orderBy
+    limit: $limit
+    offset: $offset
+  ) {
+    ...AppRating
+  }
+  nchat_app_ratings_aggregate(where: { app_id: { _eq: $appId } }) {
+    aggregate {
+      count
+      avg {
+        rating
+      }
+    }
+  }
+}
+
+# Get rating distribution for an app
+query GetAppRatingDistribution($appId: uuid!) {
+  rating_1: nchat_app_ratings_aggregate(
+    where: { app_id: { _eq: $appId }, rating: { _eq: 1 } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  rating_2: nchat_app_ratings_aggregate(
+    where: { app_id: { _eq: $appId }, rating: { _eq: 2 } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  rating_3: nchat_app_ratings_aggregate(
+    where: { app_id: { _eq: $appId }, rating: { _eq: 3 } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  rating_4: nchat_app_ratings_aggregate(
+    where: { app_id: { _eq: $appId }, rating: { _eq: 4 } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  rating_5: nchat_app_ratings_aggregate(
+    where: { app_id: { _eq: $appId }, rating: { _eq: 5 } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get related apps
+query GetRelatedApps($appId: uuid!, $categoryIds: [uuid!]!, $limit: Int = 6) {
+  nchat_apps(
+    where: {
+      id: { _neq: $appId }
+      categories: { category_id: { _in: $categoryIds } }
+      status: { _eq: "active" }
+      visibility: { _eq: "public" }
+    }
+    order_by: { active_install_count: desc }
+    limit: $limit
+  ) {
+    ...AppBasic
+    categories {
+      category {
+        id
+        name
+      }
+    }
+  }
+}
+
+# Check if user has rated an app
+query GetUserAppRating($appId: uuid!, $userId: uuid!) {
+  nchat_app_ratings(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    limit: 1
+  ) {
+    id
+    rating
+    review
+    created_at
+  }
+}

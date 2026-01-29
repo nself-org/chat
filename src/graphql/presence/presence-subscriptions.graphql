@@ -1,0 +1,182 @@
+# =============================================================================
+# Presence Subscriptions
+# =============================================================================
+
+# Subscribe to a single user's presence
+subscription UserPresence($userId: uuid!) {
+  nchat_user_presence(where: { user_id: { _eq: $userId } }) {
+    id
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to multiple users' presence
+subscription UsersPresence($userIds: [uuid!]!) {
+  nchat_user_presence(where: { user_id: { _in: $userIds } }) {
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+  }
+}
+
+# Subscribe to all online users
+subscription OnlineUsers {
+  nchat_user_presence(
+    where: { status: { _in: ["online", "away", "dnd"] } }
+    order_by: { last_seen_at: desc }
+  ) {
+    user_id
+    status
+    custom_status
+    custom_emoji
+    last_seen_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to online users count
+subscription OnlineUsersCount {
+  nchat_user_presence_aggregate(
+    where: { status: { _in: ["online", "away", "dnd"] } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Subscribe to channel typing indicators
+subscription ChannelTypingIndicators($channelId: uuid!) {
+  nchat_typing_indicators(
+    where: {
+      channel_id: { _eq: $channelId }
+      thread_id: { _is_null: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { started_at: asc }
+  ) {
+    id
+    user_id
+    started_at
+    expires_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to thread typing indicators
+subscription ThreadTypingIndicators($threadId: uuid!) {
+  nchat_typing_indicators(
+    where: { thread_id: { _eq: $threadId }, expires_at: { _gt: "now()" } }
+    order_by: { started_at: asc }
+  ) {
+    id
+    user_id
+    started_at
+    expires_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to channel members' presence
+subscription ChannelMembersPresence($channelId: uuid!) {
+  nchat_channel_members(
+    where: { channel_id: { _eq: $channelId } }
+    order_by: { user: { display_name: asc } }
+  ) {
+    user_id
+    user {
+      id
+      display_name
+      avatar_url
+      presence {
+        status
+        custom_status
+        custom_emoji
+        last_seen_at
+      }
+    }
+  }
+}
+
+# Subscribe to presence changes stream (uses Hasura streaming subscriptions)
+subscription PresenceChangesStream($batchSize: Int = 10) {
+  nchat_user_presence_stream(
+    cursor: { initial_value: { last_seen_at: "now()" } }
+    batch_size: $batchSize
+  ) {
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to typing indicators stream
+subscription TypingIndicatorsStream($channelId: uuid!, $batchSize: Int = 10) {
+  nchat_typing_indicators_stream(
+    cursor: { initial_value: { started_at: "now()" } }
+    batch_size: $batchSize
+    where: { channel_id: { _eq: $channelId } }
+  ) {
+    id
+    user_id
+    channel_id
+    thread_id
+    started_at
+    expires_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to own presence (for sync across devices)
+subscription MyPresence($userId: uuid!) {
+  nchat_user_presence_by_pk(user_id: $userId) {
+    id
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+  }
+}

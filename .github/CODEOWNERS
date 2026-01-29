@@ -1,0 +1,35 @@
+# nself-chat Code Owners
+# These owners will be requested for review when someone opens a PR
+
+# Default owners for everything
+* @nself/core-team
+
+# Frontend
+/src/ @nself/frontend-team
+/src/components/ @nself/frontend-team
+/src/app/ @nself/frontend-team
+
+# Backend configuration
+/.backend/ @nself/backend-team
+/src/graphql/ @nself/backend-team
+
+# Infrastructure and DevOps
+/.github/ @nself/devops-team
+/scripts/ @nself/devops-team
+/Dockerfile @nself/devops-team
+/docker-compose*.yml @nself/devops-team
+/Makefile @nself/devops-team
+
+# Configuration
+/next.config.js @nself/core-team
+/tailwind.config.ts @nself/frontend-team
+/tsconfig.json @nself/core-team
+/package.json @nself/core-team
+
+# Security-sensitive files
+/.env.example @nself/security-team
+/src/services/auth/ @nself/security-team
+
+# Documentation
+/docs/ @nself/docs-team
+/*.md @nself/docs-team

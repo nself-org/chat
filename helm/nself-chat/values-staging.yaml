@@ -1,0 +1,102 @@
+# ============================================================================
+# nself-chat Helm Chart - Staging Values
+# ============================================================================
+# Staging-specific overrides for pre-production testing
+#
+# Usage:
+#   helm upgrade --install nself-chat-staging ./helm/nself-chat \
+#     -f ./helm/nself-chat/values.yaml \
+#     -f ./helm/nself-chat/values-staging.yaml \
+#     --namespace nself-chat-staging
+# ============================================================================
+
+app:
+  environment: staging
+
+image:
+  pullPolicy: Always
+
+# Lower replica count for staging
+replicaCount: 2
+
+# Staging ingress with basic auth
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: staging-basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Staging Environment"
+  hosts:
+    - host: chat-staging.nself.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: nself-chat-staging-tls
+      hosts:
+        - chat-staging.nself.io
+
+# Moderate resources for staging
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Conservative autoscaling for staging
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 85
+
+# Staging environment config
+config:
+  NODE_ENV: production  # Use production mode for realistic testing
+  NEXT_PUBLIC_ENV: staging
+  NEXT_PUBLIC_USE_DEV_AUTH: "false"
+  NEXT_PUBLIC_APP_NAME: "nchat (Staging)"
+  LOG_LEVEL: debug
+  LOG_FORMAT: json
+
+# Staging service URLs
+externalServices:
+  graphql:
+    url: https://api-staging.nself.io/v1/graphql
+  auth:
+    url: https://auth-staging.nself.io
+  storage:
+    url: https://storage-staging.nself.io
+
+# Staging secrets
+secrets:
+  create: false
+  existingSecret: nself-chat-staging-secrets
+
+# Enable database subchart for staging (cost savings)
+postgresql:
+  enabled: true
+  auth:
+    username: nchat_staging
+    database: nchat_staging
+    existingSecret: nself-chat-staging-secrets
+  primary:
+    persistence:
+      size: 5Gi
+
+# Enable Redis subchart for staging
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    existingSecret: nself-chat-staging-secrets
+    existingSecretPasswordKey: REDIS_PASSWORD
+  master:
+    persistence:
+      size: 512Mi

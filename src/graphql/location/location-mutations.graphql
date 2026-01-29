@@ -1,0 +1,257 @@
+# Location Mutations for nself-chat
+# Mutations for creating, updating, and deleting location data
+
+# Share a static location (one-time pin drop)
+mutation ShareStaticLocation(
+  $userId: uuid!
+  $channelId: uuid!
+  $messageId: uuid!
+  $latitude: numeric!
+  $longitude: numeric!
+  $altitude: numeric
+  $accuracy: numeric
+  $addressFormatted: String
+  $addressStreet: String
+  $addressCity: String
+  $addressState: String
+  $addressCountry: String
+  $addressPostalCode: String
+  $label: String
+) {
+  insert_nchat_location_shares_one(
+    object: {
+      type: "static"
+      user_id: $userId
+      channel_id: $channelId
+      message_id: $messageId
+      latitude: $latitude
+      longitude: $longitude
+      altitude: $altitude
+      accuracy: $accuracy
+      address_formatted: $addressFormatted
+      address_street: $addressStreet
+      address_city: $addressCity
+      address_state: $addressState
+      address_country: $addressCountry
+      address_postal_code: $addressPostalCode
+      label: $label
+      is_active: false
+    }
+  ) {
+    id
+    type
+    latitude
+    longitude
+    address_formatted
+    label
+    created_at
+  }
+}
+
+# Start sharing live location
+mutation StartLiveLocation(
+  $userId: uuid!
+  $channelId: uuid!
+  $messageId: uuid!
+  $latitude: numeric!
+  $longitude: numeric!
+  $altitude: numeric
+  $accuracy: numeric
+  $heading: numeric
+  $speed: numeric
+  $addressFormatted: String
+  $durationMinutes: Int!
+  $expiresAt: timestamptz!
+) {
+  insert_nchat_location_shares_one(
+    object: {
+      type: "live"
+      user_id: $userId
+      channel_id: $channelId
+      message_id: $messageId
+      latitude: $latitude
+      longitude: $longitude
+      altitude: $altitude
+      accuracy: $accuracy
+      heading: $heading
+      speed: $speed
+      address_formatted: $addressFormatted
+      duration_minutes: $durationMinutes
+      started_at: "now()"
+      expires_at: $expiresAt
+      is_active: true
+      last_updated_at: "now()"
+    }
+  ) {
+    id
+    type
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    created_at
+  }
+}
+
+# Update live location position
+mutation UpdateLiveLocation(
+  $id: uuid!
+  $latitude: numeric!
+  $longitude: numeric!
+  $altitude: numeric
+  $accuracy: numeric
+  $heading: numeric
+  $speed: numeric
+  $addressFormatted: String
+) {
+  update_nchat_location_shares_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      latitude: $latitude
+      longitude: $longitude
+      altitude: $altitude
+      accuracy: $accuracy
+      heading: $heading
+      speed: $speed
+      address_formatted: $addressFormatted
+      last_updated_at: "now()"
+    }
+  ) {
+    id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    last_updated_at
+  }
+}
+
+# Stop sharing live location
+mutation StopLiveLocation($id: uuid!) {
+  update_nchat_location_shares_by_pk(
+    pk_columns: { id: $id }
+    _set: { is_active: false }
+  ) {
+    id
+    is_active
+    expires_at
+  }
+}
+
+# Extend live location duration
+mutation ExtendLiveLocation(
+  $id: uuid!
+  $additionalMinutes: Int!
+  $newExpiresAt: timestamptz!
+) {
+  update_nchat_location_shares_by_pk(
+    pk_columns: { id: $id }
+    _set: { expires_at: $newExpiresAt }
+    _inc: { duration_minutes: $additionalMinutes }
+  ) {
+    id
+    duration_minutes
+    expires_at
+  }
+}
+
+# Delete a location share
+mutation DeleteLocationShare($id: uuid!) {
+  delete_nchat_location_shares_by_pk(id: $id) {
+    id
+  }
+}
+
+# Clear user's location history
+mutation ClearLocationHistory($userId: uuid!) {
+  delete_nchat_location_shares(where: { user_id: { _eq: $userId } }) {
+    affected_rows
+  }
+}
+
+# Clear location history older than a date
+mutation ClearOldLocationHistory($userId: uuid!, $olderThan: timestamptz!) {
+  delete_nchat_location_shares(
+    where: {
+      user_id: { _eq: $userId }
+      created_at: { _lt: $olderThan }
+      type: { _eq: "static" }
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Update location privacy settings
+mutation UpdateLocationPrivacySettings(
+  $userId: uuid!
+  $locationVisibility: String
+  $saveLocationHistory: Boolean
+  $locationHistoryRetentionDays: Int
+  $useApproximateLocation: Boolean
+  $showNearbyPlaces: Boolean
+  $defaultSharingDuration: Int
+) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: {
+      location_visibility: $locationVisibility
+      save_location_history: $saveLocationHistory
+      location_history_retention_days: $locationHistoryRetentionDays
+      use_approximate_location: $useApproximateLocation
+      show_nearby_places: $showNearbyPlaces
+      default_sharing_duration: $defaultSharingDuration
+    }
+  ) {
+    user_id
+    location_visibility
+    save_location_history
+    location_history_retention_days
+    use_approximate_location
+    show_nearby_places
+    default_sharing_duration
+  }
+}
+
+# Stop all active live locations for a user (e.g., when logging out)
+mutation StopAllUserLiveLocations($userId: uuid!) {
+  update_nchat_location_shares(
+    where: {
+      user_id: { _eq: $userId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+    }
+    _set: { is_active: false }
+  ) {
+    affected_rows
+    returning {
+      id
+      channel_id
+    }
+  }
+}
+
+# Mark expired live locations as inactive (cron job)
+mutation DeactivateExpiredLocations {
+  update_nchat_location_shares(
+    where: {
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _lt: "now()" }
+    }
+    _set: { is_active: false }
+  ) {
+    affected_rows
+  }
+}

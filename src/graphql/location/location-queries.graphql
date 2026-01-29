@@ -1,0 +1,216 @@
+# Location Queries for nself-chat
+# Queries for fetching location data from the database
+
+# Get a specific location share by ID
+query GetLocationShare($id: uuid!) {
+  nchat_location_shares_by_pk(id: $id) {
+    id
+    type
+    user_id
+    channel_id
+    message_id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    address_street
+    address_city
+    address_state
+    address_country
+    address_postal_code
+    label
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    created_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get all active live locations in a channel
+query GetActiveChannelLocations($channelId: uuid!) {
+  nchat_location_shares(
+    where: {
+      channel_id: { _eq: $channelId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { started_at: desc }
+  ) {
+    id
+    type
+    user_id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get all location shares for a specific message
+query GetMessageLocations($messageId: uuid!) {
+  nchat_location_shares(
+    where: { message_id: { _eq: $messageId } }
+    order_by: { created_at: desc }
+  ) {
+    id
+    type
+    user_id
+    latitude
+    longitude
+    address_formatted
+    label
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+    created_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get user's current active live location (if any)
+query GetUserActiveLocation($userId: uuid!) {
+  nchat_location_shares(
+    where: {
+      user_id: { _eq: $userId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    limit: 1
+    order_by: { started_at: desc }
+  ) {
+    id
+    type
+    channel_id
+    message_id
+    latitude
+    longitude
+    altitude
+    accuracy
+    heading
+    speed
+    address_formatted
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    last_updated_at
+  }
+}
+
+# Get user's location sharing history
+query GetUserLocationHistory(
+  $userId: uuid!
+  $limit: Int = 50
+  $offset: Int = 0
+) {
+  nchat_location_shares(
+    where: { user_id: { _eq: $userId } }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    type
+    channel_id
+    latitude
+    longitude
+    address_formatted
+    label
+    duration_minutes
+    started_at
+    expires_at
+    is_active
+    created_at
+    channel {
+      id
+      name
+      type
+    }
+  }
+  nchat_location_shares_aggregate(where: { user_id: { _eq: $userId } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get user's location privacy settings
+query GetLocationPrivacySettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    location_visibility
+    save_location_history
+    location_history_retention_days
+    use_approximate_location
+    show_nearby_places
+    default_sharing_duration
+  }
+}
+
+# Get users currently sharing location in a channel
+query GetChannelLocationSharers($channelId: uuid!) {
+  nchat_location_shares(
+    where: {
+      channel_id: { _eq: $channelId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { started_at: desc }
+  ) {
+    user {
+      id
+      display_name
+      avatar_url
+    }
+    started_at
+    expires_at
+    duration_minutes
+  }
+}
+
+# Check if a specific user is sharing location
+query IsUserSharingLocation($userId: uuid!) {
+  nchat_location_shares_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      type: { _eq: "live" }
+      is_active: { _eq: true }
+      expires_at: { _gt: "now()" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

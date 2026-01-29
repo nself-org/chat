@@ -1,0 +1,506 @@
+/**
+ * TipTap Editor Styles
+ *
+ * Styles for the rich text editor including:
+ * - Editor content styling
+ * - Placeholder styling
+ * - Mention styling
+ * - Code block syntax highlighting
+ * - List styling
+ * - Blockquote styling
+ */
+
+/* ============================================================================
+   Base Editor Styles
+   ============================================================================ */
+
+.rich-editor {
+  /* Container styles handled by Tailwind in component */
+}
+
+.rich-editor-content {
+  /* Base styles */
+  font-size: 0.9375rem;
+  line-height: 1.625;
+}
+
+.rich-editor-content:focus {
+  outline: none;
+}
+
+/* ============================================================================
+   Placeholder Styles
+   ============================================================================ */
+
+.rich-editor-content p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.rich-editor-content.is-editor-empty::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ============================================================================
+   Typography
+   ============================================================================ */
+
+.rich-editor-content p {
+  margin: 0;
+}
+
+.rich-editor-content p + p {
+  margin-top: 0.5rem;
+}
+
+.rich-editor-content strong {
+  font-weight: 600;
+}
+
+.rich-editor-content em {
+  font-style: italic;
+}
+
+.rich-editor-content u {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rich-editor-content s {
+  text-decoration: line-through;
+}
+
+/* ============================================================================
+   Links
+   ============================================================================ */
+
+.rich-editor-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--primary) / 0.3);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.rich-editor-content a:hover {
+  text-decoration-color: hsl(var(--primary));
+}
+
+/* ============================================================================
+   Inline Code
+   ============================================================================ */
+
+.rich-editor-content code:not(pre code) {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.875em;
+  padding: 0.125rem 0.375rem;
+  color: hsl(var(--foreground));
+}
+
+/* ============================================================================
+   Code Blocks
+   ============================================================================ */
+
+.rich-editor-content pre {
+  background-color: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+.rich-editor-content pre code {
+  background: none;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+/* Code block wrapper (for TipTap NodeView) */
+.code-block-wrapper {
+  margin: 0.75rem 0;
+}
+
+.code-block-wrapper:first-child {
+  margin-top: 0;
+}
+
+.code-block-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================================
+   Syntax Highlighting (Lowlight/Highlight.js compatible)
+   ============================================================================ */
+
+/* Comments */
+.hljs-comment,
+.hljs-quote {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+/* Keywords */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+  color: #c678dd;
+}
+
+/* Strings */
+.hljs-string,
+.hljs-meta .hljs-string,
+.hljs-literal,
+.hljs-doctag,
+.hljs-regexp {
+  color: #98c379;
+}
+
+/* Numbers */
+.hljs-number,
+.hljs-bullet,
+.hljs-selector-class,
+.hljs-symbol {
+  color: #d19a66;
+}
+
+/* Functions */
+.hljs-title,
+.hljs-section,
+.hljs-title.function_ {
+  color: #61afef;
+}
+
+/* Variables */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-built_in {
+  color: #e06c75;
+}
+
+/* Types */
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-params {
+  color: #e5c07b;
+}
+
+/* Meta */
+.hljs-meta,
+.hljs-meta .hljs-keyword {
+  color: #56b6c2;
+}
+
+/* Deletion */
+.hljs-deletion {
+  color: #be5046;
+}
+
+/* Emphasis */
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+/* Dark mode adjustments */
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-addition {
+  color: #c792ea;
+}
+
+.dark .hljs-string,
+.dark .hljs-meta .hljs-string,
+.dark .hljs-literal,
+.dark .hljs-doctag,
+.dark .hljs-regexp {
+  color: #c3e88d;
+}
+
+.dark .hljs-number,
+.dark .hljs-bullet,
+.dark .hljs-selector-class,
+.dark .hljs-symbol {
+  color: #f78c6c;
+}
+
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-title.function_ {
+  color: #82aaff;
+}
+
+.dark .hljs-variable,
+.dark .hljs-template-variable,
+.dark .hljs-attribute,
+.dark .hljs-tag,
+.dark .hljs-name,
+.dark .hljs-selector-id,
+.dark .hljs-selector-attr,
+.dark .hljs-selector-pseudo,
+.dark .hljs-built_in {
+  color: #ff5370;
+}
+
+.dark .hljs-type,
+.dark .hljs-class .hljs-title,
+.dark .hljs-params {
+  color: #ffcb6b;
+}
+
+.dark .hljs-meta,
+.dark .hljs-meta .hljs-keyword {
+  color: #89ddff;
+}
+
+/* ============================================================================
+   Lists
+   ============================================================================ */
+
+.rich-editor-content ul,
+.rich-editor-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.rich-editor-content ul {
+  list-style-type: disc;
+}
+
+.rich-editor-content ol {
+  list-style-type: decimal;
+}
+
+.rich-editor-content li {
+  margin: 0.25rem 0;
+}
+
+.rich-editor-content li p {
+  margin: 0;
+}
+
+.rich-editor-content ul ul,
+.rich-editor-content ol ol,
+.rich-editor-content ul ol,
+.rich-editor-content ol ul {
+  margin: 0.25rem 0;
+}
+
+.rich-editor-content ul ul {
+  list-style-type: circle;
+}
+
+.rich-editor-content ul ul ul {
+  list-style-type: square;
+}
+
+/* ============================================================================
+   Blockquotes
+   ============================================================================ */
+
+.rich-editor-content blockquote {
+  border-left: 3px solid hsl(var(--primary));
+  margin: 0.75rem 0;
+  padding: 0.5rem 0 0.5rem 1rem;
+  color: hsl(var(--muted-foreground));
+  background-color: hsl(var(--muted) / 0.3);
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.rich-editor-content blockquote p {
+  margin: 0;
+}
+
+.rich-editor-content blockquote blockquote {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* ============================================================================
+   Mentions
+   ============================================================================ */
+
+.mention {
+  background-color: hsl(var(--primary) / 0.15);
+  border-radius: 0.25rem;
+  color: hsl(var(--primary));
+  padding: 0.125rem 0.375rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.mention:hover {
+  background-color: hsl(var(--primary) / 0.25);
+}
+
+/* User mentions */
+.mention-user {
+  color: hsl(var(--primary));
+}
+
+.mention-user::before {
+  content: "@";
+}
+
+/* Channel mentions */
+.mention-channel {
+  color: hsl(217, 91%, 60%); /* Blue for channels */
+}
+
+.mention-channel::before {
+  content: "#";
+}
+
+/* ============================================================================
+   Emojis
+   ============================================================================ */
+
+.emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+  font-size: 1.25em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* ============================================================================
+   Selection
+   ============================================================================ */
+
+.rich-editor-content ::selection {
+  background-color: hsl(var(--primary) / 0.3);
+}
+
+/* ============================================================================
+   Focus styles for accessibility
+   ============================================================================ */
+
+.rich-editor:focus-within {
+  /* Focus ring handled by Tailwind in component */
+}
+
+/* ============================================================================
+   ProseMirror-specific styles
+   ============================================================================ */
+
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.5em;
+}
+
+/* Gapcursor */
+.ProseMirror-gapcursor {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ProseMirror-gapcursor:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: 1px solid hsl(var(--foreground));
+  animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes ProseMirror-cursor-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+  display: block;
+}
+
+/* Drag and drop styles */
+.ProseMirror-hideselection *::selection {
+  background: transparent;
+}
+
+.ProseMirror-hideselection *::-moz-selection {
+  background: transparent;
+}
+
+.ProseMirror-hideselection {
+  caret-color: transparent;
+}
+
+/* ============================================================================
+   Responsive adjustments
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  .rich-editor-content {
+    font-size: 0.875rem;
+  }
+
+  .rich-editor-content pre {
+    font-size: 0.8125rem;
+    padding: 0.75rem;
+  }
+
+  .rich-editor-content ul,
+  .rich-editor-content ol {
+    padding-left: 1.25rem;
+  }
+}
+
+/* ============================================================================
+   Print styles
+   ============================================================================ */
+
+@media print {
+  .rich-editor-content {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  .rich-editor-content a {
+    text-decoration: underline;
+  }
+
+  .rich-editor-content pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+  }
+
+  .mention {
+    background: none;
+    font-weight: bold;
+  }
+}

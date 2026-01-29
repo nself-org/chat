@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://docs.nself.org/chat
+    about: Check our documentation for answers
+  - name: Discussions
+    url: https://github.com/nself/nself-chat/discussions
+    about: Ask questions and discuss ideas
+  - name: Discord
+    url: https://discord.gg/nself
+    about: Join our Discord community for support

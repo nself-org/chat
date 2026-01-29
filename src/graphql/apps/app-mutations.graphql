@@ -1,0 +1,508 @@
+# ============================================================================
+# App Directory GraphQL Mutations
+# ============================================================================
+
+# ============================================================================
+# Installation Mutations
+# ============================================================================
+
+# Install an app
+mutation InstallApp(
+  $appId: uuid!
+  $userId: uuid!
+  $workspaceId: uuid
+  $version: String!
+  $permissions: jsonb!
+  $settings: jsonb = {}
+) {
+  insert_nchat_app_installations_one(
+    object: {
+      app_id: $appId
+      user_id: $userId
+      workspace_id: $workspaceId
+      installed_version: $version
+      status: "active"
+      granted_permissions: $permissions
+      settings: $settings
+    }
+    on_conflict: {
+      constraint: nchat_app_installations_app_id_user_id_key
+      update_columns: [status, installed_version, granted_permissions, settings, updated_at]
+    }
+  ) {
+    id
+    app_id
+    user_id
+    installed_version
+    status
+    granted_permissions
+    settings
+    installed_at
+    app {
+      id
+      name
+      slug
+      icon
+    }
+  }
+}
+
+# Uninstall an app
+mutation UninstallApp($appId: uuid!, $userId: uuid!) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      status: "uninstalled"
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      app_id
+      status
+    }
+  }
+}
+
+# Update app installation settings
+mutation UpdateAppSettings(
+  $appId: uuid!
+  $userId: uuid!
+  $settings: jsonb!
+) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      settings: $settings
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      settings
+      updated_at
+    }
+  }
+}
+
+# Update granted permissions
+mutation UpdateAppPermissions(
+  $appId: uuid!
+  $userId: uuid!
+  $permissions: jsonb!
+) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      granted_permissions: $permissions
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      granted_permissions
+      updated_at
+    }
+  }
+}
+
+# Pause an app (disable temporarily)
+mutation PauseApp($appId: uuid!, $userId: uuid!) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      status: "paused"
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      status
+      updated_at
+    }
+  }
+}
+
+# Resume a paused app
+mutation ResumeApp($appId: uuid!, $userId: uuid!) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+      status: { _eq: "paused" }
+    }
+    _set: {
+      status: "active"
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      status
+      updated_at
+    }
+  }
+}
+
+# Update installed app version
+mutation UpdateAppVersion(
+  $appId: uuid!
+  $userId: uuid!
+  $version: String!
+) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      installed_version: $version
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      installed_version
+      updated_at
+    }
+  }
+}
+
+# Record app usage
+mutation RecordAppUsage($appId: uuid!, $userId: uuid!) {
+  update_nchat_app_installations(
+    where: {
+      app_id: { _eq: $appId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      last_used_at: "now()"
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# ============================================================================
+# Rating Mutations
+# ============================================================================
+
+# Create or update a rating
+mutation RateApp(
+  $appId: uuid!
+  $userId: uuid!
+  $rating: Int!
+  $review: String
+) {
+  insert_nchat_app_ratings_one(
+    object: {
+      app_id: $appId
+      user_id: $userId
+      rating: $rating
+      review: $review
+    }
+    on_conflict: {
+      constraint: nchat_app_ratings_app_id_user_id_key
+      update_columns: [rating, review, updated_at]
+    }
+  ) {
+    id
+    app_id
+    user_id
+    rating
+    review
+    created_at
+    updated_at
+  }
+}
+
+# Delete a rating
+mutation DeleteRating($id: uuid!) {
+  delete_nchat_app_ratings_by_pk(id: $id) {
+    id
+    app_id
+  }
+}
+
+# Mark rating as helpful
+mutation MarkRatingHelpful($id: uuid!) {
+  update_nchat_app_ratings_by_pk(
+    pk_columns: { id: $id }
+    _inc: { helpful_count: 1 }
+  ) {
+    id
+    helpful_count
+  }
+}
+
+# Report a rating
+mutation ReportRating($id: uuid!, $reason: String!) {
+  update_nchat_app_ratings_by_pk(
+    pk_columns: { id: $id }
+    _set: { reported: true }
+  ) {
+    id
+    reported
+  }
+  # Also insert a report record
+  insert_nchat_app_rating_reports_one(
+    object: {
+      rating_id: $id
+      reason: $reason
+    }
+  ) {
+    id
+  }
+}
+
+# Developer response to a rating
+mutation RespondToRating(
+  $ratingId: uuid!
+  $response: String!
+) {
+  update_nchat_app_ratings_by_pk(
+    pk_columns: { id: $ratingId }
+    _set: {
+      developer_response: $response
+      developer_response_at: "now()"
+    }
+  ) {
+    id
+    developer_response
+    developer_response_at
+  }
+}
+
+# ============================================================================
+# App Management Mutations (Admin)
+# ============================================================================
+
+# Create a new app (for developers)
+mutation CreateApp(
+  $name: String!
+  $slug: String!
+  $shortDescription: String!
+  $longDescription: String
+  $type: String!
+  $icon: String!
+  $developerId: uuid!
+  $categories: [nchat_app_category_mappings_insert_input!]!
+  $permissions: jsonb!
+) {
+  insert_nchat_apps_one(
+    object: {
+      name: $name
+      slug: $slug
+      short_description: $shortDescription
+      long_description: $longDescription
+      type: $type
+      status: "pending"
+      visibility: "private"
+      pricing: "free"
+      icon: $icon
+      developer_id: $developerId
+      current_version: "1.0.0"
+      versions: [{ version: "1.0.0", releaseDate: "now()", changelog: "Initial release" }]
+      permissions: $permissions
+      categories: { data: $categories }
+    }
+  ) {
+    id
+    name
+    slug
+    status
+    created_at
+  }
+}
+
+# Update app details
+mutation UpdateApp(
+  $id: uuid!
+  $name: String
+  $shortDescription: String
+  $longDescription: String
+  $icon: String
+  $banner: String
+  $features: jsonb
+  $links: jsonb
+) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      name: $name
+      short_description: $shortDescription
+      long_description: $longDescription
+      icon: $icon
+      banner: $banner
+      features: $features
+      links: $links
+      updated_at: "now()"
+    }
+  ) {
+    id
+    name
+    short_description
+    updated_at
+  }
+}
+
+# Publish a new version
+mutation PublishAppVersion(
+  $appId: uuid!
+  $version: String!
+  $changelog: String!
+  $permissions: jsonb
+) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      current_version: $version
+      permissions: $permissions
+      updated_at: "now()"
+    }
+    _append: {
+      versions: [{ version: $version, releaseDate: "now()", changelog: $changelog }]
+    }
+  ) {
+    id
+    current_version
+    versions
+    updated_at
+  }
+}
+
+# Submit app for review
+mutation SubmitAppForReview($appId: uuid!) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      status: "pending"
+      updated_at: "now()"
+    }
+  ) {
+    id
+    status
+  }
+}
+
+# Approve app (admin only)
+mutation ApproveApp($appId: uuid!) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      status: "active"
+      visibility: "public"
+      published_at: "now()"
+      updated_at: "now()"
+    }
+  ) {
+    id
+    status
+    visibility
+    published_at
+  }
+}
+
+# Reject app (admin only)
+mutation RejectApp($appId: uuid!, $reason: String!) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      status: "rejected"
+      updated_at: "now()"
+    }
+    _append: {
+      metadata: { rejectionReason: $reason, rejectedAt: "now()" }
+    }
+  ) {
+    id
+    status
+  }
+}
+
+# Feature an app (admin only)
+mutation FeatureApp($appId: uuid!, $featured: Boolean!) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      featured: $featured
+      updated_at: "now()"
+    }
+  ) {
+    id
+    featured
+  }
+}
+
+# Deprecate an app
+mutation DeprecateApp($appId: uuid!) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      status: "deprecated"
+      updated_at: "now()"
+    }
+  ) {
+    id
+    status
+  }
+}
+
+# Update app install counts (typically done by a trigger/function)
+mutation UpdateAppInstallCounts(
+  $appId: uuid!
+  $installCount: Int!
+  $activeInstallCount: Int!
+) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      install_count: $installCount
+      active_install_count: $activeInstallCount
+    }
+  ) {
+    id
+    install_count
+    active_install_count
+  }
+}
+
+# Update app rating stats (typically done by a trigger/function)
+mutation UpdateAppRatingStats(
+  $appId: uuid!
+  $rating: numeric!
+  $ratingCount: Int!
+  $reviewCount: Int!
+) {
+  update_nchat_apps_by_pk(
+    pk_columns: { id: $appId }
+    _set: {
+      rating: $rating
+      rating_count: $ratingCount
+      review_count: $reviewCount
+    }
+  ) {
+    id
+    rating
+    rating_count
+    review_count
+  }
+}

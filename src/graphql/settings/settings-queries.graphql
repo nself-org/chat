@@ -1,0 +1,158 @@
+# Settings GraphQL Queries
+
+# Get all user settings
+query GetUserSettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    user_id
+    appearance_settings
+    notification_settings
+    privacy_settings
+    accessibility_settings
+    language_settings
+    advanced_settings
+    created_at
+    updated_at
+  }
+}
+
+# Get appearance settings only
+query GetAppearanceSettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    appearance_settings
+  }
+}
+
+# Get notification settings only
+query GetNotificationSettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    notification_settings
+  }
+}
+
+# Get privacy settings only
+query GetPrivacySettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    privacy_settings
+  }
+}
+
+# Get accessibility settings only
+query GetAccessibilitySettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    accessibility_settings
+  }
+}
+
+# Get language settings only
+query GetLanguageSettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    language_settings
+  }
+}
+
+# Get advanced settings only
+query GetAdvancedSettings($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    advanced_settings
+  }
+}
+
+# Get settings metadata
+query GetSettingsMetadata($userId: uuid!) {
+  nchat_user_settings_by_pk(user_id: $userId) {
+    user_id
+    created_at
+    updated_at
+  }
+}
+
+# Get blocked users
+query GetBlockedUsers($userId: uuid!) {
+  nchat_blocked_users(
+    where: { blocker_id: { _eq: $userId } }
+    order_by: { created_at: desc }
+  ) {
+    id
+    blocked_user_id
+    created_at
+    blocked_user {
+      id
+      display_name
+      username
+      avatar_url
+    }
+  }
+}
+
+# Get muted channels
+query GetMutedChannels($userId: uuid!) {
+  nchat_muted_channels(
+    where: { user_id: { _eq: $userId } }
+    order_by: { created_at: desc }
+  ) {
+    id
+    channel_id
+    muted_until
+    created_at
+    channel {
+      id
+      name
+      type
+    }
+  }
+}
+
+# Get muted users
+query GetMutedUsers($userId: uuid!) {
+  nchat_muted_users(
+    where: { muter_id: { _eq: $userId } }
+    order_by: { created_at: desc }
+  ) {
+    id
+    muted_user_id
+    muted_until
+    created_at
+    muted_user {
+      id
+      display_name
+      username
+      avatar_url
+    }
+  }
+}
+
+# Get active sessions
+query GetActiveSessions($userId: uuid!) {
+  nchat_user_sessions(
+    where: { user_id: { _eq: $userId }, is_active: { _eq: true } }
+    order_by: { last_active_at: desc }
+  ) {
+    id
+    device_name
+    device_type
+    browser
+    ip_address
+    location
+    last_active_at
+    created_at
+    is_current
+  }
+}
+
+# Get login history
+query GetLoginHistory($userId: uuid!, $limit: Int = 20) {
+  nchat_login_history(
+    where: { user_id: { _eq: $userId } }
+    order_by: { created_at: desc }
+    limit: $limit
+  ) {
+    id
+    device_name
+    device_type
+    browser
+    ip_address
+    location
+    success
+    created_at
+  }
+}

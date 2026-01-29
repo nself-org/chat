@@ -1,0 +1,37 @@
+apiVersion: v2
+name: nself-chat
+description: A Helm chart for nself-chat - White-label team communication platform
+type: application
+version: 0.2.0
+appVersion: "0.2.0"
+
+keywords:
+  - chat
+  - team-communication
+  - slack-clone
+  - next.js
+  - nself
+
+home: https://github.com/nself/nself-chat
+
+sources:
+  - https://github.com/nself/nself-chat
+
+maintainers:
+  - name: nself
+    email: support@nself.io
+    url: https://nself.io
+
+annotations:
+  artifacthub.io/license: MIT
+  artifacthub.io/category: communication
+
+dependencies:
+  - name: postgresql
+    version: "13.x.x"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: redis
+    version: "18.x.x"
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled

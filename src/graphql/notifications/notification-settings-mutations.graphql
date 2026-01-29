@@ -1,0 +1,686 @@
+# ============================================================================
+# Notification Settings Mutations - nself-chat
+# ============================================================================
+# GraphQL mutations for updating notification settings and preferences
+
+# ----------------------------------------------------------------------------
+# Update Notification Preferences
+# ----------------------------------------------------------------------------
+
+mutation UpdateNotificationPreferences($userId: uuid!, $preferences: jsonb!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      notification_preferences: $preferences
+      updated_at: "now()"
+    }
+  ) {
+    id
+    notification_preferences
+    updated_at
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Global Notification Toggle
+# ----------------------------------------------------------------------------
+
+mutation UpdateGlobalNotifications($userId: uuid!, $enabled: Boolean!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      notifications_enabled: $enabled
+      updated_at: "now()"
+    }
+  ) {
+    id
+    notifications_enabled
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Desktop Notification Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateDesktopNotificationSettings(
+  $userId: uuid!
+  $enabled: Boolean!
+  $showPreview: Boolean!
+  $showAvatar: Boolean!
+  $playSound: Boolean!
+  $duration: Int!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      desktop_notifications_enabled: $enabled
+      desktop_notification_preview: $showPreview
+      desktop_notification_avatar: $showAvatar
+      desktop_notification_sound: $playSound
+      desktop_notification_duration: $duration
+      updated_at: "now()"
+    }
+  ) {
+    id
+    desktop_notifications_enabled
+    desktop_notification_preview
+    desktop_notification_avatar
+    desktop_notification_sound
+    desktop_notification_duration
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Email Notification Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateEmailNotificationSettings(
+  $userId: uuid!
+  $enabled: Boolean!
+  $digestFrequency: String!
+  $digestTime: String!
+  $digestDay: Int!
+  $includePreview: Boolean!
+  $enabledTypes: jsonb!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      email_notifications_enabled: $enabled
+      email_digest_frequency: $digestFrequency
+      email_digest_time: $digestTime
+      email_digest_day: $digestDay
+      email_include_preview: $includePreview
+      email_notification_types: $enabledTypes
+      updated_at: "now()"
+    }
+  ) {
+    id
+    email_notifications_enabled
+    email_digest_frequency
+    email_digest_time
+    email_digest_day
+    email_include_preview
+    email_notification_types
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Sound Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateSoundSettings(
+  $userId: uuid!
+  $enabled: Boolean!
+  $volume: Int!
+  $defaultSound: String!
+  $mentionSound: String!
+  $dmSound: String!
+  $threadSound: String!
+  $playWhenFocused: Boolean!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      sound_enabled: $enabled
+      sound_volume: $volume
+      sound_default: $defaultSound
+      sound_mention: $mentionSound
+      sound_dm: $dmSound
+      sound_thread: $threadSound
+      sound_play_when_focused: $playWhenFocused
+      updated_at: "now()"
+    }
+  ) {
+    id
+    sound_enabled
+    sound_volume
+    sound_default
+    sound_mention
+    sound_dm
+    sound_thread
+    sound_play_when_focused
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Quiet Hours Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateQuietHoursSettings(
+  $userId: uuid!
+  $enabled: Boolean!
+  $startTime: String!
+  $endTime: String!
+  $days: jsonb!
+  $timezone: String!
+  $allowMentions: Boolean!
+  $autoStatus: Boolean!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      quiet_hours_enabled: $enabled
+      quiet_hours_start: $startTime
+      quiet_hours_end: $endTime
+      quiet_hours_days: $days
+      quiet_hours_timezone: $timezone
+      quiet_hours_allow_mentions: $allowMentions
+      quiet_hours_auto_status: $autoStatus
+      updated_at: "now()"
+    }
+  ) {
+    id
+    quiet_hours_enabled
+    quiet_hours_start
+    quiet_hours_end
+    quiet_hours_days
+    quiet_hours_timezone
+    quiet_hours_allow_mentions
+    quiet_hours_auto_status
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Channel Notification Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateChannelNotificationSettings(
+  $channelId: uuid!
+  $userId: uuid!
+  $level: String!
+  $mutedUntil: timestamptz
+  $customSound: String
+  $overrideGlobal: Boolean!
+) {
+  update_nchat_channel_members(
+    where: {
+      channel_id: { _eq: $channelId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      notification_level: $level
+      muted_until: $mutedUntil
+      custom_sound: $customSound
+      override_global: $overrideGlobal
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      channel_id
+      notification_level
+      muted_until
+      custom_sound
+      override_global
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Mute Channel
+# ----------------------------------------------------------------------------
+
+mutation MuteChannel(
+  $channelId: uuid!
+  $userId: uuid!
+  $mutedUntil: timestamptz
+) {
+  update_nchat_channel_members(
+    where: {
+      channel_id: { _eq: $channelId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      notification_level: "nothing"
+      muted_until: $mutedUntil
+      override_global: true
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      channel_id
+      notification_level
+      muted_until
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Unmute Channel
+# ----------------------------------------------------------------------------
+
+mutation UnmuteChannel($channelId: uuid!, $userId: uuid!) {
+  update_nchat_channel_members(
+    where: {
+      channel_id: { _eq: $channelId }
+      user_id: { _eq: $userId }
+    }
+    _set: {
+      notification_level: "all"
+      muted_until: null
+      updated_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      channel_id
+      notification_level
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Add Keyword Notification
+# ----------------------------------------------------------------------------
+
+mutation AddKeywordNotification(
+  $userId: uuid!
+  $keyword: String!
+  $caseSensitive: Boolean!
+  $wholeWord: Boolean!
+  $enabled: Boolean!
+  $highlightColor: String
+  $soundId: String
+  $channelIds: jsonb!
+) {
+  insert_nchat_keyword_notifications_one(
+    object: {
+      user_id: $userId
+      keyword: $keyword
+      case_sensitive: $caseSensitive
+      whole_word: $wholeWord
+      enabled: $enabled
+      highlight_color: $highlightColor
+      sound_id: $soundId
+      channel_ids: $channelIds
+    }
+  ) {
+    id
+    keyword
+    case_sensitive
+    whole_word
+    enabled
+    highlight_color
+    sound_id
+    channel_ids
+    created_at
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Keyword Notification
+# ----------------------------------------------------------------------------
+
+mutation UpdateKeywordNotification(
+  $keywordId: uuid!
+  $keyword: String
+  $caseSensitive: Boolean
+  $wholeWord: Boolean
+  $enabled: Boolean
+  $highlightColor: String
+  $soundId: String
+  $channelIds: jsonb
+) {
+  update_nchat_keyword_notifications_by_pk(
+    pk_columns: { id: $keywordId }
+    _set: {
+      keyword: $keyword
+      case_sensitive: $caseSensitive
+      whole_word: $wholeWord
+      enabled: $enabled
+      highlight_color: $highlightColor
+      sound_id: $soundId
+      channel_ids: $channelIds
+    }
+  ) {
+    id
+    keyword
+    case_sensitive
+    whole_word
+    enabled
+    highlight_color
+    sound_id
+    channel_ids
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Delete Keyword Notification
+# ----------------------------------------------------------------------------
+
+mutation DeleteKeywordNotification($keywordId: uuid!) {
+  delete_nchat_keyword_notifications_by_pk(id: $keywordId) {
+    id
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Toggle Keyword Notification
+# ----------------------------------------------------------------------------
+
+mutation ToggleKeywordNotification($keywordId: uuid!, $enabled: Boolean!) {
+  update_nchat_keyword_notifications_by_pk(
+    pk_columns: { id: $keywordId }
+    _set: { enabled: $enabled }
+  ) {
+    id
+    enabled
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Register Push Token
+# ----------------------------------------------------------------------------
+
+mutation RegisterPushToken(
+  $userId: uuid!
+  $token: String!
+  $platform: String!
+  $deviceId: String
+  $deviceName: String
+) {
+  insert_nchat_push_tokens_one(
+    object: {
+      user_id: $userId
+      token: $token
+      platform: $platform
+      device_id: $deviceId
+      device_name: $deviceName
+      enabled: true
+    }
+    on_conflict: {
+      constraint: nchat_push_tokens_token_key
+      update_columns: [user_id, platform, device_id, device_name, enabled, updated_at]
+    }
+  ) {
+    id
+    token
+    platform
+    device_id
+    device_name
+    enabled
+    created_at
+    updated_at
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Unregister Push Token
+# ----------------------------------------------------------------------------
+
+mutation UnregisterPushToken($token: String!) {
+  delete_nchat_push_tokens(where: { token: { _eq: $token } }) {
+    affected_rows
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Toggle Push Token
+# ----------------------------------------------------------------------------
+
+mutation TogglePushToken($tokenId: uuid!, $enabled: Boolean!) {
+  update_nchat_push_tokens_by_pk(
+    pk_columns: { id: $tokenId }
+    _set: { enabled: $enabled, updated_at: "now()" }
+  ) {
+    id
+    enabled
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Mention Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateMentionSettings(
+  $userId: uuid!
+  $enabled: Boolean!
+  $notifyOnUser: Boolean!
+  $notifyOnHere: Boolean!
+  $notifyOnChannel: Boolean!
+  $notifyOnEveryone: Boolean!
+  $breakThroughQuietHours: Boolean!
+  $customSound: String
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      mention_notifications_enabled: $enabled
+      mention_notify_on_user: $notifyOnUser
+      mention_notify_on_here: $notifyOnHere
+      mention_notify_on_channel: $notifyOnChannel
+      mention_notify_on_everyone: $notifyOnEveryone
+      mention_break_through_quiet_hours: $breakThroughQuietHours
+      mention_custom_sound: $customSound
+      updated_at: "now()"
+    }
+  ) {
+    id
+    mention_notifications_enabled
+    mention_notify_on_user
+    mention_notify_on_here
+    mention_notify_on_channel
+    mention_notify_on_everyone
+    mention_break_through_quiet_hours
+    mention_custom_sound
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update DM Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateDMSettings(
+  $userId: uuid!
+  $enabled: Boolean!
+  $desktop: Boolean!
+  $mobile: Boolean!
+  $email: Boolean!
+  $showPreview: Boolean!
+  $playSound: Boolean!
+  $customSound: String
+  $allowDuringQuietHours: Boolean!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      dm_notifications_enabled: $enabled
+      dm_desktop_enabled: $desktop
+      dm_mobile_enabled: $mobile
+      dm_email_enabled: $email
+      dm_show_preview: $showPreview
+      dm_play_sound: $playSound
+      dm_custom_sound: $customSound
+      dm_allow_during_quiet_hours: $allowDuringQuietHours
+      updated_at: "now()"
+    }
+  ) {
+    id
+    dm_notifications_enabled
+    dm_desktop_enabled
+    dm_mobile_enabled
+    dm_email_enabled
+    dm_show_preview
+    dm_play_sound
+    dm_custom_sound
+    dm_allow_during_quiet_hours
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Mute DM Conversation
+# ----------------------------------------------------------------------------
+
+mutation MuteDMConversation(
+  $userId: uuid!
+  $conversationId: uuid!
+  $mutedUntil: timestamptz
+) {
+  insert_nchat_dm_settings_one(
+    object: {
+      user_id: $userId
+      conversation_id: $conversationId
+      notifications_enabled: false
+      muted_until: $mutedUntil
+    }
+    on_conflict: {
+      constraint: nchat_dm_settings_user_id_conversation_id_key
+      update_columns: [notifications_enabled, muted_until]
+    }
+  ) {
+    id
+    conversation_id
+    notifications_enabled
+    muted_until
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Unmute DM Conversation
+# ----------------------------------------------------------------------------
+
+mutation UnmuteDMConversation($userId: uuid!, $conversationId: uuid!) {
+  update_nchat_dm_settings(
+    where: {
+      user_id: { _eq: $userId }
+      conversation_id: { _eq: $conversationId }
+    }
+    _set: {
+      notifications_enabled: true
+      muted_until: null
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      conversation_id
+      notifications_enabled
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Mark Notification as Read
+# ----------------------------------------------------------------------------
+
+mutation MarkNotificationRead($notificationId: uuid!) {
+  update_nchat_notifications_by_pk(
+    pk_columns: { id: $notificationId }
+    _set: {
+      is_read: true
+      read_at: "now()"
+    }
+  ) {
+    id
+    is_read
+    read_at
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Mark All Notifications as Read
+# ----------------------------------------------------------------------------
+
+mutation MarkAllNotificationsRead($userId: uuid!, $channelId: uuid) {
+  update_nchat_notifications(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: false }
+      channel_id: { _eq: $channelId }
+    }
+    _set: {
+      is_read: true
+      read_at: "now()"
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Archive Notification
+# ----------------------------------------------------------------------------
+
+mutation ArchiveNotification($notificationId: uuid!) {
+  update_nchat_notifications_by_pk(
+    pk_columns: { id: $notificationId }
+    _set: { is_archived: true }
+  ) {
+    id
+    is_archived
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Archive All Read Notifications
+# ----------------------------------------------------------------------------
+
+mutation ArchiveAllReadNotifications($userId: uuid!) {
+  update_nchat_notifications(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: true }
+      is_archived: { _eq: false }
+    }
+    _set: { is_archived: true }
+  ) {
+    affected_rows
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Delete Notification
+# ----------------------------------------------------------------------------
+
+mutation DeleteNotification($notificationId: uuid!) {
+  delete_nchat_notifications_by_pk(id: $notificationId) {
+    id
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Clear All Notifications
+# ----------------------------------------------------------------------------
+
+mutation ClearAllNotifications($userId: uuid!) {
+  delete_nchat_notifications(where: { user_id: { _eq: $userId } }) {
+    affected_rows
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Update Notification Type Settings
+# ----------------------------------------------------------------------------
+
+mutation UpdateNotificationTypeSettings(
+  $userId: uuid!
+  $threadReplies: Boolean!
+  $reactions: Boolean!
+  $channelInvites: Boolean!
+  $channelUpdates: Boolean!
+  $announcements: Boolean!
+) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: {
+      notify_thread_replies: $threadReplies
+      notify_reactions: $reactions
+      notify_channel_invites: $channelInvites
+      notify_channel_updates: $channelUpdates
+      notify_announcements: $announcements
+      updated_at: "now()"
+    }
+  ) {
+    id
+    notify_thread_replies
+    notify_reactions
+    notify_channel_invites
+    notify_channel_updates
+    notify_announcements
+  }
+}

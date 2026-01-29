@@ -1,0 +1,522 @@
+/* ===============================================================================
+ * WhatsApp Message Bubbles
+ * ===============================================================================
+ * Authentic WhatsApp bubble styling with tails, timestamps, and shadows
+ * =============================================================================== */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Base Bubble Styles
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble {
+  position: relative;
+  max-width: var(--wa-bubble-max-width, 65%);
+  padding: 6px 7px 8px 9px;
+  border-radius: var(--wa-bubble-radius, 7.5px);
+  box-shadow: var(--wa-bubble-shadow);
+  font-family: var(--wa-font-family);
+  font-size: var(--wa-font-size-base);
+  line-height: var(--wa-line-height);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Outgoing (Own) Messages
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-outgoing {
+  background-color: var(--wa-bubble-outgoing);
+  color: var(--wa-text-bubble-outgoing);
+  margin-left: auto;
+  margin-right: 0;
+  border-top-right-radius: 0;
+}
+
+.wa-bubble-outgoing:hover {
+  background-color: var(--wa-bubble-outgoing-hover);
+}
+
+/* Outgoing tail (right side) */
+.wa-bubble-outgoing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 8px 8px;
+  border-color: transparent transparent transparent var(--wa-bubble-outgoing);
+}
+
+.wa-bubble-outgoing:hover::before {
+  border-color: transparent transparent transparent var(--wa-bubble-outgoing-hover);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Incoming (Other) Messages
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-incoming {
+  background-color: var(--wa-bubble-incoming);
+  color: var(--wa-text-bubble-incoming);
+  margin-left: 0;
+  margin-right: auto;
+  border-top-left-radius: 0;
+}
+
+.wa-bubble-incoming:hover {
+  background-color: var(--wa-bubble-incoming-hover);
+}
+
+/* Incoming tail (left side) */
+.wa-bubble-incoming::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 0;
+  border-color: transparent var(--wa-bubble-incoming) transparent transparent;
+}
+
+.wa-bubble-incoming:hover::before {
+  border-color: transparent var(--wa-bubble-incoming-hover) transparent transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Bubble Without Tail (Consecutive Messages)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-no-tail {
+  border-radius: var(--wa-bubble-radius);
+}
+
+.wa-bubble-no-tail::before {
+  display: none;
+}
+
+.wa-bubble-outgoing.wa-bubble-no-tail {
+  border-top-right-radius: var(--wa-bubble-radius);
+}
+
+.wa-bubble-incoming.wa-bubble-no-tail {
+  border-top-left-radius: var(--wa-bubble-radius);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Bubble Content
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-content {
+  position: relative;
+  padding-right: 60px; /* Space for timestamp and checkmarks */
+  min-height: 19px;
+}
+
+/* For short messages, prevent wrapping */
+.wa-bubble-content-short {
+  padding-right: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Bubble Footer (Timestamp + Checkmarks)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 3px 4px 0;
+  font-size: var(--wa-font-size-xs);
+  color: var(--wa-text-timestamp);
+  white-space: nowrap;
+}
+
+/* When message is too short, float the footer */
+.wa-bubble-footer-inline {
+  position: relative;
+  float: right;
+  margin-top: 2px;
+  margin-left: 8px;
+  padding-bottom: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Reply Context (Quoted Message)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-reply {
+  background-color: var(--wa-bubble-reply);
+  border-radius: 5px;
+  padding: 5px 12px 7px 9px;
+  margin: -2px -2px 4px -2px;
+  border-left: 4px solid var(--wa-primary-green);
+  cursor: pointer;
+}
+
+.wa-bubble-reply:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.dark .wa-bubble-reply:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.wa-bubble-reply-name {
+  font-size: var(--wa-font-size-sm);
+  font-weight: 500;
+  color: var(--wa-primary-green);
+  margin-bottom: 2px;
+}
+
+.wa-bubble-reply-content {
+  font-size: var(--wa-font-size-sm);
+  color: var(--wa-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Forwarded Message Indicator
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-forwarded {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--wa-font-size-xs);
+  color: var(--wa-text-secondary);
+  font-style: italic;
+  margin-bottom: 2px;
+}
+
+.wa-bubble-forwarded-icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Starred Message Indicator
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-starred {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #F4C430;
+  width: 12px;
+  height: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * View Once Media
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-view-once {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.wa-bubble-view-once-icon {
+  width: 48px;
+  height: 48px;
+  color: white;
+}
+
+.wa-bubble-view-once-opened {
+  background-color: var(--wa-bubble-reply);
+  padding: 16px;
+  border-radius: 5px;
+  text-align: center;
+  color: var(--wa-text-secondary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Image/Video Bubbles
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-media {
+  padding: 3px;
+  overflow: hidden;
+}
+
+.wa-bubble-media img,
+.wa-bubble-media video {
+  display: block;
+  max-width: 330px;
+  max-height: 330px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.wa-bubble-media .wa-bubble-footer {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+  padding: 4px 6px;
+  border-radius: 3px;
+  color: white;
+}
+
+.wa-bubble-media-caption {
+  padding: 6px 7px 0 9px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Document Bubbles
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-document {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--wa-bubble-reply);
+  border-radius: 5px;
+  min-width: 250px;
+}
+
+.wa-bubble-document-icon {
+  width: 32px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F44336;
+  border-radius: 3px;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.wa-bubble-document-icon.pdf { background: #F44336; }
+.wa-bubble-document-icon.doc { background: #2196F3; }
+.wa-bubble-document-icon.xls { background: #4CAF50; }
+.wa-bubble-document-icon.ppt { background: #FF9800; }
+.wa-bubble-document-icon.zip { background: #9C27B0; }
+
+.wa-bubble-document-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wa-bubble-document-name {
+  font-size: var(--wa-font-size-base);
+  color: var(--wa-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-bubble-document-meta {
+  font-size: var(--wa-font-size-xs);
+  color: var(--wa-text-secondary);
+  margin-top: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Poll Bubbles
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-poll {
+  min-width: 250px;
+}
+
+.wa-bubble-poll-question {
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.wa-bubble-poll-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  margin: 4px 0;
+  background: var(--wa-bubble-reply);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+.wa-bubble-poll-option:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .wa-bubble-poll-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.wa-bubble-poll-option-selected {
+  background: rgba(37, 211, 102, 0.15);
+  border: 1px solid var(--wa-primary-green);
+}
+
+.wa-bubble-poll-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--wa-border-medium);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wa-bubble-poll-checkbox.checked {
+  background: var(--wa-primary-green);
+  border-color: var(--wa-primary-green);
+}
+
+.wa-bubble-poll-option-text {
+  flex: 1;
+}
+
+.wa-bubble-poll-votes {
+  font-size: var(--wa-font-size-xs);
+  color: var(--wa-text-secondary);
+}
+
+.wa-bubble-poll-total {
+  font-size: var(--wa-font-size-xs);
+  color: var(--wa-text-secondary);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--wa-border-light);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Location Bubbles
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-location {
+  padding: 3px;
+}
+
+.wa-bubble-location-map {
+  width: 280px;
+  height: 160px;
+  background: #E5E3DF;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.wa-bubble-location-info {
+  padding: 8px;
+}
+
+.wa-bubble-location-name {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.wa-bubble-location-address {
+  font-size: var(--wa-font-size-sm);
+  color: var(--wa-text-secondary);
+}
+
+.wa-bubble-location-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--wa-primary-green);
+  font-size: var(--wa-font-size-sm);
+  margin-top: 4px;
+}
+
+.wa-bubble-location-live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--wa-primary-green);
+  border-radius: 50%;
+  animation: wa-pulse 2s infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Reactions
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-bubble-reactions {
+  position: absolute;
+  bottom: -10px;
+  right: 8px;
+  display: flex;
+  background: var(--wa-bg-dropdown);
+  border-radius: 10px;
+  padding: 2px 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+}
+
+.wa-bubble-reaction {
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.wa-bubble-reactions-count {
+  font-size: var(--wa-font-size-xs);
+  color: var(--wa-text-secondary);
+  margin-left: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Animations
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes wa-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Message Row Container
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-message-row {
+  display: flex;
+  padding: 1px 7%;
+}
+
+.wa-message-row-outgoing {
+  justify-content: flex-end;
+}
+
+.wa-message-row-incoming {
+  justify-content: flex-start;
+}
+
+/* First message in a group - add more spacing */
+.wa-message-row-first {
+  margin-top: 8px;
+}
+
+/* Last message in a group - add tail */
+.wa-message-row-last .wa-bubble {
+  /* Tail is visible */
+}
+
+/* Middle messages - no tail */
+.wa-message-row-middle .wa-bubble {
+  /* No tail */
+}

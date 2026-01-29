@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Config & Test Auto-Prefill</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        button {
+            background: #0EA5E9;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0284C7;
+        }
+        .info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #e5e5e5;
+        }
+        .code {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Reset Config & Test Auto-Prefill</h1>
+
+    <div class="info">
+        <h3>Current Environment Detection:</h3>
+        <div id="env-info" class="code">Checking...</div>
+    </div>
+
+    <div class="info">
+        <h3>Current Config in localStorage:</h3>
+        <div id="current-config" class="code">Loading...</div>
+    </div>
+
+    <div class="info">
+        <h3>Actions:</h3>
+        <button onclick="clearAndRedirect()">Clear Config & Go to Setup Step 2</button>
+        <button onclick="clearOnly()">Clear Config Only</button>
+        <button onclick="checkEnv()">Re-check Environment</button>
+    </div>
+
+    <div id="status"></div>
+
+    <script>
+        function checkEnv() {
+            const hostname = window.location.hostname;
+            const port = window.location.port;
+
+            const devHostnames = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]'];
+            const devPatterns = ['.localhost', 'local.', '.local', '.dev', '.test'];
+
+            let isDev = false;
+            let reason = 'no match';
+
+            if (devHostnames.includes(hostname)) {
+                isDev = true;
+                reason = 'exact match: ' + hostname;
+            }
+
+            if (!isDev) {
+                for (const pattern of devPatterns) {
+                    if (hostname.includes(pattern)) {
+                        isDev = true;
+                        reason = 'pattern match: ' + pattern + ' in ' + hostname;
+                        break;
+                    }
+                }
+            }
+
+            const envInfo = {
+                hostname: hostname,
+                port: port || 'none',
+                isDevelopment: isDev,
+                reason: reason,
+                href: window.location.href
+            };
+
+            document.getElementById('env-info').innerHTML = `
+                <strong>Hostname:</strong> ${envInfo.hostname}<br>
+                <strong>Port:</strong> ${envInfo.port}<br>
+                <strong>Is Development:</strong> <span style="color: ${isDev ? 'green' : 'red'}">${isDev}</span><br>
+                <strong>Reason:</strong> ${reason}<br>
+                <strong>Full URL:</strong> ${envInfo.href}
+            `;
+
+            // Check localStorage
+            const config = localStorage.getItem('app-config');
+            if (config) {
+                try {
+                    const parsed = JSON.parse(config);
+                    document.getElementById('current-config').innerHTML = `
+                        <strong>Owner Email:</strong> ${parsed.owner?.email || '(empty)'}<br>
+                        <strong>Owner Name:</strong> ${parsed.owner?.name || '(empty)'}<br>
+                        <strong>Owner Role:</strong> ${parsed.owner?.role || '(empty)'}<br>
+                        <strong>Setup Step:</strong> ${parsed.setup?.currentStep || 0}
+                    `;
+                } catch (e) {
+                    document.getElementById('current-config').textContent = 'Invalid JSON in localStorage';
+                }
+            } else {
+                document.getElementById('current-config').textContent = 'No config in localStorage';
+            }
+        }
+
+        function clearAndRedirect() {
+            localStorage.removeItem('app-config');
+            localStorage.removeItem('theme');
+            document.getElementById('status').className = 'status success';
+            document.getElementById('status').innerHTML = '✅ Config cleared! Redirecting to setup step 2...';
+            setTimeout(() => {
+                window.location.href = 'https://nchat.localhost/setup/2';
+            }, 1000);
+        }
+
+        function clearOnly() {
+            localStorage.removeItem('app-config');
+            localStorage.removeItem('theme');
+            document.getElementById('status').className = 'status success';
+            document.getElementById('status').innerHTML = '✅ Config cleared from localStorage';
+            checkEnv();
+        }
+
+        // Check on load
+        checkEnv();
+    </script>
+</body>
+</html>

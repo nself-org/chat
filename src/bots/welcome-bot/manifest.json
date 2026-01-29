@@ -1,0 +1,122 @@
+{
+  "id": "welcome-bot",
+  "name": "Welcome Bot",
+  "description": "Automatically welcome new members to your channels with customizable messages",
+  "version": "1.0.0",
+  "author": "nchat Team",
+  "icon": "hand-wave",
+  "homepage": "https://github.com/nself/nchat",
+  "repository": "https://github.com/nself/nchat",
+  "permissions": [
+    "read_messages",
+    "send_messages",
+    "read_channels",
+    "read_users",
+    "mention_users"
+  ],
+  "commands": [
+    {
+      "name": "setwelcome",
+      "description": "Set a custom welcome message for this channel",
+      "arguments": [
+        {
+          "name": "message",
+          "description": "The welcome message (use {user} for username, {channel} for channel name)",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/setwelcome \"Welcome to #{channel}, {user}! Please read the rules.\"",
+        "/setwelcome \"Hey {user}! Glad to have you here!\""
+      ],
+      "permissions": ["manage_channels"]
+    },
+    {
+      "name": "testwelcome",
+      "description": "Preview the welcome message",
+      "examples": [
+        "/testwelcome"
+      ]
+    },
+    {
+      "name": "disablewelcome",
+      "description": "Disable welcome messages for this channel",
+      "examples": [
+        "/disablewelcome"
+      ],
+      "permissions": ["manage_channels"]
+    },
+    {
+      "name": "enablewelcome",
+      "description": "Enable welcome messages for this channel",
+      "examples": [
+        "/enablewelcome"
+      ],
+      "permissions": ["manage_channels"]
+    },
+    {
+      "name": "welcomestats",
+      "description": "Show welcome statistics",
+      "examples": [
+        "/welcomestats"
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "user-join",
+      "name": "User Join Handler",
+      "event": "user_joined",
+      "description": "Triggers when a user joins a channel"
+    }
+  ],
+  "settings": [
+    {
+      "key": "default_message",
+      "label": "Default Welcome Message",
+      "description": "Default message when no custom message is set",
+      "type": "string",
+      "default": "Welcome to {channel}, {user}! We're glad to have you here."
+    },
+    {
+      "key": "send_dm",
+      "label": "Send DM",
+      "description": "Also send a welcome DM to new members",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "key": "dm_message",
+      "label": "DM Message",
+      "description": "Message to send in DM (if enabled)",
+      "type": "string",
+      "default": "Welcome to the server! Let us know if you have any questions."
+    },
+    {
+      "key": "mention_user",
+      "label": "Mention User",
+      "description": "Mention the user in the welcome message",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "key": "show_member_count",
+      "label": "Show Member Count",
+      "description": "Show the channel member count in welcome message",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "key": "delay_seconds",
+      "label": "Message Delay",
+      "description": "Delay before sending welcome message (seconds)",
+      "type": "number",
+      "default": 2,
+      "validation": {
+        "min": 0,
+        "max": 30
+      }
+    }
+  ]
+}

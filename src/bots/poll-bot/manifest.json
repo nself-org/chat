@@ -1,0 +1,139 @@
+{
+  "id": "poll-bot",
+  "name": "Poll Bot",
+  "description": "Create interactive polls and surveys in your channels",
+  "version": "1.0.0",
+  "author": "nchat Team",
+  "icon": "chart-bar",
+  "homepage": "https://github.com/nself/nchat",
+  "repository": "https://github.com/nself/nchat",
+  "permissions": [
+    "read_messages",
+    "send_messages",
+    "add_reactions",
+    "manage_reactions"
+  ],
+  "commands": [
+    {
+      "name": "poll",
+      "description": "Create a new poll",
+      "arguments": [
+        {
+          "name": "question",
+          "description": "The poll question",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "options",
+          "description": "Poll options separated by | (pipe)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "duration",
+          "description": "How long the poll should last (e.g., 1h, 30m, 1d)",
+          "type": "duration",
+          "required": false
+        },
+        {
+          "name": "anonymous",
+          "description": "Make votes anonymous",
+          "type": "boolean",
+          "required": false,
+          "default": false
+        }
+      ],
+      "examples": [
+        "/poll \"What's for lunch?\" \"Pizza | Tacos | Sushi\"",
+        "/poll \"Meeting time?\" \"10am | 2pm | 4pm\" --duration 1h",
+        "/poll \"Favorite color?\" \"Red | Blue | Green\" --anonymous"
+      ],
+      "cooldown": 10
+    },
+    {
+      "name": "quickpoll",
+      "description": "Create a yes/no poll",
+      "aliases": ["yesno"],
+      "arguments": [
+        {
+          "name": "question",
+          "description": "The poll question",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/quickpoll \"Should we have a team meeting today?\"",
+        "/yesno \"Is everyone ready?\""
+      ],
+      "cooldown": 5
+    },
+    {
+      "name": "pollresults",
+      "description": "Show results of a poll",
+      "aliases": ["results"],
+      "arguments": [
+        {
+          "name": "poll_id",
+          "description": "ID of the poll",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/pollresults abc123"
+      ]
+    },
+    {
+      "name": "endpoll",
+      "description": "End a poll early",
+      "arguments": [
+        {
+          "name": "poll_id",
+          "description": "ID of the poll to end",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/endpoll abc123"
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "vote-reaction",
+      "name": "Vote Reaction Handler",
+      "event": "reaction_added",
+      "description": "Handles voting via reactions"
+    }
+  ],
+  "settings": [
+    {
+      "key": "default_duration",
+      "label": "Default Poll Duration",
+      "description": "Default duration for polls (e.g., 1h, 24h)",
+      "type": "string",
+      "default": "24h"
+    },
+    {
+      "key": "max_options",
+      "label": "Maximum Options",
+      "description": "Maximum number of poll options",
+      "type": "number",
+      "default": 10,
+      "validation": {
+        "min": 2,
+        "max": 20
+      }
+    },
+    {
+      "key": "show_voters",
+      "label": "Show Voters",
+      "description": "Show who voted for each option",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

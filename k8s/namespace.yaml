@@ -1,0 +1,13 @@
+# ============================================================================
+# nself-chat Kubernetes Namespace
+# ============================================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nself-chat
+  labels:
+    app.kubernetes.io/name: nself-chat
+    app.kubernetes.io/part-of: nself
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    description: "Namespace for nself-chat team communication platform"

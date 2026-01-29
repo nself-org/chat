@@ -1,0 +1,122 @@
+{
+  "name": "nchat",
+  "displayName": "nChat",
+  "expo": {
+    "name": "nChat",
+    "slug": "nchat",
+    "version": "0.2.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#18181B"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "org.nself.nchat",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "nChat needs camera access to take photos and videos",
+        "NSMicrophoneUsageDescription": "nChat needs microphone access for voice messages and calls",
+        "NSPhotoLibraryUsageDescription": "nChat needs photo library access to share photos",
+        "NSPhotoLibraryAddUsageDescription": "nChat needs permission to save photos to your library",
+        "NSFaceIDUsageDescription": "nChat uses Face ID for secure authentication",
+        "UIBackgroundModes": [
+          "audio",
+          "voip",
+          "remote-notification"
+        ]
+      },
+      "associatedDomains": [
+        "applinks:nchat.nself.org",
+        "webcredentials:nchat.nself.org"
+      ]
+    },
+    "android": {
+      "package": "org.nself.nchat",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#18181B"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO",
+        "VIBRATE",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "RECEIVE_BOOT_COMPLETED",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "nchat.nself.org",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "nchat"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#00D4FF",
+          "sounds": ["./assets/sounds/notification.wav"]
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow nChat to access your camera for photos and video calls"
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow nChat to access your photos to share media",
+          "savePhotosPermission": "Allow nChat to save photos to your device"
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow nChat to use Face ID for secure authentication"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "nchat-mobile"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/nchat-mobile"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}

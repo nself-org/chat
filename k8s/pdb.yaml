@@ -1,0 +1,21 @@
+# ============================================================================
+# nself-chat Pod Disruption Budget
+# ============================================================================
+# Ensures high availability during voluntary disruptions (node drain, upgrades)
+# ============================================================================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: nself-chat
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: nself-chat
+    app.kubernetes.io/component: availability
+spec:
+  # At least 1 pod must always be available
+  minAvailable: 1
+  # Alternative: maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nself-chat
+      app.kubernetes.io/component: frontend

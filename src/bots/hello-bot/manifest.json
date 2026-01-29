@@ -1,0 +1,94 @@
+{
+  "id": "hello-bot",
+  "name": "Hello Bot",
+  "description": "A friendly bot that greets users and responds to hello messages",
+  "version": "1.0.0",
+  "author": "nchat Team",
+  "icon": "wave",
+  "homepage": "https://github.com/nself/nchat",
+  "repository": "https://github.com/nself/nchat",
+  "permissions": [
+    "read_messages",
+    "send_messages",
+    "mention_users"
+  ],
+  "commands": [
+    {
+      "name": "hello",
+      "description": "Say hello to someone",
+      "aliases": ["hi", "hey"],
+      "arguments": [
+        {
+          "name": "name",
+          "description": "Name of the person to greet",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "examples": [
+        "/hello",
+        "/hello World",
+        "/hi @alice"
+      ],
+      "cooldown": 3
+    },
+    {
+      "name": "wave",
+      "description": "Wave at someone",
+      "arguments": [
+        {
+          "name": "user",
+          "description": "User to wave at",
+          "type": "user",
+          "required": false
+        }
+      ],
+      "examples": [
+        "/wave",
+        "/wave @bob"
+      ]
+    },
+    {
+      "name": "goodbye",
+      "description": "Say goodbye",
+      "aliases": ["bye", "cya"],
+      "examples": [
+        "/goodbye",
+        "/bye"
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "greeting-trigger",
+      "name": "Greeting Detector",
+      "event": "keyword",
+      "description": "Responds when someone says hello",
+      "config": {
+        "keywords": ["hello", "hi", "hey", "howdy", "greetings"]
+      }
+    }
+  ],
+  "settings": [
+    {
+      "key": "greeting_style",
+      "label": "Greeting Style",
+      "description": "How should the bot greet users?",
+      "type": "select",
+      "default": "friendly",
+      "options": [
+        { "label": "Friendly", "value": "friendly" },
+        { "label": "Formal", "value": "formal" },
+        { "label": "Casual", "value": "casual" },
+        { "label": "Fun", "value": "fun" }
+      ]
+    },
+    {
+      "key": "include_emoji",
+      "label": "Include Emoji",
+      "description": "Add emojis to greetings",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

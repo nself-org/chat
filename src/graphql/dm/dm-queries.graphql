@@ -1,0 +1,425 @@
+# Direct Message Queries
+# GraphQL queries for fetching DM data
+
+# ============================================================================
+# Fragments
+# ============================================================================
+
+fragment DMUserBasic on nchat_users {
+  id
+  username
+  display_name
+  avatar_url
+  status
+  status_emoji
+  last_seen_at
+}
+
+fragment DMParticipantFull on nchat_dm_participants {
+  id
+  user_id
+  dm_id
+  joined_at
+  last_read_at
+  last_read_message_id
+  notification_setting
+  is_muted
+  muted_until
+  role
+  user {
+    ...DMUserBasic
+  }
+}
+
+fragment DirectMessageBasic on nchat_direct_messages {
+  id
+  type
+  name
+  slug
+  description
+  avatar_url
+  created_by
+  created_at
+  updated_at
+  status
+  archived_at
+  archived_by
+  participant_count
+  last_message_id
+  last_message_at
+  last_message_preview
+  last_message_user_id
+}
+
+fragment DirectMessageFull on nchat_direct_messages {
+  ...DirectMessageBasic
+  settings
+  participants {
+    ...DMParticipantFull
+  }
+}
+
+fragment DMMessageBasic on nchat_dm_messages {
+  id
+  dm_id
+  user_id
+  content
+  type
+  reply_to_id
+  forwarded_from_id
+  is_edited
+  is_pinned
+  is_deleted
+  deleted_at
+  created_at
+  edited_at
+  user {
+    ...DMUserBasic
+  }
+}
+
+fragment DMMessageFull on nchat_dm_messages {
+  ...DMMessageBasic
+  reply_to {
+    id
+    content
+    user {
+      ...DMUserBasic
+    }
+  }
+  attachments {
+    id
+    message_id
+    file_name
+    file_type
+    file_size
+    file_url
+    thumbnail_url
+    width
+    height
+    duration
+    metadata
+    created_at
+  }
+  reactions {
+    id
+    message_id
+    user_id
+    emoji
+    created_at
+    user {
+      ...DMUserBasic
+    }
+  }
+  read_receipts {
+    id
+    message_id
+    user_id
+    read_at
+    user {
+      ...DMUserBasic
+    }
+  }
+}
+
+# ============================================================================
+# Queries
+# ============================================================================
+
+# Get all DMs for the current user
+query GetUserDMs($userId: uuid!, $status: String = "active", $limit: Int = 50, $offset: Int = 0) {
+  nchat_dm_participants(
+    where: {
+      user_id: { _eq: $userId }
+      dm: { status: { _eq: $status } }
+    }
+    order_by: { dm: { last_message_at: desc_nulls_last } }
+    limit: $limit
+    offset: $offset
+  ) {
+    dm {
+      ...DirectMessageFull
+    }
+    last_read_at
+    last_read_message_id
+    notification_setting
+    is_muted
+    muted_until
+  }
+  nchat_dm_participants_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      dm: { status: { _eq: $status } }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get a single DM by ID
+query GetDM($id: uuid!) {
+  nchat_direct_messages_by_pk(id: $id) {
+    ...DirectMessageFull
+    pinned_messages: messages(
+      where: { is_pinned: { _eq: true }, is_deleted: { _eq: false } }
+      order_by: { created_at: desc }
+    ) {
+      ...DMMessageBasic
+    }
+  }
+}
+
+# Get a DM by slug
+query GetDMBySlug($slug: String!) {
+  nchat_direct_messages(
+    where: { slug: { _eq: $slug } }
+    limit: 1
+  ) {
+    ...DirectMessageFull
+  }
+}
+
+# Check if DM exists between two users
+query CheckExistingDM($userId1: uuid!, $userId2: uuid!) {
+  nchat_direct_messages(
+    where: {
+      type: { _eq: "direct" }
+      _and: [
+        { participants: { user_id: { _eq: $userId1 } } }
+        { participants: { user_id: { _eq: $userId2 } } }
+      ]
+    }
+    limit: 1
+  ) {
+    ...DirectMessageFull
+  }
+}
+
+# Get DM messages with pagination
+query GetDMMessages(
+  $dmId: uuid!
+  $limit: Int = 50
+  $cursor: timestamptz
+  $order: order_by = desc
+) {
+  nchat_dm_messages(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_deleted: { _eq: false }
+      created_at: { _lt: $cursor }
+    }
+    order_by: { created_at: $order }
+    limit: $limit
+  ) {
+    ...DMMessageFull
+  }
+  nchat_dm_messages_aggregate(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_deleted: { _eq: false }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get pinned messages in a DM
+query GetDMPinnedMessages($dmId: uuid!) {
+  nchat_dm_messages(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_pinned: { _eq: true }
+      is_deleted: { _eq: false }
+    }
+    order_by: { created_at: desc }
+  ) {
+    ...DMMessageFull
+  }
+}
+
+# Get shared files in a DM
+query GetDMSharedFiles($dmId: uuid!, $limit: Int = 50, $offset: Int = 0) {
+  nchat_dm_attachments(
+    where: {
+      message: {
+        dm_id: { _eq: $dmId }
+        is_deleted: { _eq: false }
+      }
+      file_type: { _nlike: "image/%" }
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    message_id
+    file_name
+    file_type
+    file_size
+    file_url
+    thumbnail_url
+    created_at
+    message {
+      user {
+        ...DMUserBasic
+      }
+    }
+  }
+}
+
+# Get media items in a DM
+query GetDMMedia($dmId: uuid!, $limit: Int = 50, $offset: Int = 0) {
+  nchat_dm_attachments(
+    where: {
+      message: {
+        dm_id: { _eq: $dmId }
+        is_deleted: { _eq: false }
+      }
+      file_type: { _ilike: "image/%" }
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    message_id
+    file_url
+    thumbnail_url
+    width
+    height
+    file_type
+    created_at
+    message {
+      user {
+        ...DMUserBasic
+      }
+    }
+  }
+}
+
+# Search DM messages
+query SearchDMMessages(
+  $dmId: uuid!
+  $query: String!
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  nchat_dm_messages(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_deleted: { _eq: false }
+      content: { _ilike: $query }
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...DMMessageFull
+  }
+}
+
+# Get unread count for a DM
+query GetDMUnreadCount($dmId: uuid!, $userId: uuid!, $lastReadAt: timestamptz!) {
+  nchat_dm_messages_aggregate(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_deleted: { _eq: false }
+      created_at: { _gt: $lastReadAt }
+      user_id: { _neq: $userId }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get total unread count across all DMs
+query GetTotalDMUnreadCount($userId: uuid!) {
+  nchat_dm_participants(
+    where: {
+      user_id: { _eq: $userId }
+      dm: { status: { _eq: "active" } }
+    }
+  ) {
+    dm_id
+    last_read_at
+    dm {
+      messages_aggregate(
+        where: {
+          is_deleted: { _eq: false }
+          user_id: { _neq: $userId }
+        }
+      ) {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+}
+
+# Get DM participants
+query GetDMParticipants($dmId: uuid!) {
+  nchat_dm_participants(
+    where: { dm_id: { _eq: $dmId } }
+    order_by: [{ role: asc }, { joined_at: asc }]
+  ) {
+    ...DMParticipantFull
+  }
+}
+
+# Get archived DMs
+query GetArchivedDMs($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
+  nchat_dm_participants(
+    where: {
+      user_id: { _eq: $userId }
+      dm: { status: { _eq: "archived" } }
+    }
+    order_by: { dm: { archived_at: desc } }
+    limit: $limit
+    offset: $offset
+  ) {
+    dm {
+      ...DirectMessageFull
+    }
+  }
+}
+
+# Get read receipts for a message
+query GetDMReadReceipts($messageId: uuid!) {
+  nchat_dm_read_receipts(
+    where: { message_id: { _eq: $messageId } }
+    order_by: { read_at: desc }
+  ) {
+    id
+    user_id
+    message_id
+    read_at
+    user {
+      ...DMUserBasic
+    }
+  }
+}
+
+# Get typing indicators for a DM
+query GetDMTypingIndicators($dmId: uuid!, $excludeUserId: uuid!) {
+  nchat_dm_typing_indicators(
+    where: {
+      dm_id: { _eq: $dmId }
+      user_id: { _neq: $excludeUserId }
+      expires_at: { _gt: "now()" }
+    }
+  ) {
+    user_id
+    started_at
+    expires_at
+    user {
+      ...DMUserBasic
+    }
+  }
+}

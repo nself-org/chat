@@ -1,0 +1,27 @@
+version: '3.8'
+
+# Development docker-compose override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+      args:
+        NODE_ENV: development
+        NEXT_PUBLIC_USE_DEV_AUTH: 'true'
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_USE_DEV_AUTH=true
+      - NEXT_PUBLIC_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: ['pnpm', 'dev']
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true

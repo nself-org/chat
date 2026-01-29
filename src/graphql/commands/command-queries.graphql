@@ -1,0 +1,259 @@
+# ============================================================================
+# Slash Commands - GraphQL Queries
+# ============================================================================
+
+# Get all custom commands
+query GetCustomCommands {
+  nchat_commands(
+    where: { is_built_in: { _eq: false } }
+    order_by: [{ order: asc_nulls_last }, { name: asc }]
+  ) {
+    ...CommandFull
+  }
+}
+
+# Get enabled commands for a user based on role
+query GetEnabledCommands($userRole: String!) {
+  nchat_commands(
+    where: {
+      is_enabled: { _eq: true }
+      _or: [
+        { min_role: { _eq: "guest" } }
+        { min_role: { _eq: "member" }, _and: [{ _or: [
+          { _not: { min_role: { _eq: "guest" } } }
+        ] }] }
+        # Role hierarchy handled in application layer
+      ]
+    }
+    order_by: [{ category: asc }, { order: asc_nulls_last }, { name: asc }]
+  ) {
+    ...CommandBasic
+  }
+}
+
+# Get a single command by ID
+query GetCommand($id: uuid!) {
+  nchat_commands_by_pk(id: $id) {
+    ...CommandFull
+  }
+}
+
+# Get command by trigger
+query GetCommandByTrigger($trigger: String!) {
+  nchat_commands(
+    where: {
+      _or: [
+        { trigger: { _eq: $trigger } }
+        { aliases: { _contains: $trigger } }
+      ]
+    }
+    limit: 1
+  ) {
+    ...CommandFull
+  }
+}
+
+# Get commands by category
+query GetCommandsByCategory($category: String!) {
+  nchat_commands(
+    where: {
+      category: { _eq: $category }
+      is_enabled: { _eq: true }
+    }
+    order_by: [{ order: asc_nulls_last }, { name: asc }]
+  ) {
+    ...CommandBasic
+  }
+}
+
+# Search commands
+query SearchCommands($query: String!) {
+  nchat_commands(
+    where: {
+      _or: [
+        { trigger: { _ilike: $query } }
+        { name: { _ilike: $query } }
+        { description: { _ilike: $query } }
+      ]
+      is_enabled: { _eq: true }
+    }
+    order_by: { name: asc }
+    limit: 20
+  ) {
+    ...CommandBasic
+  }
+}
+
+# Get command execution history
+query GetCommandExecutions(
+  $commandId: uuid
+  $userId: uuid
+  $channelId: uuid
+  $limit: Int = 50
+  $offset: Int = 0
+) {
+  nchat_command_executions(
+    where: {
+      _and: [
+        { command_id: { _eq: $commandId } }
+        { user_id: { _eq: $userId } }
+        { channel_id: { _eq: $channelId } }
+      ]
+    }
+    order_by: { executed_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    command_id
+    trigger
+    user_id
+    channel_id
+    input
+    success
+    error
+    executed_at
+    duration_ms
+    user {
+      id
+      display_name
+      avatar_url
+    }
+    command {
+      id
+      trigger
+      name
+    }
+  }
+  nchat_command_executions_aggregate(
+    where: {
+      _and: [
+        { command_id: { _eq: $commandId } }
+        { user_id: { _eq: $userId } }
+        { channel_id: { _eq: $channelId } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get command usage statistics
+query GetCommandUsageStats($commandId: uuid!, $days: Int = 30) {
+  nchat_command_executions_aggregate(
+    where: {
+      command_id: { _eq: $commandId }
+      executed_at: { _gte: "now() - interval '$days days'" }
+    }
+  ) {
+    aggregate {
+      count
+      avg {
+        duration_ms
+      }
+    }
+  }
+  success_count: nchat_command_executions_aggregate(
+    where: {
+      command_id: { _eq: $commandId }
+      executed_at: { _gte: "now() - interval '$days days'" }
+      success: { _eq: true }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  error_count: nchat_command_executions_aggregate(
+    where: {
+      command_id: { _eq: $commandId }
+      executed_at: { _gte: "now() - interval '$days days'" }
+      success: { _eq: false }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# ============================================================================
+# Fragments
+# ============================================================================
+
+fragment CommandBasic on nchat_commands {
+  id
+  trigger
+  aliases
+  name
+  description
+  category
+  icon
+  is_enabled
+  is_built_in
+  min_role
+}
+
+fragment CommandFull on nchat_commands {
+  id
+  trigger
+  aliases
+  name
+  description
+  help_text
+  usage
+  category
+  icon
+  order
+  cooldown
+  is_enabled
+  is_built_in
+
+  # Arguments stored as JSONB
+  arguments
+
+  # Permissions
+  min_role
+  allowed_roles
+  allowed_users
+  denied_users
+  allow_guests
+
+  # Channel config
+  allowed_channel_types
+  allowed_channels
+  blocked_channels
+  allow_in_threads
+
+  # Response config
+  response_type
+  response_template
+  response_ephemeral
+  show_typing
+  response_delay
+
+  # Action config
+  action_type
+  action_config
+
+  # Webhook config
+  webhook_url
+  webhook_method
+  webhook_headers
+  webhook_body_template
+  webhook_timeout
+  webhook_retry_attempts
+
+  # Workflow config
+  workflow_id
+  workflow_input_mapping
+  workflow_wait
+  workflow_timeout
+
+  # Metadata
+  created_at
+  updated_at
+  created_by
+}

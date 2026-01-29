@@ -1,0 +1,256 @@
+# Settings GraphQL Mutations
+
+# Upsert all user settings
+mutation UpsertUserSettings(
+  $userId: uuid!
+  $appearanceSettings: jsonb
+  $notificationSettings: jsonb
+  $privacySettings: jsonb
+  $accessibilitySettings: jsonb
+  $languageSettings: jsonb
+  $advancedSettings: jsonb
+) {
+  insert_nchat_user_settings_one(
+    object: {
+      user_id: $userId
+      appearance_settings: $appearanceSettings
+      notification_settings: $notificationSettings
+      privacy_settings: $privacySettings
+      accessibility_settings: $accessibilitySettings
+      language_settings: $languageSettings
+      advanced_settings: $advancedSettings
+    }
+    on_conflict: {
+      constraint: user_settings_pkey
+      update_columns: [
+        appearance_settings
+        notification_settings
+        privacy_settings
+        accessibility_settings
+        language_settings
+        advanced_settings
+        updated_at
+      ]
+    }
+  ) {
+    user_id
+    updated_at
+  }
+}
+
+# Update appearance settings
+mutation UpdateAppearanceSettings($userId: uuid!, $settings: jsonb!) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: { appearance_settings: $settings }
+  ) {
+    user_id
+    appearance_settings
+    updated_at
+  }
+}
+
+# Update notification settings
+mutation UpdateNotificationSettings($userId: uuid!, $settings: jsonb!) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: { notification_settings: $settings }
+  ) {
+    user_id
+    notification_settings
+    updated_at
+  }
+}
+
+# Update privacy settings
+mutation UpdatePrivacySettings($userId: uuid!, $settings: jsonb!) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: { privacy_settings: $settings }
+  ) {
+    user_id
+    privacy_settings
+    updated_at
+  }
+}
+
+# Update accessibility settings
+mutation UpdateAccessibilitySettings($userId: uuid!, $settings: jsonb!) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: { accessibility_settings: $settings }
+  ) {
+    user_id
+    accessibility_settings
+    updated_at
+  }
+}
+
+# Update language settings
+mutation UpdateLanguageSettings($userId: uuid!, $settings: jsonb!) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: { language_settings: $settings }
+  ) {
+    user_id
+    language_settings
+    updated_at
+  }
+}
+
+# Update advanced settings
+mutation UpdateAdvancedSettings($userId: uuid!, $settings: jsonb!) {
+  update_nchat_user_settings_by_pk(
+    pk_columns: { user_id: $userId }
+    _set: { advanced_settings: $settings }
+  ) {
+    user_id
+    advanced_settings
+    updated_at
+  }
+}
+
+# Reset all settings to defaults
+mutation ResetUserSettings($userId: uuid!) {
+  delete_nchat_user_settings_by_pk(user_id: $userId) {
+    user_id
+  }
+}
+
+# Block a user
+mutation BlockUser($blockerId: uuid!, $blockedUserId: uuid!) {
+  insert_nchat_blocked_users_one(
+    object: { blocker_id: $blockerId, blocked_user_id: $blockedUserId }
+    on_conflict: { constraint: blocked_users_pkey, update_columns: [] }
+  ) {
+    id
+    blocked_user_id
+    created_at
+  }
+}
+
+# Unblock a user
+mutation UnblockUser($blockerId: uuid!, $blockedUserId: uuid!) {
+  delete_nchat_blocked_users(
+    where: {
+      blocker_id: { _eq: $blockerId }
+      blocked_user_id: { _eq: $blockedUserId }
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Mute a channel
+mutation MuteChannel($userId: uuid!, $channelId: uuid!, $mutedUntil: timestamptz) {
+  insert_nchat_muted_channels_one(
+    object: { user_id: $userId, channel_id: $channelId, muted_until: $mutedUntil }
+    on_conflict: {
+      constraint: muted_channels_pkey
+      update_columns: [muted_until]
+    }
+  ) {
+    id
+    channel_id
+    muted_until
+  }
+}
+
+# Unmute a channel
+mutation UnmuteChannel($userId: uuid!, $channelId: uuid!) {
+  delete_nchat_muted_channels(
+    where: { user_id: { _eq: $userId }, channel_id: { _eq: $channelId } }
+  ) {
+    affected_rows
+  }
+}
+
+# Mute a user
+mutation MuteUser($muterId: uuid!, $mutedUserId: uuid!, $mutedUntil: timestamptz) {
+  insert_nchat_muted_users_one(
+    object: { muter_id: $muterId, muted_user_id: $mutedUserId, muted_until: $mutedUntil }
+    on_conflict: {
+      constraint: muted_users_pkey
+      update_columns: [muted_until]
+    }
+  ) {
+    id
+    muted_user_id
+    muted_until
+  }
+}
+
+# Unmute a user
+mutation UnmuteUser($muterId: uuid!, $mutedUserId: uuid!) {
+  delete_nchat_muted_users(
+    where: { muter_id: { _eq: $muterId }, muted_user_id: { _eq: $mutedUserId } }
+  ) {
+    affected_rows
+  }
+}
+
+# Revoke a session
+mutation RevokeSession($sessionId: uuid!) {
+  update_nchat_user_sessions_by_pk(
+    pk_columns: { id: $sessionId }
+    _set: { is_active: false, revoked_at: "now()" }
+  ) {
+    id
+    is_active
+    revoked_at
+  }
+}
+
+# Revoke all other sessions
+mutation RevokeAllOtherSessions($userId: uuid!, $currentSessionId: uuid!) {
+  update_nchat_user_sessions(
+    where: {
+      user_id: { _eq: $userId }
+      id: { _neq: $currentSessionId }
+      is_active: { _eq: true }
+    }
+    _set: { is_active: false, revoked_at: "now()" }
+  ) {
+    affected_rows
+  }
+}
+
+# Update account email
+mutation UpdateAccountEmail($userId: uuid!, $newEmail: String!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { email: $newEmail, email_verified: false }
+  ) {
+    id
+    email
+  }
+}
+
+# Enable 2FA
+mutation EnableTwoFactor($userId: uuid!, $secret: String!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { two_factor_enabled: true, two_factor_secret: $secret }
+  ) {
+    id
+    two_factor_enabled
+  }
+}
+
+# Disable 2FA
+mutation DisableTwoFactor($userId: uuid!) {
+  update_nchat_users_by_pk(
+    pk_columns: { id: $userId }
+    _set: { two_factor_enabled: false, two_factor_secret: null }
+  ) {
+    id
+    two_factor_enabled
+  }
+}
+
+# Delete account
+mutation DeleteAccount($userId: uuid!) {
+  delete_nchat_users_by_pk(id: $userId) {
+    id
+  }
+}

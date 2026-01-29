@@ -1,0 +1,435 @@
+# Onboarding GraphQL Mutations
+
+# Create or update user onboarding state
+mutation UpsertUserOnboarding(
+  $userId: uuid!
+  $status: String!
+  $currentStepId: String!
+  $startedAt: timestamptz
+  $completedAt: timestamptz
+  $skippedAt: timestamptz
+  $version: Int!
+) {
+  insert_nchat_user_onboarding_one(
+    object: {
+      user_id: $userId
+      status: $status
+      current_step_id: $currentStepId
+      started_at: $startedAt
+      completed_at: $completedAt
+      skipped_at: $skippedAt
+      version: $version
+    }
+    on_conflict: {
+      constraint: user_onboarding_user_id_key
+      update_columns: [status, current_step_id, started_at, completed_at, skipped_at, version, updated_at]
+    }
+  ) {
+    id
+    user_id
+    status
+    current_step_id
+  }
+}
+
+# Update onboarding step state
+mutation UpsertOnboardingStep(
+  $userId: uuid!
+  $stepId: String!
+  $status: String!
+  $order: Int!
+  $completedAt: timestamptz
+  $skippedAt: timestamptz
+  $data: jsonb
+) {
+  insert_nchat_onboarding_steps_one(
+    object: {
+      user_id: $userId
+      step_id: $stepId
+      status: $status
+      order: $order
+      completed_at: $completedAt
+      skipped_at: $skippedAt
+      data: $data
+    }
+    on_conflict: {
+      constraint: onboarding_steps_user_id_step_id_key
+      update_columns: [status, completed_at, skipped_at, data, updated_at]
+    }
+  ) {
+    id
+    step_id
+    status
+  }
+}
+
+# Batch update onboarding steps
+mutation BatchUpsertOnboardingSteps($objects: [nchat_onboarding_steps_insert_input!]!) {
+  insert_nchat_onboarding_steps(
+    objects: $objects
+    on_conflict: {
+      constraint: onboarding_steps_user_id_step_id_key
+      update_columns: [status, completed_at, skipped_at, data, updated_at]
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Complete onboarding step
+mutation CompleteOnboardingStep(
+  $userId: uuid!
+  $stepId: String!
+  $data: jsonb
+  $nextStepId: String
+) {
+  # Update the completed step
+  update_nchat_onboarding_steps(
+    where: {
+      user_id: { _eq: $userId }
+      step_id: { _eq: $stepId }
+    }
+    _set: {
+      status: "completed"
+      completed_at: "now()"
+      data: $data
+    }
+  ) {
+    affected_rows
+  }
+
+  # Update current step in onboarding state
+  update_nchat_user_onboarding(
+    where: { user_id: { _eq: $userId } }
+    _set: { current_step_id: $nextStepId }
+  ) {
+    affected_rows
+  }
+}
+
+# Skip onboarding step
+mutation SkipOnboardingStep(
+  $userId: uuid!
+  $stepId: String!
+  $nextStepId: String
+) {
+  update_nchat_onboarding_steps(
+    where: {
+      user_id: { _eq: $userId }
+      step_id: { _eq: $stepId }
+    }
+    _set: {
+      status: "skipped"
+      skipped_at: "now()"
+    }
+  ) {
+    affected_rows
+  }
+
+  update_nchat_user_onboarding(
+    where: { user_id: { _eq: $userId } }
+    _set: { current_step_id: $nextStepId }
+  ) {
+    affected_rows
+  }
+}
+
+# Complete entire onboarding
+mutation CompleteOnboarding($userId: uuid!) {
+  update_nchat_user_onboarding(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      status: "completed"
+      completed_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      status
+      completed_at
+    }
+  }
+}
+
+# Skip entire onboarding
+mutation SkipOnboarding($userId: uuid!) {
+  update_nchat_user_onboarding(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      status: "skipped"
+      skipped_at: "now()"
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      status
+      skipped_at
+    }
+  }
+}
+
+# Reset onboarding
+mutation ResetOnboarding($userId: uuid!) {
+  # Delete step records
+  delete_nchat_onboarding_steps(where: { user_id: { _eq: $userId } }) {
+    affected_rows
+  }
+
+  # Reset onboarding state
+  update_nchat_user_onboarding(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      status: "not_started"
+      current_step_id: "welcome"
+      started_at: null
+      completed_at: null
+      skipped_at: null
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Create or update user tour state
+mutation UpsertUserTour(
+  $userId: uuid!
+  $status: String!
+  $currentStopId: String
+  $completedStops: jsonb!
+  $startedAt: timestamptz
+  $completedAt: timestamptz
+  $dismissedAt: timestamptz
+) {
+  insert_nchat_user_tour_one(
+    object: {
+      user_id: $userId
+      status: $status
+      current_stop_id: $currentStopId
+      completed_stops: $completedStops
+      started_at: $startedAt
+      completed_at: $completedAt
+      dismissed_at: $dismissedAt
+    }
+    on_conflict: {
+      constraint: user_tour_user_id_key
+      update_columns: [status, current_stop_id, completed_stops, started_at, completed_at, dismissed_at, updated_at]
+    }
+  ) {
+    id
+    status
+    current_stop_id
+  }
+}
+
+# Complete tour stop
+mutation CompleteTourStop($userId: uuid!, $stopId: String!, $nextStopId: String) {
+  update_nchat_user_tour(
+    where: { user_id: { _eq: $userId } }
+    _set: { current_stop_id: $nextStopId }
+    _append: { completed_stops: [$stopId] }
+  ) {
+    affected_rows
+  }
+}
+
+# Complete tour
+mutation CompleteTour($userId: uuid!) {
+  update_nchat_user_tour(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      status: "completed"
+      completed_at: "now()"
+      current_stop_id: null
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Dismiss tour
+mutation DismissTour($userId: uuid!) {
+  update_nchat_user_tour(
+    where: { user_id: { _eq: $userId } }
+    _set: {
+      status: "dismissed"
+      dismissed_at: "now()"
+      current_stop_id: null
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Update feature discovery state
+mutation UpsertFeatureDiscovery(
+  $userId: uuid!
+  $discoveredFeatures: jsonb!
+  $dismissedTips: jsonb!
+  $seenTips: jsonb!
+  $lastTipShownAt: timestamptz
+) {
+  insert_nchat_feature_discovery_one(
+    object: {
+      user_id: $userId
+      discovered_features: $discoveredFeatures
+      dismissed_tips: $dismissedTips
+      seen_tips: $seenTips
+      last_tip_shown_at: $lastTipShownAt
+    }
+    on_conflict: {
+      constraint: feature_discovery_user_id_key
+      update_columns: [discovered_features, dismissed_tips, seen_tips, last_tip_shown_at, updated_at]
+    }
+  ) {
+    id
+  }
+}
+
+# Mark feature as discovered
+mutation DiscoverFeature($userId: uuid!, $featureId: String!) {
+  update_nchat_feature_discovery(
+    where: { user_id: { _eq: $userId } }
+    _append: { discovered_features: [$featureId] }
+  ) {
+    affected_rows
+  }
+}
+
+# Mark tip as seen
+mutation SeeTip($userId: uuid!, $tipId: String!) {
+  update_nchat_feature_discovery(
+    where: { user_id: { _eq: $userId } }
+    _append: { seen_tips: [$tipId] }
+    _set: { last_tip_shown_at: "now()" }
+  ) {
+    affected_rows
+  }
+}
+
+# Dismiss tip
+mutation DismissTip($userId: uuid!, $tipId: String!) {
+  update_nchat_feature_discovery(
+    where: { user_id: { _eq: $userId } }
+    _append: { dismissed_tips: [$tipId] }
+  ) {
+    affected_rows
+  }
+}
+
+# Update what's new state
+mutation UpsertUserWhatsNew(
+  $userId: uuid!
+  $lastSeenVersion: String!
+  $seenItems: jsonb!
+  $dismissedUntil: timestamptz
+) {
+  insert_nchat_user_whats_new_one(
+    object: {
+      user_id: $userId
+      last_seen_version: $lastSeenVersion
+      seen_items: $seenItems
+      dismissed_until: $dismissedUntil
+    }
+    on_conflict: {
+      constraint: user_whats_new_user_id_key
+      update_columns: [last_seen_version, seen_items, dismissed_until, updated_at]
+    }
+  ) {
+    id
+  }
+}
+
+# Mark what's new item as seen
+mutation SeeWhatsNewItem($userId: uuid!, $itemId: String!) {
+  update_nchat_user_whats_new(
+    where: { user_id: { _eq: $userId } }
+    _append: { seen_items: [$itemId] }
+  ) {
+    affected_rows
+  }
+}
+
+# Track onboarding analytics event
+mutation TrackOnboardingEvent(
+  $userId: uuid!
+  $eventType: String!
+  $stepId: String
+  $duration: Int
+  $metadata: jsonb
+) {
+  insert_nchat_onboarding_analytics_one(
+    object: {
+      user_id: $userId
+      event_type: $eventType
+      step_id: $stepId
+      duration: $duration
+      metadata: $metadata
+    }
+  ) {
+    id
+    event_type
+    created_at
+  }
+}
+
+# Admin: Update onboarding configuration
+mutation UpdateOnboardingConfig(
+  $enabled: Boolean
+  $requiredSteps: jsonb
+  $optionalSteps: jsonb
+  $defaultChannels: jsonb
+  $customWelcomeMessage: String
+  $customCompletionMessage: String
+  $showTourOnCompletion: Boolean
+  $allowSkipAll: Boolean
+  $collectAnalytics: Boolean
+  $version: Int
+) {
+  update_nchat_onboarding_config(
+    where: {}
+    _set: {
+      enabled: $enabled
+      required_steps: $requiredSteps
+      optional_steps: $optionalSteps
+      default_channels: $defaultChannels
+      custom_welcome_message: $customWelcomeMessage
+      custom_completion_message: $customCompletionMessage
+      show_tour_on_completion: $showTourOnCompletion
+      allow_skip_all: $allowSkipAll
+      collect_analytics: $collectAnalytics
+      version: $version
+    }
+  ) {
+    affected_rows
+  }
+}
+
+# Send team invitations
+mutation SendTeamInvitations($invitations: [nchat_invitations_insert_input!]!) {
+  insert_nchat_invitations(objects: $invitations) {
+    affected_rows
+    returning {
+      id
+      email
+      status
+      created_at
+    }
+  }
+}
+
+# Join channels during onboarding
+mutation JoinOnboardingChannels($userId: uuid!, $channelIds: [uuid!]!) {
+  insert_nchat_channel_members(
+    objects: [
+      # This would need to be dynamically generated
+    ]
+    on_conflict: {
+      constraint: channel_members_channel_id_user_id_key
+      update_columns: []
+    }
+  ) {
+    affected_rows
+  }
+}

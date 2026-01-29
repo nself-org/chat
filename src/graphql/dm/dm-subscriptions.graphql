@@ -1,0 +1,412 @@
+# Direct Message Subscriptions
+# GraphQL subscriptions for real-time DM updates
+
+# ============================================================================
+# DM Updates
+# ============================================================================
+
+# Subscribe to DM updates for the current user
+subscription DMListSubscription($userId: uuid!) {
+  nchat_dm_participants(
+    where: {
+      user_id: { _eq: $userId }
+      dm: { status: { _eq: "active" } }
+    }
+    order_by: { dm: { last_message_at: desc_nulls_last } }
+  ) {
+    dm {
+      id
+      type
+      name
+      slug
+      avatar_url
+      status
+      last_message_at
+      last_message_preview
+      last_message_user_id
+      participant_count
+      participants {
+        user_id
+        user {
+          id
+          username
+          display_name
+          avatar_url
+          status
+        }
+      }
+    }
+    last_read_at
+    is_muted
+    muted_until
+  }
+}
+
+# Subscribe to a single DM updates
+subscription DMSubscription($dmId: uuid!) {
+  nchat_direct_messages_by_pk(id: $dmId) {
+    id
+    type
+    name
+    slug
+    description
+    avatar_url
+    status
+    last_message_at
+    last_message_preview
+    participant_count
+    updated_at
+    participants {
+      user_id
+      role
+      last_read_at
+      user {
+        id
+        username
+        display_name
+        avatar_url
+        status
+        status_emoji
+        last_seen_at
+      }
+    }
+    settings
+  }
+}
+
+# Subscribe to DM participant changes
+subscription DMParticipantsSubscription($dmId: uuid!) {
+  nchat_dm_participants(
+    where: { dm_id: { _eq: $dmId } }
+    order_by: [{ role: asc }, { joined_at: asc }]
+  ) {
+    id
+    user_id
+    dm_id
+    role
+    joined_at
+    last_read_at
+    last_read_message_id
+    notification_setting
+    is_muted
+    muted_until
+    user {
+      id
+      username
+      display_name
+      avatar_url
+      status
+      status_emoji
+      last_seen_at
+    }
+  }
+}
+
+# ============================================================================
+# Messages
+# ============================================================================
+
+# Subscribe to new messages in a DM
+subscription DMMessagesSubscription($dmId: uuid!, $limit: Int = 50) {
+  nchat_dm_messages(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_deleted: { _eq: false }
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+  ) {
+    id
+    dm_id
+    user_id
+    content
+    type
+    reply_to_id
+    forwarded_from_id
+    is_edited
+    is_pinned
+    created_at
+    edited_at
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+    reply_to {
+      id
+      content
+      user {
+        id
+        username
+        display_name
+      }
+    }
+    attachments {
+      id
+      file_name
+      file_type
+      file_size
+      file_url
+      thumbnail_url
+      width
+      height
+      duration
+    }
+    reactions {
+      id
+      user_id
+      emoji
+      created_at
+      user {
+        id
+        username
+        display_name
+        avatar_url
+      }
+    }
+  }
+}
+
+# Subscribe to a single message (for reactions, edits)
+subscription DMMessageSubscription($messageId: uuid!) {
+  nchat_dm_messages_by_pk(id: $messageId) {
+    id
+    content
+    is_edited
+    is_pinned
+    is_deleted
+    edited_at
+    deleted_at
+    reactions {
+      id
+      user_id
+      emoji
+      created_at
+      user {
+        id
+        username
+        display_name
+        avatar_url
+      }
+    }
+    read_receipts {
+      id
+      user_id
+      read_at
+      user {
+        id
+        username
+        display_name
+        avatar_url
+      }
+    }
+  }
+}
+
+# Subscribe to pinned messages in a DM
+subscription DMPinnedMessagesSubscription($dmId: uuid!) {
+  nchat_dm_messages(
+    where: {
+      dm_id: { _eq: $dmId }
+      is_pinned: { _eq: true }
+      is_deleted: { _eq: false }
+    }
+    order_by: { created_at: desc }
+  ) {
+    id
+    content
+    type
+    created_at
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# ============================================================================
+# Typing Indicators
+# ============================================================================
+
+# Subscribe to typing indicators in a DM
+subscription DMTypingSubscription($dmId: uuid!, $excludeUserId: uuid!) {
+  nchat_dm_typing_indicators(
+    where: {
+      dm_id: { _eq: $dmId }
+      user_id: { _neq: $excludeUserId }
+      expires_at: { _gt: "now()" }
+    }
+  ) {
+    dm_id
+    user_id
+    started_at
+    expires_at
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# ============================================================================
+# Read Receipts
+# ============================================================================
+
+# Subscribe to read receipts for a DM
+subscription DMReadReceiptsSubscription($dmId: uuid!) {
+  nchat_dm_participants(
+    where: { dm_id: { _eq: $dmId } }
+  ) {
+    user_id
+    last_read_at
+    last_read_message_id
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Subscribe to read receipts for a specific message
+subscription DMMessageReadReceiptsSubscription($messageId: uuid!) {
+  nchat_dm_read_receipts(
+    where: { message_id: { _eq: $messageId } }
+    order_by: { read_at: desc }
+  ) {
+    id
+    user_id
+    message_id
+    read_at
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# ============================================================================
+# Presence
+# ============================================================================
+
+# Subscribe to participant presence in a DM
+subscription DMPresenceSubscription($dmId: uuid!) {
+  nchat_dm_participants(
+    where: { dm_id: { _eq: $dmId } }
+  ) {
+    user_id
+    user {
+      id
+      username
+      display_name
+      avatar_url
+      status
+      last_seen_at
+    }
+  }
+}
+
+# ============================================================================
+# Unread Count
+# ============================================================================
+
+# Subscribe to unread count for all DMs
+subscription DMUnreadCountSubscription($userId: uuid!) {
+  nchat_dm_participants(
+    where: {
+      user_id: { _eq: $userId }
+      dm: { status: { _eq: "active" } }
+    }
+  ) {
+    dm_id
+    last_read_at
+    is_muted
+    dm {
+      id
+      last_message_at
+      messages_aggregate(
+        where: {
+          is_deleted: { _eq: false }
+          user_id: { _neq: $userId }
+        }
+      ) {
+        aggregate {
+          count
+        }
+      }
+    }
+  }
+}
+
+# ============================================================================
+# Reactions
+# ============================================================================
+
+# Subscribe to reactions on messages in a DM
+subscription DMReactionsSubscription($dmId: uuid!) {
+  nchat_dm_reactions(
+    where: {
+      message: { dm_id: { _eq: $dmId } }
+    }
+    order_by: { created_at: desc }
+    limit: 100
+  ) {
+    id
+    message_id
+    user_id
+    emoji
+    created_at
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# ============================================================================
+# Attachments / Media
+# ============================================================================
+
+# Subscribe to new attachments in a DM (for media gallery updates)
+subscription DMAttachmentsSubscription($dmId: uuid!, $limit: Int = 50) {
+  nchat_dm_attachments(
+    where: {
+      message: {
+        dm_id: { _eq: $dmId }
+        is_deleted: { _eq: false }
+      }
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+  ) {
+    id
+    message_id
+    file_name
+    file_type
+    file_size
+    file_url
+    thumbnail_url
+    width
+    height
+    duration
+    created_at
+    message {
+      user {
+        id
+        username
+        display_name
+        avatar_url
+      }
+    }
+  }
+}

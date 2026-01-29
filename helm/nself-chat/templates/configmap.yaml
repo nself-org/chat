@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nself-chat.configmapName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nself-chat.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.config }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  # Health check configuration
+  HEALTH_URL: "http://localhost:{{ .Values.service.targetPort }}/api/health"
+  HEALTH_TIMEOUT: "5"

@@ -1,0 +1,143 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "org.nself.nchat",
+  "productName": "nchat",
+  "copyright": "Copyright (c) 2024 nself",
+  "asar": true,
+  "compression": "maximum",
+  "directories": {
+    "output": "../dist-electron",
+    "buildResources": "resources"
+  },
+  "files": [
+    "main.js",
+    "preload.js",
+    "main/**/*.js",
+    "preload/**/*.js",
+    "resources/**/*",
+    "!**/*.ts",
+    "!**/*.map"
+  ],
+  "extraResources": [
+    {
+      "from": "../out",
+      "to": "app",
+      "filter": ["**/*"]
+    }
+  ],
+  "mac": {
+    "category": "public.app-category.productivity",
+    "icon": "resources/icon.icns",
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false,
+    "entitlements": "resources/entitlements.mac.plist",
+    "entitlementsInherit": "resources/entitlements.mac.plist",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      },
+      {
+        "target": "zip",
+        "arch": ["x64", "arm64"]
+      }
+    ],
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "darkModeSupport": true,
+    "minimumSystemVersion": "10.15"
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 130,
+        "y": 220
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ],
+    "backgroundColor": "#ffffff",
+    "window": {
+      "width": 540,
+      "height": 400
+    }
+  },
+  "win": {
+    "icon": "resources/icon.ico",
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "publisherName": "nself"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": true,
+    "installerIcon": "resources/icon.ico",
+    "uninstallerIcon": "resources/icon.ico",
+    "installerHeaderIcon": "resources/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "nchat",
+    "deleteAppDataOnUninstall": false
+  },
+  "linux": {
+    "icon": "resources/icons",
+    "category": "Network;InstantMessaging;Chat",
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": ["x64"]
+      },
+      {
+        "target": "deb",
+        "arch": ["x64"]
+      },
+      {
+        "target": "rpm",
+        "arch": ["x64"]
+      },
+      {
+        "target": "tar.gz",
+        "arch": ["x64"]
+      }
+    ],
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "maintainer": "nself <hello@nself.org>",
+    "vendor": "nself",
+    "synopsis": "Team Communication Platform",
+    "description": "nself-chat Desktop - White-label team communication platform with Slack and Telegram features",
+    "desktop": {
+      "Name": "nchat",
+      "Comment": "Team Communication Platform",
+      "Keywords": "chat;messaging;team;communication;slack;telegram"
+    }
+  },
+  "appImage": {
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+  },
+  "protocols": [
+    {
+      "name": "nchat",
+      "schemes": ["nchat"]
+    }
+  ],
+  "publish": {
+    "provider": "github",
+    "owner": "nself",
+    "repo": "nself-chat",
+    "releaseType": "release"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "id": "reminder-bot",
+  "name": "Reminder Bot",
+  "description": "Set reminders for yourself or your team. Never forget important tasks again!",
+  "version": "1.0.0",
+  "author": "nchat Team",
+  "icon": "bell",
+  "homepage": "https://github.com/nself/nchat",
+  "repository": "https://github.com/nself/nchat",
+  "permissions": [
+    "read_messages",
+    "send_messages",
+    "mention_users"
+  ],
+  "commands": [
+    {
+      "name": "remind",
+      "description": "Set a reminder",
+      "aliases": ["remindme", "reminder"],
+      "arguments": [
+        {
+          "name": "time",
+          "description": "When to remind (e.g., 5m, 1h, 2d, tomorrow)",
+          "type": "duration",
+          "required": true
+        },
+        {
+          "name": "message",
+          "description": "What to remind about",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/remind 30m \"Check the build\"",
+        "/remind 1h \"Team standup meeting\"",
+        "/remind 1d \"Submit weekly report\""
+      ],
+      "cooldown": 5
+    },
+    {
+      "name": "reminders",
+      "description": "List your active reminders",
+      "aliases": ["myreminders"],
+      "examples": [
+        "/reminders"
+      ]
+    },
+    {
+      "name": "cancelreminder",
+      "description": "Cancel a reminder",
+      "aliases": ["cancelrem", "delreminder"],
+      "arguments": [
+        {
+          "name": "reminder_id",
+          "description": "ID of the reminder to cancel",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/cancelreminder rem_abc123"
+      ]
+    },
+    {
+      "name": "snooze",
+      "description": "Snooze a reminder",
+      "arguments": [
+        {
+          "name": "reminder_id",
+          "description": "ID of the reminder to snooze",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "time",
+          "description": "How long to snooze (default: 10m)",
+          "type": "duration",
+          "required": false,
+          "default": "10m"
+        }
+      ],
+      "examples": [
+        "/snooze rem_abc123",
+        "/snooze rem_abc123 30m"
+      ]
+    },
+    {
+      "name": "remindchannel",
+      "description": "Set a reminder for the entire channel",
+      "arguments": [
+        {
+          "name": "time",
+          "description": "When to remind",
+          "type": "duration",
+          "required": true
+        },
+        {
+          "name": "message",
+          "description": "The reminder message",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "examples": [
+        "/remindchannel 1h \"Team meeting starting!\"",
+        "/remindchannel 15m \"Break time!\""
+      ],
+      "permissions": ["manage_channels"],
+      "cooldown": 30
+    }
+  ],
+  "triggers": [
+    {
+      "id": "scheduled-reminder",
+      "name": "Scheduled Reminder",
+      "event": "scheduled",
+      "description": "Triggers when a reminder is due"
+    }
+  ],
+  "settings": [
+    {
+      "key": "max_reminders",
+      "label": "Maximum Reminders Per User",
+      "description": "How many active reminders each user can have",
+      "type": "number",
+      "default": 25,
+      "validation": {
+        "min": 5,
+        "max": 100
+      }
+    },
+    {
+      "key": "max_duration",
+      "label": "Maximum Duration",
+      "description": "Maximum time in the future for reminders (days)",
+      "type": "number",
+      "default": 365,
+      "validation": {
+        "min": 1,
+        "max": 730
+      }
+    },
+    {
+      "key": "default_snooze",
+      "label": "Default Snooze Duration",
+      "description": "Default snooze time (e.g., 10m, 30m, 1h)",
+      "type": "string",
+      "default": "10m"
+    }
+  ]
+}

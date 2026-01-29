@@ -1,0 +1,227 @@
+# Onboarding GraphQL Queries
+
+# Get user's onboarding state
+query GetUserOnboarding($userId: uuid!) {
+  nchat_user_onboarding(where: { user_id: { _eq: $userId } }) {
+    id
+    user_id
+    status
+    current_step_id
+    started_at
+    completed_at
+    skipped_at
+    version
+    created_at
+    updated_at
+  }
+}
+
+# Get onboarding step states for a user
+query GetOnboardingSteps($userId: uuid!) {
+  nchat_onboarding_steps(where: { user_id: { _eq: $userId } }, order_by: { order: asc }) {
+    id
+    user_id
+    step_id
+    status
+    order
+    completed_at
+    skipped_at
+    data
+    created_at
+    updated_at
+  }
+}
+
+# Get user's tour state
+query GetUserTour($userId: uuid!) {
+  nchat_user_tour(where: { user_id: { _eq: $userId } }) {
+    id
+    user_id
+    status
+    current_stop_id
+    completed_stops
+    started_at
+    completed_at
+    dismissed_at
+    created_at
+    updated_at
+  }
+}
+
+# Get user's feature discovery state
+query GetUserFeatureDiscovery($userId: uuid!) {
+  nchat_feature_discovery(where: { user_id: { _eq: $userId } }) {
+    id
+    user_id
+    discovered_features
+    dismissed_tips
+    seen_tips
+    last_tip_shown_at
+    created_at
+    updated_at
+  }
+}
+
+# Get suggested channels for onboarding
+query GetSuggestedChannels($limit: Int = 10) {
+  nchat_channels(
+    where: {
+      type: { _eq: "public" }
+      _or: [
+        { is_default: { _eq: true } }
+        { is_recommended: { _eq: true } }
+      ]
+    }
+    order_by: [
+      { is_default: desc }
+      { is_recommended: desc }
+      { member_count: desc }
+    ]
+    limit: $limit
+  ) {
+    id
+    name
+    slug
+    description
+    member_count
+    category
+    is_default
+    is_recommended
+    created_at
+  }
+}
+
+# Get onboarding configuration (admin settings)
+query GetOnboardingConfig {
+  nchat_onboarding_config(limit: 1) {
+    id
+    enabled
+    required_steps
+    optional_steps
+    default_channels
+    custom_welcome_message
+    custom_completion_message
+    show_tour_on_completion
+    allow_skip_all
+    collect_analytics
+    version
+    created_at
+    updated_at
+  }
+}
+
+# Get tour configuration
+query GetTourConfig {
+  nchat_tour_config(limit: 1) {
+    id
+    enabled
+    auto_start_after_onboarding
+    allow_dismiss
+    stops
+    created_at
+    updated_at
+  }
+}
+
+# Get feature discovery configuration
+query GetFeatureDiscoveryConfig {
+  nchat_feature_discovery_config(limit: 1) {
+    id
+    enabled
+    show_pro_tips
+    show_keyboard_shortcut_tips
+    tip_frequency
+    max_tips_per_session
+    created_at
+    updated_at
+  }
+}
+
+# Get what's new items
+query GetWhatsNewItems($since: timestamptz) {
+  nchat_whats_new(
+    where: { release_date: { _gte: $since } }
+    order_by: { release_date: desc }
+  ) {
+    id
+    title
+    description
+    icon
+    learn_more_url
+    release_date
+    category
+    created_at
+  }
+}
+
+# Get user's what's new state
+query GetUserWhatsNew($userId: uuid!) {
+  nchat_user_whats_new(where: { user_id: { _eq: $userId } }) {
+    id
+    user_id
+    last_seen_version
+    seen_items
+    dismissed_until
+    created_at
+    updated_at
+  }
+}
+
+# Get onboarding analytics summary (admin)
+query GetOnboardingAnalytics($startDate: timestamptz, $endDate: timestamptz) {
+  nchat_onboarding_analytics_aggregate(
+    where: {
+      created_at: { _gte: $startDate, _lte: $endDate }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  # Breakdown by event type
+  started: nchat_onboarding_analytics_aggregate(
+    where: {
+      event_type: { _eq: "step_started" }
+      step_id: { _eq: "welcome" }
+      created_at: { _gte: $startDate, _lte: $endDate }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  completed: nchat_onboarding_analytics_aggregate(
+    where: {
+      event_type: { _eq: "onboarding_completed" }
+      created_at: { _gte: $startDate, _lte: $endDate }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  abandoned: nchat_onboarding_analytics_aggregate(
+    where: {
+      event_type: { _eq: "onboarding_abandoned" }
+      created_at: { _gte: $startDate, _lte: $endDate }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Check if user needs onboarding
+query CheckUserOnboardingStatus($userId: uuid!) {
+  nchat_user_onboarding(where: { user_id: { _eq: $userId } }) {
+    status
+  }
+
+  nchat_onboarding_config(limit: 1) {
+    enabled
+  }
+}

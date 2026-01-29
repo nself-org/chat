@@ -1,0 +1,44 @@
+# ============================================================================
+# nself-chat Development Dockerfile
+# ============================================================================
+# Development image with hot-reload support and debugging tools
+# ============================================================================
+
+FROM node:20-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    libc6-compat \
+    git \
+    curl \
+    bash
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+
+# Copy package files first for better caching
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY .npmrc ./
+
+# Install all dependencies (including devDependencies)
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the application
+COPY . .
+
+# Set development environment
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV WATCHPACK_POLLING=true
+
+# Expose port
+EXPOSE 3000
+
+# Health check for development
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start development server with hot-reload
+CMD ["pnpm", "dev"]

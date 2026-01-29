@@ -1,0 +1,200 @@
+# Pinned Messages GraphQL Queries
+# These queries are for fetching pinned messages data
+
+# Get all pinned messages for a channel
+query GetPinnedMessages($channelId: uuid!, $limit: Int = 50, $offset: Int = 0) {
+  nchat_pinned_messages(
+    where: { channel_id: { _eq: $channelId } }
+    order_by: { position: asc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    message_id
+    channel_id
+    pinned_by
+    pinned_at
+    note
+    position
+    message {
+      id
+      content
+      type
+      created_at
+      updated_at
+      is_edited
+      user_id
+      user {
+        id
+        username
+        display_name
+        avatar_url
+        role
+      }
+      attachments {
+        id
+        type
+        url
+        name
+        size
+        mime_type
+        thumbnail_url
+      }
+      reactions_aggregate {
+        aggregate {
+          count
+        }
+      }
+      thread_info: thread {
+        reply_count
+        last_reply_at
+      }
+    }
+    pinner: user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+  nchat_pinned_messages_aggregate(where: { channel_id: { _eq: $channelId } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get a single pinned message by message ID
+query GetPinnedMessageByMessageId($channelId: uuid!, $messageId: uuid!) {
+  nchat_pinned_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      message_id: { _eq: $messageId }
+    }
+    limit: 1
+  ) {
+    id
+    message_id
+    channel_id
+    pinned_by
+    pinned_at
+    note
+    position
+    message {
+      id
+      content
+      type
+      created_at
+      user {
+        id
+        username
+        display_name
+        avatar_url
+      }
+    }
+    pinner: user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get pin count for a channel
+query GetChannelPinCount($channelId: uuid!) {
+  nchat_pinned_messages_aggregate(where: { channel_id: { _eq: $channelId } }) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get pin statistics for a channel
+query GetChannelPinStats($channelId: uuid!) {
+  nchat_pinned_messages_aggregate(where: { channel_id: { _eq: $channelId } }) {
+    aggregate {
+      count
+      max {
+        pinned_at
+      }
+    }
+  }
+  pinners: nchat_pinned_messages(
+    where: { channel_id: { _eq: $channelId } }
+    distinct_on: [pinned_by]
+  ) {
+    pinned_by
+  }
+}
+
+# Check if a message is pinned
+query IsMessagePinned($channelId: uuid!, $messageId: uuid!) {
+  nchat_pinned_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      message_id: { _eq: $messageId }
+    }
+    limit: 1
+  ) {
+    id
+  }
+}
+
+# Get pin configuration for a channel
+query GetChannelPinConfig($channelId: uuid!) {
+  nchat_channel_settings(where: { channel_id: { _eq: $channelId } }) {
+    pin_max_count
+    pin_permission
+    pin_show_banner
+    pin_notify_on_pin
+  }
+}
+
+# Get user's pin count in a channel
+query GetUserPinCount($channelId: uuid!, $userId: uuid!) {
+  nchat_pinned_messages_aggregate(
+    where: {
+      channel_id: { _eq: $channelId }
+      pinned_by: { _eq: $userId }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Search pinned messages
+query SearchPinnedMessages(
+  $channelId: uuid!
+  $searchQuery: String!
+  $limit: Int = 20
+) {
+  nchat_pinned_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      _or: [
+        { message: { content: { _ilike: $searchQuery } } }
+        { note: { _ilike: $searchQuery } }
+      ]
+    }
+    order_by: { pinned_at: desc }
+    limit: $limit
+  ) {
+    id
+    message_id
+    channel_id
+    pinned_at
+    note
+    message {
+      id
+      content
+      created_at
+      user {
+        id
+        display_name
+      }
+    }
+  }
+}

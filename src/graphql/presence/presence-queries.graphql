@@ -1,0 +1,175 @@
+# =============================================================================
+# Presence Queries
+# =============================================================================
+
+# Get user presence by user ID
+query GetUserPresence($userId: uuid!) {
+  nchat_user_presence(where: { user_id: { _eq: $userId } }, limit: 1) {
+    id
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get presence for multiple users
+query GetUsersPresence($userIds: [uuid!]!) {
+  nchat_user_presence(where: { user_id: { _in: $userIds } }) {
+    id
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+  }
+}
+
+# Get all online users (status is online, away, or dnd)
+query GetOnlineUsers($limit: Int = 100) {
+  nchat_user_presence(
+    where: { status: { _in: ["online", "away", "dnd"] } }
+    order_by: { last_seen_at: desc }
+    limit: $limit
+  ) {
+    id
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    last_seen_at
+    device
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get online users count
+query GetOnlineUsersCount {
+  nchat_user_presence_aggregate(
+    where: { status: { _in: ["online", "away", "dnd"] } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# Get users with custom status set
+query GetUsersWithCustomStatus($limit: Int = 50) {
+  nchat_user_presence(
+    where: {
+      _and: [
+        {
+          _or: [
+            { custom_status: { _is_null: false } }
+            { custom_emoji: { _is_null: false } }
+          ]
+        }
+        {
+          _or: [
+            { custom_status_expires_at: { _is_null: true } }
+            { custom_status_expires_at: { _gt: "now()" } }
+          ]
+        }
+      ]
+    }
+    limit: $limit
+  ) {
+    id
+    user_id
+    status
+    custom_status
+    custom_emoji
+    custom_status_expires_at
+    user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get channel members' presence
+query GetChannelMembersPresence($channelId: uuid!) {
+  nchat_channel_members(where: { channel_id: { _eq: $channelId } }) {
+    user_id
+    user {
+      id
+      display_name
+      avatar_url
+      presence {
+        status
+        custom_status
+        custom_emoji
+        last_seen_at
+      }
+    }
+  }
+}
+
+# Get typing indicators for a channel
+query GetChannelTypingIndicators($channelId: uuid!) {
+  nchat_typing_indicators(
+    where: {
+      channel_id: { _eq: $channelId }
+      thread_id: { _is_null: true }
+      expires_at: { _gt: "now()" }
+    }
+    order_by: { started_at: asc }
+  ) {
+    id
+    user_id
+    started_at
+    expires_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get typing indicators for a thread
+query GetThreadTypingIndicators($threadId: uuid!) {
+  nchat_typing_indicators(
+    where: { thread_id: { _eq: $threadId }, expires_at: { _gt: "now()" } }
+    order_by: { started_at: asc }
+  ) {
+    id
+    user_id
+    started_at
+    expires_at
+    user {
+      id
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Get my presence settings
+query GetMyPresenceSettings($userId: uuid!) {
+  nchat_user_settings(where: { user_id: { _eq: $userId } }) {
+    id
+    user_id
+    presence_settings
+  }
+}

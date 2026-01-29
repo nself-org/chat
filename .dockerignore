@@ -1,0 +1,103 @@
+# ============================================================================
+# Docker Ignore File for nself-chat
+# ============================================================================
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Development files
+.git
+.gitignore
+.github
+.husky
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Test files
+coverage
+.nyc_output
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+e2e
+playwright
+playwright-report
+test-results
+
+# Documentation
+docs
+*.md
+!README.md
+
+# Backend (nself CLI managed)
+.backend
+
+# Environment files (will be injected at runtime)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Temporary files
+tmp
+temp
+.tmp
+.temp
+
+# Cache directories
+.cache
+.turbo
+.swc
+
+# Docker files (don't need to copy themselves)
+Dockerfile*
+docker-compose*.yml
+docker/
+
+# Kubernetes manifests
+k8s/
+helm/
+
+# Scripts (only needed for CI/CD)
+scripts/
+
+# Protocol files
+.protocol-ts
+
+# Jest
+jest.config.js
+jest.setup.js
+
+# Playwright
+playwright.config.ts
+
+# ESLint/Prettier configs (not needed in runtime)
+.eslintrc*
+.prettierrc*
+eslint.config.*
+
+# AI assistant config directories
+.ai-assistant/
+.*aude/

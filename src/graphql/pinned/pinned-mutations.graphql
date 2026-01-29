@@ -1,0 +1,151 @@
+# Pinned Messages GraphQL Mutations
+# These mutations are for managing pinned messages
+
+# Pin a message
+mutation PinMessage(
+  $channelId: uuid!
+  $messageId: uuid!
+  $pinnedBy: uuid!
+  $note: String
+  $position: Int!
+) {
+  insert_nchat_pinned_messages_one(
+    object: {
+      channel_id: $channelId
+      message_id: $messageId
+      pinned_by: $pinnedBy
+      note: $note
+      position: $position
+    }
+    on_conflict: {
+      constraint: pinned_messages_channel_id_message_id_key
+      update_columns: []
+    }
+  ) {
+    id
+    message_id
+    channel_id
+    pinned_by
+    pinned_at
+    note
+    position
+    message {
+      id
+      content
+      type
+      created_at
+      user {
+        id
+        username
+        display_name
+        avatar_url
+      }
+    }
+    pinner: user {
+      id
+      username
+      display_name
+      avatar_url
+    }
+  }
+}
+
+# Unpin a message by pin ID
+mutation UnpinMessageById($pinId: uuid!) {
+  delete_nchat_pinned_messages_by_pk(id: $pinId) {
+    id
+    message_id
+    channel_id
+  }
+}
+
+# Unpin a message by message ID
+mutation UnpinMessageByMessageId($channelId: uuid!, $messageId: uuid!) {
+  delete_nchat_pinned_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      message_id: { _eq: $messageId }
+    }
+  ) {
+    affected_rows
+    returning {
+      id
+      message_id
+      channel_id
+    }
+  }
+}
+
+# Update pin note
+mutation UpdatePinNote($pinId: uuid!, $note: String) {
+  update_nchat_pinned_messages_by_pk(
+    pk_columns: { id: $pinId }
+    _set: { note: $note }
+  ) {
+    id
+    note
+  }
+}
+
+# Reorder pinned messages
+mutation ReorderPinnedMessages($updates: [nchat_pinned_messages_updates!]!) {
+  update_nchat_pinned_messages_many(updates: $updates) {
+    affected_rows
+    returning {
+      id
+      position
+    }
+  }
+}
+
+# Update single pin position
+mutation UpdatePinPosition($pinId: uuid!, $position: Int!) {
+  update_nchat_pinned_messages_by_pk(
+    pk_columns: { id: $pinId }
+    _set: { position: $position }
+  ) {
+    id
+    position
+  }
+}
+
+# Clear all pins from a channel (admin action)
+mutation ClearChannelPins($channelId: uuid!) {
+  delete_nchat_pinned_messages(where: { channel_id: { _eq: $channelId } }) {
+    affected_rows
+  }
+}
+
+# Update channel pin configuration
+mutation UpdateChannelPinConfig(
+  $channelId: uuid!
+  $maxPins: Int
+  $pinPermission: String
+  $showBanner: Boolean
+  $notifyOnPin: Boolean
+) {
+  insert_nchat_channel_settings_one(
+    object: {
+      channel_id: $channelId
+      pin_max_count: $maxPins
+      pin_permission: $pinPermission
+      pin_show_banner: $showBanner
+      pin_notify_on_pin: $notifyOnPin
+    }
+    on_conflict: {
+      constraint: channel_settings_pkey
+      update_columns: [
+        pin_max_count
+        pin_permission
+        pin_show_banner
+        pin_notify_on_pin
+      ]
+    }
+  ) {
+    channel_id
+    pin_max_count
+    pin_permission
+    pin_show_banner
+    pin_notify_on_pin
+  }
+}

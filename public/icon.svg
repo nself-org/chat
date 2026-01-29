@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  
+        <defs>
+          <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#38BDF8"/>
+            <stop offset="100%" stop-color="#8B5CF6"/>
+          </linearGradient>
+        </defs>
+  <rect x="0" y="0" width="512" height="512" rx="64" ry="64" fill="url(#iconGrad)"/>
+  <text x="50%" y="50%" 
+        font-family="Inter, system-ui, -apple-system, sans-serif" 
+        font-size="320" 
+        font-weight="bold" 
+        fill="#FFFFFF" 
+        text-anchor="middle" 
+        dominant-baseline="middle">n</text>
+</svg>

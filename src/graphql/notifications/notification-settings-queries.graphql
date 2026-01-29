@@ -1,0 +1,339 @@
+# ============================================================================
+# Notification Settings Queries - nself-chat
+# ============================================================================
+# GraphQL queries for fetching notification settings and preferences
+
+# ----------------------------------------------------------------------------
+# Get User Notification Preferences
+# ----------------------------------------------------------------------------
+
+query GetNotificationPreferences($userId: uuid!) {
+  nchat_users_by_pk(id: $userId) {
+    id
+    email
+    notification_preferences
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Channel Notification Settings
+# ----------------------------------------------------------------------------
+
+query GetChannelNotificationSettings($userId: uuid!, $channelId: uuid!) {
+  nchat_channel_members(
+    where: {
+      user_id: { _eq: $userId }
+      channel_id: { _eq: $channelId }
+    }
+  ) {
+    id
+    channel_id
+    user_id
+    notifications_enabled
+    notification_level
+    muted_until
+    custom_sound
+    override_global
+    channel {
+      id
+      name
+      slug
+      type
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get All Channel Notification Settings for User
+# ----------------------------------------------------------------------------
+
+query GetAllChannelNotificationSettings($userId: uuid!) {
+  nchat_channel_members(
+    where: { user_id: { _eq: $userId } }
+    order_by: { channel: { name: asc } }
+  ) {
+    id
+    channel_id
+    notifications_enabled
+    notification_level
+    muted_until
+    custom_sound
+    override_global
+    channel {
+      id
+      name
+      slug
+      type
+      is_private
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Muted Channels
+# ----------------------------------------------------------------------------
+
+query GetMutedChannels($userId: uuid!) {
+  nchat_channel_members(
+    where: {
+      user_id: { _eq: $userId }
+      _or: [
+        { notification_level: { _eq: "nothing" } }
+        { muted_until: { _gt: "now()" } }
+      ]
+    }
+  ) {
+    id
+    channel_id
+    notification_level
+    muted_until
+    channel {
+      id
+      name
+      slug
+      type
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Keyword Notifications
+# ----------------------------------------------------------------------------
+
+query GetKeywordNotifications($userId: uuid!) {
+  nchat_keyword_notifications(
+    where: { user_id: { _eq: $userId } }
+    order_by: { created_at: desc }
+  ) {
+    id
+    keyword
+    case_sensitive
+    whole_word
+    enabled
+    highlight_color
+    sound_id
+    channel_ids
+    created_at
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Quiet Hours Settings
+# ----------------------------------------------------------------------------
+
+query GetQuietHoursSettings($userId: uuid!) {
+  nchat_users_by_pk(id: $userId) {
+    id
+    quiet_hours_enabled
+    quiet_hours_start
+    quiet_hours_end
+    quiet_hours_days
+    quiet_hours_timezone
+    quiet_hours_allow_mentions
+    quiet_hours_auto_status
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Push Notification Tokens
+# ----------------------------------------------------------------------------
+
+query GetPushTokens($userId: uuid!) {
+  nchat_push_tokens(
+    where: { user_id: { _eq: $userId } }
+    order_by: { updated_at: desc }
+  ) {
+    id
+    token
+    platform
+    device_id
+    device_name
+    enabled
+    created_at
+    updated_at
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Email Notification Settings
+# ----------------------------------------------------------------------------
+
+query GetEmailNotificationSettings($userId: uuid!) {
+  nchat_users_by_pk(id: $userId) {
+    id
+    email
+    email_notifications_enabled
+    email_digest_frequency
+    email_digest_time
+    email_digest_day
+    email_include_preview
+    email_notification_types
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Notification History
+# ----------------------------------------------------------------------------
+
+query GetNotificationHistory(
+  $userId: uuid!
+  $limit: Int = 50
+  $offset: Int = 0
+  $unreadOnly: Boolean = false
+  $types: [String!]
+) {
+  nchat_notifications(
+    where: {
+      user_id: { _eq: $userId }
+      _and: [
+        { _or: [{ is_read: { _eq: false } }, { is_read: { _neq: $unreadOnly } }] }
+        { type: { _in: $types } }
+      ]
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    type
+    priority
+    title
+    body
+    actor_id
+    actor {
+      id
+      display_name
+      avatar_url
+    }
+    channel_id
+    channel {
+      id
+      name
+      slug
+    }
+    message_id
+    thread_id
+    is_read
+    is_archived
+    created_at
+    read_at
+    action_url
+    data
+  }
+  nchat_notifications_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      _and: [
+        { _or: [{ is_read: { _eq: false } }, { is_read: { _neq: $unreadOnly } }] }
+        { type: { _in: $types } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get Unread Notification Counts
+# ----------------------------------------------------------------------------
+
+query GetUnreadNotificationCounts($userId: uuid!) {
+  total: nchat_notifications_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: false }
+      is_archived: { _eq: false }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  mentions: nchat_notifications_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: false }
+      is_archived: { _eq: false }
+      type: { _eq: "mention" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  directMessages: nchat_notifications_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: false }
+      is_archived: { _eq: false }
+      type: { _eq: "direct_message" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  threads: nchat_notifications_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: false }
+      is_archived: { _eq: false }
+      type: { _eq: "thread_reply" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  reactions: nchat_notifications_aggregate(
+    where: {
+      user_id: { _eq: $userId }
+      is_read: { _eq: false }
+      is_archived: { _eq: false }
+      type: { _eq: "reaction" }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Get DM Notification Settings
+# ----------------------------------------------------------------------------
+
+query GetDMNotificationSettings($userId: uuid!) {
+  nchat_dm_settings(where: { user_id: { _eq: $userId } }) {
+    id
+    conversation_id
+    notifications_enabled
+    muted_until
+    custom_sound
+    conversation {
+      id
+      participants {
+        user {
+          id
+          display_name
+          avatar_url
+        }
+      }
+    }
+  }
+}
+
+# ----------------------------------------------------------------------------
+# Check if User Has Notification Permissions
+# ----------------------------------------------------------------------------
+
+query CheckNotificationPermissions($userId: uuid!) {
+  nchat_users_by_pk(id: $userId) {
+    id
+    desktop_notifications_granted
+    push_notifications_granted
+    email_verified
+  }
+}

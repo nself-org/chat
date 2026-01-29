@@ -1,0 +1,221 @@
+# =============================================================================
+# Disappearing Messages - GraphQL Queries
+# =============================================================================
+
+# Get disappearing settings for a channel
+query GetDisappearingSettings($channelId: uuid!) {
+  nchat_disappearing_settings_by_pk(channel_id: $channelId) {
+    channel_id
+    enabled
+    default_duration
+    can_modify
+    show_banner
+    is_secret_chat
+    is_encrypted
+    screenshot_warning
+    prevent_forwarding
+    prevent_copying
+    hide_notification_content
+    updated_at
+    updated_by
+  }
+}
+
+# Get disappearing settings for multiple channels
+query GetDisappearingSettingsBulk($channelIds: [uuid!]!) {
+  nchat_disappearing_settings(
+    where: { channel_id: { _in: $channelIds } }
+  ) {
+    channel_id
+    enabled
+    default_duration
+    can_modify
+    show_banner
+    updated_at
+  }
+}
+
+# Get messages with active disappearing timers
+query GetDisappearingMessages($channelId: uuid!, $limit: Int = 100) {
+  nchat_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      is_deleted: { _eq: false }
+      disappearing_data: { _is_null: false }
+      _or: [
+        { disappearing_expires_at: { _is_null: false } }
+        { disappearing_type: { _eq: "view_once" } }
+        { disappearing_type: { _eq: "burn_after_reading" } }
+      ]
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+  ) {
+    id
+    channel_id
+    user_id
+    disappearing_type
+    disappearing_duration
+    disappearing_burn_timer
+    disappearing_expires_at
+    disappearing_viewed
+    disappearing_viewed_at
+    disappearing_viewed_by
+    disappearing_is_reading
+    disappearing_reading_started_at
+    created_at
+  }
+}
+
+# Get a single message's disappearing data
+query GetMessageDisappearingData($messageId: uuid!) {
+  nchat_messages_by_pk(id: $messageId) {
+    id
+    channel_id
+    user_id
+    content
+    disappearing_type
+    disappearing_duration
+    disappearing_burn_timer
+    disappearing_expires_at
+    disappearing_viewed
+    disappearing_viewed_at
+    disappearing_viewed_by
+    disappearing_is_reading
+    disappearing_reading_started_at
+    created_at
+    attachments {
+      id
+      url
+      type
+      name
+    }
+  }
+}
+
+# Get view-once messages pending viewing
+query GetPendingViewOnceMessages($channelId: uuid!, $userId: uuid!) {
+  nchat_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      is_deleted: { _eq: false }
+      disappearing_type: { _eq: "view_once" }
+      disappearing_viewed: { _eq: false }
+      user_id: { _neq: $userId }
+    }
+    order_by: { created_at: desc }
+  ) {
+    id
+    channel_id
+    user_id
+    created_at
+    attachments {
+      id
+      type
+      name
+      thumbnail_url
+    }
+  }
+}
+
+# Get messages expiring soon (for warning display)
+query GetExpiringMessages($channelId: uuid!, $expiresWithin: timestamptz!) {
+  nchat_messages(
+    where: {
+      channel_id: { _eq: $channelId }
+      is_deleted: { _eq: false }
+      disappearing_expires_at: { _lte: $expiresWithin, _gt: "now()" }
+    }
+    order_by: { disappearing_expires_at: asc }
+  ) {
+    id
+    channel_id
+    disappearing_expires_at
+    disappearing_type
+  }
+}
+
+# Get user's disappearing preferences
+query GetDisappearingPreferences($userId: uuid!) {
+  nchat_users_by_pk(id: $userId) {
+    id
+    disappearing_dm_default
+    disappearing_group_default
+    disappearing_show_indicators
+    disappearing_show_countdown
+    disappearing_warning_seconds
+    disappearing_sound_before_expiry
+  }
+}
+
+# Get secret chat info
+query GetSecretChatInfo($channelId: uuid!) {
+  nchat_disappearing_settings(
+    where: {
+      channel_id: { _eq: $channelId }
+      is_secret_chat: { _eq: true }
+    }
+  ) {
+    channel_id
+    enabled
+    default_duration
+    is_encrypted
+    screenshot_warning
+    prevent_forwarding
+    prevent_copying
+    hide_notification_content
+    updated_at
+    updated_by
+  }
+}
+
+# Get channels with disappearing enabled
+query GetChannelsWithDisappearing($userId: uuid!) {
+  nchat_channel_members(
+    where: {
+      user_id: { _eq: $userId }
+      channel: {
+        disappearing_settings: {
+          enabled: { _eq: true }
+        }
+      }
+    }
+  ) {
+    channel {
+      id
+      name
+      type
+      disappearing_settings {
+        enabled
+        default_duration
+        is_secret_chat
+      }
+    }
+  }
+}
+
+# Get disappearing message history (for admin/audit)
+query GetDisappearingHistory(
+  $channelId: uuid!
+  $startDate: timestamptz!
+  $endDate: timestamptz!
+) {
+  nchat_disappearing_history(
+    where: {
+      channel_id: { _eq: $channelId }
+      expired_at: { _gte: $startDate, _lte: $endDate }
+    }
+    order_by: { expired_at: desc }
+  ) {
+    id
+    message_id
+    channel_id
+    user_id
+    disappearing_type
+    duration
+    sent_at
+    expired_at
+    viewed_by
+    viewed_at
+  }
+}

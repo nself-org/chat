@@ -1,0 +1,270 @@
+/* ===============================================================================
+ * WhatsApp Checkmarks (Read Receipts)
+ * ===============================================================================
+ * Authentic WhatsApp checkmark styling for message delivery status
+ * - Single gray check: Sent to server
+ * - Double gray check: Delivered to recipient
+ * - Double blue check: Read by recipient
+ * =============================================================================== */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Base Checkmark Container
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Pending (Clock Icon)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-pending {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.wa-checkmark-pending svg {
+  width: 14px;
+  height: 14px;
+  color: var(--wa-check-pending, #8696A0);
+}
+
+/* Animated clock */
+.wa-checkmark-pending-animated svg {
+  animation: wa-clock-spin 1s linear infinite;
+}
+
+@keyframes wa-clock-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Single Check (Sent)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-sent svg {
+  width: 16px;
+  height: 16px;
+  color: var(--wa-check-gray, #667781);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Double Check Base (Delivered/Read)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-double {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.wa-checkmark-double svg {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+}
+
+/* First check (behind) */
+.wa-checkmark-double svg:first-child {
+  left: 0;
+  color: var(--wa-check-gray, #667781);
+}
+
+/* Second check (front) */
+.wa-checkmark-double svg:last-child {
+  left: 4px;
+  color: var(--wa-check-gray, #667781);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Delivered (Double Gray)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-delivered svg {
+  color: var(--wa-check-gray, #667781);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Read (Double Blue)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-read svg {
+  color: var(--wa-check-blue, #53BDEB);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Failed (Red X)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-failed svg {
+  width: 16px;
+  height: 16px;
+  color: #EA0038;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SVG Checkmark Definitions
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Use these SVG paths for the checkmarks:
+ *
+ * Clock (pending):
+ * <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+ *
+ * Single Check (sent):
+ * <svg viewBox="0 0 16 15"><path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512z"/></svg>
+ *
+ * Double Check (delivered/read):
+ * <svg viewBox="0 0 16 15"><path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512z"/></svg>
+ * (Second check is positioned 4px to the right)
+ *
+ * Failed (X):
+ * <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 9l-6 6m0-6l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Animated Transition
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-animated svg {
+  transition: color 200ms ease-out;
+}
+
+/* Animation when status changes */
+.wa-checkmark-animate-in svg {
+  animation: wa-checkmark-appear 200ms ease-out;
+}
+
+@keyframes wa-checkmark-appear {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Blue flash animation when read */
+.wa-checkmark-read-flash svg {
+  animation: wa-checkmark-blue-flash 300ms ease-out;
+}
+
+@keyframes wa-checkmark-blue-flash {
+  0% {
+    color: var(--wa-check-gray, #667781);
+  }
+  50% {
+    color: var(--wa-check-blue, #53BDEB);
+    transform: scale(1.15);
+  }
+  100% {
+    color: var(--wa-check-blue, #53BDEB);
+    transform: scale(1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Group Chat Read Receipts
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-group {
+  display: flex;
+  align-items: center;
+}
+
+.wa-checkmark-group-partial svg:first-child {
+  color: var(--wa-check-blue, #53BDEB);
+}
+
+.wa-checkmark-group-partial svg:last-child {
+  color: var(--wa-check-gray, #667781);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Checkmark with Timestamp
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-timestamp-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--wa-font-size-xs, 11px);
+  color: var(--wa-text-timestamp, #667781);
+}
+
+.wa-timestamp-check-time {
+  white-space: nowrap;
+}
+
+/* On dark backgrounds (media messages) */
+.wa-timestamp-check-light {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wa-timestamp-check-light .wa-checkmark svg {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wa-timestamp-check-light .wa-checkmark-read svg {
+  color: var(--wa-check-blue, #53BDEB);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Checkmark Sizes
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-sm {
+  width: 14px;
+  height: 14px;
+}
+
+.wa-checkmark-sm svg {
+  width: 12px;
+  height: 12px;
+}
+
+.wa-checkmark-lg {
+  width: 20px;
+  height: 20px;
+}
+
+.wa-checkmark-lg svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Voice Message Seen (Blue Microphone)
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark-played svg {
+  color: var(--wa-check-blue, #53BDEB);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Accessibility
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.wa-checkmark[role="img"] {
+  /* Screen readers will announce the aria-label */
+}
+
+.wa-checkmark:focus-visible {
+  outline: 2px solid var(--wa-primary-green);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
