@@ -5,7 +5,7 @@
  * structured data, log levels, and context tracking.
  */
 
-import { isDevelopment, isServer } from '@/lib/env'
+import { isDevelopment, isServer } from '@/lib/environment'
 
 // ============================================================================
 // Types

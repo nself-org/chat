@@ -1,111 +1,62 @@
 /**
- * Environment detection utilities
+ * Simple Environment Utilities
+ *
+ * Lightweight environment detection without complex validation.
+ * Use for simple checks in hooks and utilities.
  */
 
 /**
- * Check if the application is running in a development environment
- * This checks the hostname to determine if we're in local development
+ * Check if running in development mode
  */
-export function isDevelopment(): boolean {
-  // Server-side: check NODE_ENV
+export const isDevelopment = (): boolean => {
   if (typeof window === 'undefined') {
-    const isDev = process.env.NODE_ENV === 'development'
-    console.log('[Server] isDevelopment:', isDev, 'NODE_ENV:', process.env.NODE_ENV)
-    return isDev
+    return process.env.NODE_ENV === 'development'
   }
-
-  // Client-side: check hostname patterns
-  const hostname = window.location.hostname
-  const port = window.location.port
-
-  const devHostnames = [
-    'localhost',
-    '127.0.0.1',
-    '0.0.0.0',
-    '[::1]', // IPv6 localhost
-  ]
-
-  const devPatterns = [
-    '.localhost', // *.localhost domains
-    'local.', // local.* domains
-    '.local', // *.local domains
-    '.dev', // *.dev domains
-    '.test', // *.test domains
-  ]
-
-  const devPorts = ['3000', '3001', '8080', '8000', '4200', '5173'] // Common dev ports
-
-  let isDev = false
-  let reason = 'no match'
-
-  // Check exact matches
-  if (devHostnames.includes(hostname)) {
-    isDev = true
-    reason = `exact match: ${hostname}`
-  }
-
-  // Check patterns
-  if (!isDev) {
-    for (const pattern of devPatterns) {
-      if (hostname.includes(pattern)) {
-        isDev = true
-        reason = `pattern match: ${pattern} in ${hostname}`
-        break
-      }
-    }
-  }
-
-  // Check port (if specified and in dev ports list)
-  if (!isDev && port && devPorts.includes(port)) {
-    isDev = true
-    reason = `port match: ${port}`
-  }
-
-  // Check environment variable as fallback
-  if (!isDev && process.env.NEXT_PUBLIC_ENV === 'development') {
-    isDev = true
-    reason = 'NEXT_PUBLIC_ENV=development'
-  }
-
-  console.log('[Client] isDevelopment:', isDev, 'reason:', reason, 'hostname:', hostname, 'port:', port || 'none')
-  return isDev
+  return process.env.NEXT_PUBLIC_ENV === 'development'
 }
 
 /**
- * Check if the application is running in production
+ * Check if running in production mode
  */
-export function isProduction(): boolean {
-  return !isDevelopment()
-}
-
-/**
- * Get the current environment name
- */
-export function getEnvironment(): 'development' | 'production' {
-  return isDevelopment() ? 'development' : 'production'
-}
-
-/**
- * Get the current hostname
- */
-export function getHostname(): string {
+export const isProduction = (): boolean => {
   if (typeof window === 'undefined') {
-    return 'server'
+    return process.env.NODE_ENV === 'production'
   }
-  return window.location.hostname
+  return process.env.NEXT_PUBLIC_ENV === 'production'
 }
 
 /**
- * Check if we're on a specific domain pattern
+ * Check if running in staging mode
  */
-export function isLocalDomain(): boolean {
-  if (typeof window === 'undefined') {
-    return false
-  }
+export const isStaging = (): boolean => {
+  return process.env.NEXT_PUBLIC_ENV === 'staging'
+}
 
-  const hostname = window.location.hostname
-  return hostname === 'localhost' ||
-         hostname.endsWith('.localhost') ||
-         hostname.includes('local.') ||
-         hostname.endsWith('.local')
+/**
+ * Check if server-side
+ */
+export const isServer = (): boolean => {
+  return typeof window === 'undefined'
+}
+
+/**
+ * Check if client-side
+ */
+export const isClient = (): boolean => {
+  return typeof window !== 'undefined'
+}
+
+/**
+ * Get public environment variable safely
+ */
+export const getPublicEnv = () => {
+  return {
+    NEXT_PUBLIC_ENV: (process.env.NEXT_PUBLIC_ENV || 'development') as
+      | 'development'
+      | 'staging'
+      | 'production'
+      | 'test',
+    NEXT_PUBLIC_USE_DEV_AUTH: process.env.NEXT_PUBLIC_USE_DEV_AUTH === 'true',
+    NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'ɳChat',
+  }
 }

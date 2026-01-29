@@ -9,7 +9,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { logger } from '@/lib/logger'
-import { isDevelopment } from '@/lib/env'
+import { isDevelopment } from '@/lib/environment'
 
 // ============================================================================
 // Types

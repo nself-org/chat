@@ -7,7 +7,7 @@
 
 'use client'
 
-import { isDevelopment, getPublicEnv } from '@/lib/env'
+import { isDevelopment, getPublicEnv } from '@/lib/environment'
 
 // ============================================================================
 // Types
