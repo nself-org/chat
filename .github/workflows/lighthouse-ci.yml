@@ -53,17 +53,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build application
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
-          NEXT_PUBLIC_ENV: 'production'
-          NODE_ENV: 'production'
-
       - name: Run Lighthouse CI
         run: pnpm lighthouse
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
+          NEXT_PUBLIC_ENV: 'production'
+          NODE_ENV: 'production'
 
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@v4
