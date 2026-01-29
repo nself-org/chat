@@ -30,6 +30,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "./scripts/test-all.sh",
+    "lighthouse": "lhci autorun",
+    "lighthouse:collect": "lhci collect",
+    "lighthouse:assert": "lhci assert",
+    "lighthouse:upload": "lhci upload",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "format": "prettier --write .",
@@ -139,6 +143,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^15.5.9",
     "@playwright/test": "^1.50.1",
     "@testing-library/jest-dom": "^6.6.3",

@@ -1,0 +1,110 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'next.config.js'
+      - 'package.json'
+      - 'lighthouserc.json'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'next.config.js'
+      - 'package.json'
+      - 'lighthouserc.json'
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    name: Lighthouse Performance Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
+          NEXT_PUBLIC_ENV: 'production'
+          NODE_ENV: 'production'
+
+      - name: Run Lighthouse CI
+        run: pnpm lighthouse
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: |
+            .lighthouseci
+            lighthouseci-*.html
+          retention-days: 30
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Find manifest file
+            const manifestPath = '.lighthouseci/manifest.json';
+            if (!fs.existsSync(manifestPath)) {
+              console.log('No manifest file found');
+              return;
+            }
+
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            const results = manifest[0];
+
+            const comment = `## 🔦 Lighthouse CI Results
+
+            ### Performance Scores
+
+            | URL | Performance | Accessibility | Best Practices | SEO |
+            |-----|-------------|---------------|----------------|-----|
+            ${results.summary ? Object.entries(results.summary).map(([url, scores]) =>
+              `| ${url} | ${Math.round(scores.performance * 100)} | ${Math.round(scores.accessibility * 100)} | ${Math.round(scores['best-practices'] * 100)} | ${Math.round(scores.seo * 100)} |`
+            ).join('\n') : 'No results available'}
+
+            ### Core Web Vitals
+
+            - **First Contentful Paint (FCP)**: Target < 1.5s
+            - **Largest Contentful Paint (LCP)**: Target < 2.5s
+            - **Cumulative Layout Shift (CLS)**: Target < 0.1
+            - **Total Blocking Time (TBT)**: Target < 300ms
+
+            [View full Lighthouse report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
