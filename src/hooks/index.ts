@@ -12,13 +12,7 @@
 export { useUserChannels, useChannelDetails, useChannelMutations } from './use-channels'
 
 // Messages
-export {
-  useMessages,
-  useSendMessage,
-  useUpdateMessage,
-  useDeleteMessage,
-  useReactions,
-} from './use-messages'
+export { useMessages, useMessageMutations } from './use-messages'
 
 // Threads
 export {

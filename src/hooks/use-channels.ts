@@ -387,7 +387,11 @@ export function useChannelMutations() {
       }
 
       try {
-        logger.info('Adding channel member', { userId: user.id, ...input })
+        logger.info('Adding channel member', {
+          adminId: user.id,
+          channelId: input.channelId,
+          targetUserId: input.userId,
+        })
 
         const { data } = await addMemberMutation({
           variables: {
@@ -397,7 +401,11 @@ export function useChannelMutations() {
           },
         })
 
-        logger.info('Channel member added', { userId: user.id, ...input })
+        logger.info('Channel member added', {
+          adminId: user.id,
+          channelId: input.channelId,
+          targetUserId: input.userId,
+        })
         toast({
           title: 'Member added',
           description: 'User has been added to the channel.',

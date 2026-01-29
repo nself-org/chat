@@ -62,28 +62,32 @@ export function resetEnvCache() {
  * Check if running in development mode
  */
 export function isDevelopment() {
-  return getPublicEnv().NEXT_PUBLIC_ENV === 'development'
+  const env = getPublicEnv()
+  return env?.NEXT_PUBLIC_ENV === 'development'
 }
 
 /**
  * Check if running in production mode
  */
 export function isProduction() {
-  return getPublicEnv().NEXT_PUBLIC_ENV === 'production'
+  const env = getPublicEnv()
+  return env?.NEXT_PUBLIC_ENV === 'production'
 }
 
 /**
  * Check if running in staging mode
  */
 export function isStaging() {
-  return getPublicEnv().NEXT_PUBLIC_ENV === 'staging'
+  const env = getPublicEnv()
+  return env?.NEXT_PUBLIC_ENV === 'staging'
 }
 
 /**
  * Check if using development authentication
  */
 export function isDevAuth() {
-  return getPublicEnv().NEXT_PUBLIC_USE_DEV_AUTH
+  const env = getPublicEnv()
+  return env?.NEXT_PUBLIC_USE_DEV_AUTH ?? false
 }
 
 /**
