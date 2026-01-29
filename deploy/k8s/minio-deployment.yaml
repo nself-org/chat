@@ -1,0 +1,145 @@
+# ============================================================================
+# MinIO Deployment for nself-chat
+# ============================================================================
+# S3-compatible object storage for file uploads and media
+# NOTE: For production, consider managed S3, GCS, or Azure Blob Storage
+# ============================================================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: storage
+spec:
+  type: ClusterIP
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+    - name: console
+      port: 9001
+      targetPort: 9001
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: storage
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: storage
+spec:
+  replicas: 1  # Single instance, use distributed mode for HA
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+      app.kubernetes.io/component: storage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minio
+        app.kubernetes.io/component: storage
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: api
+              containerPort: 9000
+              protocol: TCP
+            - name: console
+              containerPort: 9001
+              protocol: TCP
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: root-password
+            - name: MINIO_BROWSER_REDIRECT_URL
+              value: "https://storage-console.nchat.example.com"
+          args:
+            - server
+            - /data
+            - --console-address
+            - ":9001"
+          volumeMounts:
+            - name: minio-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: minio-data-pvc
+
+---
+# MinIO Credentials Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-credentials
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: storage
+type: Opaque
+stringData:
+  root-user: minio-admin
+  root-password: CHANGE_ME_USE_SECRETS_MANAGER  # Replace with actual secure password
+  access-key: CHANGE_ME_ACCESS_KEY
+  secret-key: CHANGE_ME_SECRET_KEY
+
+---
+# PVC for MinIO Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-data-pvc
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard  # Can use cheaper storage class
+  resources:
+    requests:
+      storage: 100Gi

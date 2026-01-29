@@ -1,0 +1,198 @@
+# ============================================================================
+# Alertmanager Configuration for nself-chat
+# ============================================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/component: monitoring
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+      slack_api_url: ${SLACK_WEBHOOK_URL}
+      pagerduty_url: https://events.pagerduty.com/v2/enqueue
+
+    templates:
+      - '/etc/alertmanager/templates/*.tmpl'
+
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      receiver: 'default'
+      routes:
+        # Critical alerts go to PagerDuty and Slack
+        - match:
+            severity: critical
+          receiver: 'critical-alerts'
+          continue: true
+
+        # Warning alerts only go to Slack
+        - match:
+            severity: warning
+          receiver: 'warning-alerts'
+
+        # Database alerts
+        - match:
+            service: postgres
+          receiver: 'database-alerts'
+
+    receivers:
+      # Default receiver (email)
+      - name: 'default'
+        email_configs:
+          - to: 'alerts@nchat.example.com'
+            from: 'alertmanager@nchat.example.com'
+            smarthost: 'smtp.sendgrid.net:587'
+            auth_username: 'apikey'
+            auth_password: ${SMTP_PASSWORD}
+            headers:
+              Subject: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .GroupLabels.alertname }}'
+
+      # Critical alerts
+      - name: 'critical-alerts'
+        pagerduty_configs:
+          - service_key: ${PAGERDUTY_SERVICE_KEY}
+            description: '{{ .GroupLabels.alertname }}: {{ .CommonAnnotations.summary }}'
+            severity: 'critical'
+        slack_configs:
+          - channel: '#alerts-critical'
+            title: 'CRITICAL: {{ .GroupLabels.alertname }}'
+            text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+            color: 'danger'
+            send_resolved: true
+
+      # Warning alerts
+      - name: 'warning-alerts'
+        slack_configs:
+          - channel: '#alerts-warning'
+            title: 'Warning: {{ .GroupLabels.alertname }}'
+            text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+            color: 'warning'
+            send_resolved: true
+
+      # Database alerts
+      - name: 'database-alerts'
+        slack_configs:
+          - channel: '#alerts-database'
+            title: 'Database Alert: {{ .GroupLabels.alertname }}'
+            text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+            color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+            send_resolved: true
+
+    inhibit_rules:
+      # Inhibit warning if critical is firing
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'cluster', 'service']
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/component: monitoring
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 9093
+      targetPort: 9093
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/component: monitoring
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/component: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/component: monitoring
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: alertmanager
+        app.kubernetes.io/component: monitoring
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 9093
+              protocol: TCP
+          args:
+            - '--config.file=/etc/alertmanager/alertmanager.yml'
+            - '--storage.path=/alertmanager'
+            - '--web.external-url=https://alerts.nchat.example.com'
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alertmanager
+            - name: storage
+              mountPath: /alertmanager
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9093
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9093
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: alertmanager-config
+        - name: storage
+          persistentVolumeClaim:
+            claimName: alertmanager-data-pvc
+
+---
+# PVC for Alertmanager Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alertmanager-data-pvc
+  namespace: nself-chat
+  labels:
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/component: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi

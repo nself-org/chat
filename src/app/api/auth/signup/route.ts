@@ -5,12 +5,32 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { email, password, username, displayName } = body
 
-    // TODO: Implement actual user creation with Hasura Auth
-    // For now, return mock data
-    if (email && password && username) {
-      // Check if this is the first user (make them owner)
-      const isFirstUser = true // TODO: Query database to check
-      
+    // In development mode, use mock data
+    if (process.env.NEXT_PUBLIC_USE_DEV_AUTH === 'true') {
+      // Check if this is the first user by querying the database
+      const userCountResponse = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_URL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET || '',
+        },
+        body: JSON.stringify({
+          query: `
+            query GetUserCount {
+              nchat_users_aggregate {
+                aggregate {
+                  count
+                }
+              }
+            }
+          `,
+        }),
+      })
+
+      const userCountData = await userCountResponse.json()
+      const userCount = userCountData?.data?.nchat_users_aggregate?.aggregate?.count || 0
+      const isFirstUser = userCount === 0
+
       const mockUser = {
         id: Date.now().toString(),
         email,

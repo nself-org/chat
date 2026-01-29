@@ -14,6 +14,7 @@ import { registerIpcHandlers, removeIpcHandlers } from './ipc';
 import { registerProtocolHandler, handleSecondInstance } from './deeplinks';
 import { initAutoUpdater } from './updates';
 import { syncAutoLaunchWithSettings, handleHiddenLaunch } from './autostart';
+import { registerGlobalShortcuts, unregisterGlobalShortcuts } from './shortcuts';
 import settingsStore from './store';
 
 // Configure logging
@@ -38,7 +39,7 @@ if (!gotTheLock) {
   app.quit();
 } else {
   // Handle second instance
-  app.on('second-instance', (_event, commandLine, _workingDirectory) => {
+  app.on('second-instance', (_event, commandLine) => {
     log.info('Second instance detected');
     handleSecondInstance(commandLine);
   });
@@ -75,6 +76,9 @@ if (!gotTheLock) {
 
     // Sync auto-launch settings
     await syncAutoLaunchWithSettings();
+
+    // Register global keyboard shortcuts
+    registerGlobalShortcuts();
 
     // macOS: Re-create window when dock icon is clicked
     app.on('activate', () => {
@@ -118,6 +122,7 @@ if (!gotTheLock) {
     // Cleanup
     removeIpcHandlers();
     destroyTray();
+    unregisterGlobalShortcuts();
     log.info('App cleanup complete');
   });
 
@@ -136,10 +141,9 @@ if (!gotTheLock) {
 app.on('web-contents-created', (_event, contents) => {
   // Disable navigation
   contents.on('will-navigate', (event, navigationUrl) => {
-    const mainWindow = getMainWindow();
     const appUrl = process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000'
-      : `file://${process.resourcesPath}`;
+      : `file://${app.getPath('userData')}`;
 
     if (!navigationUrl.startsWith(appUrl)) {
       event.preventDefault();

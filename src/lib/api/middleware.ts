@@ -214,7 +214,7 @@ export async function getAuthenticatedUser(
 }
 
 /**
- * Validate JWT token (placeholder - implement with actual Nhost/JWT validation)
+ * Validate JWT token with Nhost
  */
 async function validateToken(token: string): Promise<AuthenticatedUser | null> {
   try {
@@ -224,31 +224,77 @@ async function validateToken(token: string): Promise<AuthenticatedUser | null> {
       if (devUser) return devUser
     }
 
-    // TODO: Implement actual JWT validation with Nhost
-    // const { data, error } = await nhost.auth.getUser()
-    // if (error || !data) return null
+    // Production JWT validation
+    // Verify JWT token with Hasura/Nhost backend
+    const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/user`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
 
-    // For now, return null for production tokens
-    return null
-  } catch {
+    if (!response.ok) {
+      return null
+    }
+
+    const data = await response.json()
+
+    if (!data.id || !data.email) {
+      return null
+    }
+
+    // Map Nhost user to AuthenticatedUser
+    return {
+      id: data.id,
+      email: data.email,
+      displayName: data.displayName || data.metadata?.displayName || data.email,
+      role: data.metadata?.role || 'member',
+      avatarUrl: data.avatarUrl || data.metadata?.avatarUrl,
+    }
+  } catch (error) {
+    console.error('Token validation error:', error)
     return null
   }
 }
 
 /**
- * Validate session (placeholder - implement with actual session validation)
+ * Validate session with Nhost
  */
-async function validateSession(session: string): Promise<AuthenticatedUser | null> {
+async function validateSession(sessionToken: string): Promise<AuthenticatedUser | null> {
   try {
     // In development mode, check for test sessions
     if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_DEV_AUTH === 'true') {
-      const devUser = getDevUser(session)
+      const devUser = getDevUser(sessionToken)
       if (devUser) return devUser
     }
 
-    // TODO: Implement actual session validation
-    return null
-  } catch {
+    // Production session validation
+    // Verify session token with Nhost backend
+    const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/user`, {
+      headers: {
+        'Cookie': `nhost-session=${sessionToken}`,
+      },
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const data = await response.json()
+
+    if (!data.id || !data.email) {
+      return null
+    }
+
+    // Map Nhost user to AuthenticatedUser
+    return {
+      id: data.id,
+      email: data.email,
+      displayName: data.displayName || data.metadata?.displayName || data.email,
+      role: data.metadata?.role || 'member',
+      avatarUrl: data.avatarUrl || data.metadata?.avatarUrl,
+    }
+  } catch (error) {
+    console.error('Session validation error:', error)
     return null
   }
 }
@@ -566,45 +612,141 @@ export function getQueryParams(
 // ============================================================================
 
 /**
+ * Validate origin against allowed origins
+ */
+function isOriginAllowed(requestOrigin: string | null, allowedOrigins: string | string[]): boolean {
+  if (!requestOrigin) return false
+
+  // Allow all origins in development (for localhost testing)
+  if (process.env.NODE_ENV === 'development') {
+    return true
+  }
+
+  // Wildcard allows all (NOT RECOMMENDED FOR PRODUCTION)
+  if (allowedOrigins === '*') {
+    console.warn('[SECURITY WARNING] CORS configured with wildcard (*) - this is not secure for production')
+    return true
+  }
+
+  // Check if origin is in allowed list
+  if (Array.isArray(allowedOrigins)) {
+    return allowedOrigins.some((allowed) => {
+      // Exact match
+      if (allowed === requestOrigin) return true
+
+      // Pattern match (e.g., *.example.com)
+      if (allowed.startsWith('*.')) {
+        const domain = allowed.substring(2)
+        return requestOrigin.endsWith(domain)
+      }
+
+      return false
+    })
+  }
+
+  // Single origin check
+  return allowedOrigins === requestOrigin
+}
+
+/**
+ * Get allowed origin for response header
+ */
+function getAllowedOrigin(requestOrigin: string | null, allowedOrigins: string | string[]): string | null {
+  // In production, never return '*' when credentials are used
+  // Instead, return the specific origin if it's allowed
+  if (!requestOrigin) return null
+
+  if (isOriginAllowed(requestOrigin, allowedOrigins)) {
+    return requestOrigin
+  }
+
+  return null
+}
+
+/**
  * Add CORS headers to response
+ *
+ * SECURITY NOTE: For production, always specify explicit origins.
+ * Never use '*' with credentials enabled.
  */
 export function withCors(
   options: {
+    /** Allowed origins - use specific domains in production, NOT '*' */
     origin?: string | string[]
     methods?: string[]
     headers?: string[]
+    /** Enable credentials (cookies, auth headers) - requires specific origin, not '*' */
     credentials?: boolean
   } = {}
 ): Middleware {
   const {
-    origin = '*',
+    origin = process.env.NODE_ENV === 'production'
+      ? (process.env.NEXT_PUBLIC_APP_URL || 'https://nchat.app')
+      : '*',
     methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     headers: allowedHeaders = ['Content-Type', 'Authorization'],
     credentials = false,
   } = options
 
+  // Validate configuration
+  if (credentials && origin === '*') {
+    throw new Error(
+      '[SECURITY ERROR] Cannot use credentials with wildcard CORS origin. ' +
+      'Specify explicit origins when credentials are enabled.'
+    )
+  }
+
   return (handler) => async (request, context) => {
+    const requestOrigin = request.headers.get('origin')
+    const allowedOrigin = getAllowedOrigin(requestOrigin, origin)
+
     // Handle preflight requests
     if (request.method === 'OPTIONS') {
+      // Reject if origin not allowed
+      if (requestOrigin && !allowedOrigin) {
+        return new NextResponse(null, { status: 403 })
+      }
+
       return new NextResponse(null, {
         status: 204,
         headers: {
-          'Access-Control-Allow-Origin': Array.isArray(origin) ? origin.join(', ') : origin,
+          'Access-Control-Allow-Origin': allowedOrigin || '*',
           'Access-Control-Allow-Methods': methods.join(', '),
           'Access-Control-Allow-Headers': allowedHeaders.join(', '),
           'Access-Control-Allow-Credentials': String(credentials),
           'Access-Control-Max-Age': '86400',
+          'Vary': 'Origin',
         },
       })
     }
 
+    // Reject actual request if origin not allowed and credentials required
+    if (credentials && requestOrigin && !allowedOrigin) {
+      return new NextResponse(
+        JSON.stringify({ error: 'CORS origin not allowed' }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+
     const response = await handler(request, context)
 
+    // Set CORS headers
+    if (allowedOrigin) {
+      response.headers.set('Access-Control-Allow-Origin', allowedOrigin)
+      response.headers.set('Vary', 'Origin')
+    } else if (origin === '*' && !credentials) {
+      response.headers.set('Access-Control-Allow-Origin', '*')
+    }
+
+    if (credentials) {
+      response.headers.set('Access-Control-Allow-Credentials', 'true')
+    }
+
+    // Expose custom headers to client
     response.headers.set(
-      'Access-Control-Allow-Origin',
-      Array.isArray(origin) ? origin.join(', ') : origin
+      'Access-Control-Expose-Headers',
+      'X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset'
     )
-    response.headers.set('Access-Control-Allow-Credentials', String(credentials))
 
     return response
   }

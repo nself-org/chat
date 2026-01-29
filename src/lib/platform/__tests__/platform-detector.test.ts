@@ -44,35 +44,41 @@ const originalWindow = global.window;
 const originalNavigator = global.navigator;
 
 function mockWindow(overrides: Partial<Window & { __TAURI__?: unknown; electron?: unknown; Capacitor?: unknown }> = {}) {
-  const mockNav = {
+  // Build base navigator with only essential properties
+  const baseNav: Record<string, any> = {
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
     platform: 'MacIntel',
     maxTouchPoints: 0,
-    share: undefined,
-    clipboard: { writeText: jest.fn(), readText: jest.fn() },
-    geolocation: { getCurrentPosition: jest.fn() },
-    mediaDevices: { getUserMedia: jest.fn() },
-    vibrate: undefined,
-    connection: undefined,
-    ...overrides.navigator,
   };
 
-  const mockWin = {
+  // Merge with provided navigator overrides, filtering out undefined values
+  const mockNav: Record<string, any> = { ...baseNav };
+  if (overrides.navigator) {
+    Object.entries(overrides.navigator).forEach(([key, value]) => {
+      if (value !== undefined) {
+        mockNav[key] = value;
+      }
+    });
+  }
+
+  // Build base window object with essential properties
+  const baseWin: Record<string, any> = {
     navigator: mockNav,
     localStorage: {
       getItem: jest.fn(),
       setItem: jest.fn(),
       removeItem: jest.fn(),
     },
-    indexedDB: {},
-    Notification: jest.fn(),
-    serviceWorker: {},
-    __TAURI__: undefined,
-    electron: undefined,
-    Capacitor: undefined,
-    showOpenFilePicker: undefined,
-    ...overrides,
-  } as unknown as Window & typeof globalThis;
+  };
+
+  // Apply overrides, filtering out undefined values to allow property removal
+  Object.entries(overrides).forEach(([key, value]) => {
+    if (key !== 'navigator' && value !== undefined) {
+      baseWin[key] = value;
+    }
+  });
+
+  const mockWin = baseWin as unknown as Window & typeof globalThis;
 
   Object.defineProperty(global, 'window', {
     value: mockWin,

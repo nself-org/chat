@@ -10,6 +10,7 @@
 // ===============================================================================
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import type { TemplateId } from '@/templates/types'
 import {
@@ -136,12 +137,12 @@ export default function DemoPage() {
                 >
                   Documentation
                 </a>
-                <a
+                <Link
                   href="/setup"
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   Get Started
-                </a>
+                </Link>
                 <a
                   href="https://nself.org"
                   target="_blank"
@@ -193,7 +194,7 @@ function GalleryView({
 
       {/* Call to Action */}
       <div className="text-center pt-8">
-        <a
+        <Link
           href="/setup"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105"
         >
@@ -201,7 +202,7 @@ function GalleryView({
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
-        </a>
+        </Link>
       </div>
     </div>
   )

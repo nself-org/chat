@@ -5,6 +5,7 @@ mod notifications;
 mod autostart;
 mod deeplink;
 mod updater;
+mod shortcuts;
 
 use tauri::Manager;
 use tauri_plugin_autostart::MacosLauncher;
@@ -52,6 +53,9 @@ pub fn run() {
             // Initialize updater
             updater::setup_updater(app)?;
 
+            // Initialize global shortcuts
+            shortcuts::setup_shortcuts(app.handle())?;
+
             // Get main window
             let main_window = app.get_webview_window("main")
                 .expect("Main window not found");
@@ -91,6 +95,9 @@ pub fn run() {
             tray::update_tray_icon,
             tray::update_tray_tooltip,
             menu::set_menu_item_enabled,
+            shortcuts::register_shortcut,
+            shortcuts::unregister_shortcut,
+            shortcuts::is_shortcut_registered,
         ])
         .on_window_event(|window, event| {
             match event {

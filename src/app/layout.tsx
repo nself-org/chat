@@ -3,6 +3,9 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { AppProviders } from '@/providers';
 
+// Initialize Sentry client-side monitoring
+import '@/sentry.client.config';
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',

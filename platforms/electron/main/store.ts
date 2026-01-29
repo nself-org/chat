@@ -25,6 +25,13 @@ export interface NotificationSettings {
   doNotDisturbEnd?: string; // HH:mm format
 }
 
+export interface GlobalShortcuts {
+  toggleWindow?: string;
+  showWindow?: string;
+  voiceCall?: string;
+  muteToggle?: string;
+}
+
 export interface AppSettings {
   // Window state
   windowState: WindowState;
@@ -44,6 +51,9 @@ export interface AppSettings {
   zoomLevel: number;
   spellcheck: boolean;
   spellcheckLanguages: string[];
+
+  // Global shortcuts
+  globalShortcuts: GlobalShortcuts;
 
   // Updates
   autoUpdate: boolean;
@@ -85,6 +95,12 @@ const defaultSettings: AppSettings = {
   zoomLevel: 1,
   spellcheck: true,
   spellcheckLanguages: ['en-US'],
+  globalShortcuts: {
+    toggleWindow: 'CommandOrControl+Shift+Space',
+    showWindow: 'CommandOrControl+Shift+N',
+    voiceCall: 'CommandOrControl+Shift+V',
+    muteToggle: 'CommandOrControl+Shift+M',
+  },
   autoUpdate: true,
   updateChannel: 'stable',
   serverUrl: 'http://localhost:3000',
@@ -144,6 +160,15 @@ class SettingsStore {
         serverUrl: { type: 'string' },
         proxyEnabled: { type: 'boolean' },
         proxyUrl: { type: 'string' },
+        globalShortcuts: {
+          type: 'object',
+          properties: {
+            toggleWindow: { type: 'string' },
+            showWindow: { type: 'string' },
+            voiceCall: { type: 'string' },
+            muteToggle: { type: 'string' },
+          },
+        },
         clearCacheOnExit: { type: 'boolean' },
         devToolsEnabled: { type: 'boolean' },
         lastUserId: { type: 'string' },

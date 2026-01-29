@@ -1,6 +1,6 @@
 {
   "name": "nchat-mobile",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "nChat React Native mobile app - White-label team communication platform",
   "private": true,
   "main": "index.js",

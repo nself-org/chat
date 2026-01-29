@@ -20,6 +20,7 @@ import createHelloBot, { manifest as helloBotManifest } from './hello-bot'
 import createPollBot, { manifest as pollBotManifest } from './poll-bot'
 import createReminderBot, { manifest as reminderBotManifest } from './reminder-bot'
 import createWelcomeBot, { manifest as welcomeBotManifest } from './welcome-bot'
+import { getRuntime } from '@/lib/bots'
 
 // Re-export bot factories and manifests
 export { createHelloBot, helloBotManifest }
@@ -81,7 +82,6 @@ export {
  * Register all example bots with the runtime
  */
 export function registerAllBots() {
-  const { getRuntime } = require('@/lib/bots')
   const runtime = getRuntime()
 
   const bots = [

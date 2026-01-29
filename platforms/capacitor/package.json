@@ -1,0 +1,56 @@
+{
+  "name": "nchat-capacitor",
+  "version": "1.0.0",
+  "description": "nChat Capacitor mobile app - iOS and Android",
+  "private": true,
+  "scripts": {
+    "dev": "npm run build:web && cap sync",
+    "build:web": "cd ../.. && npm run build && npm run export",
+    "sync": "cap sync",
+    "sync:ios": "cap sync ios",
+    "sync:android": "cap sync android",
+    "open:ios": "cap open ios",
+    "open:android": "cap open android",
+    "run:ios": "cap run ios",
+    "run:android": "cap run android",
+    "build:ios": "cap build ios",
+    "build:android": "cap build android",
+    "add:ios": "cap add ios",
+    "add:android": "cap add android",
+    "update": "cap update",
+    "copy": "cap copy",
+    "doctor": "cap doctor",
+    "clean": "rm -rf ios android",
+    "clean:ios": "rm -rf ios",
+    "clean:android": "rm -rf android",
+    "reinstall:ios": "npm run clean:ios && npm run add:ios && npm run sync:ios",
+    "reinstall:android": "npm run clean:android && npm run add:android && npm run sync:android",
+    "pod:install": "cd ios/App && pod install",
+    "pod:update": "cd ios/App && pod update"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/camera": "^6.1.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/filesystem": "^6.0.2",
+    "@capacitor/haptics": "^6.0.1",
+    "@capacitor/ios": "^6.2.0",
+    "@capacitor/keyboard": "^6.0.3",
+    "@capacitor/local-notifications": "^6.1.1",
+    "@capacitor/network": "^6.0.3",
+    "@capacitor/preferences": "^6.0.3",
+    "@capacitor/push-notifications": "^6.0.3",
+    "@capacitor/share": "^6.0.3",
+    "@capacitor/splash-screen": "^6.0.3",
+    "@capacitor/status-bar": "^6.0.2",
+    "@capacitor/toast": "^6.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.7"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

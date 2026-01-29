@@ -305,10 +305,28 @@ export async function decryptMessage(
 
   const content = await decryptWithKey(ciphertext, encryptionKey, iv, additionalData)
 
+  // Verify message signature if present
+  let verified = false
+  if (encryptedMessage.signature && options.verificationKey) {
+    try {
+      verified = await verifyMessageSignature(
+        content,
+        encryptedMessage.signature,
+        options.verificationKey
+      )
+    } catch (error) {
+      console.error('Signature verification failed:', error)
+      verified = false
+    }
+  } else {
+    // If no signature is present, consider it unverified but not failed
+    verified = !encryptedMessage.signature
+  }
+
   return {
     content,
     timestamp: encryptedMessage.timestamp,
-    verified: true, // TODO: Implement signature verification
+    verified,
   }
 }
 

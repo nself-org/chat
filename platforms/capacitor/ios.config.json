@@ -1,0 +1,60 @@
+{
+  "displayName": "nChat",
+  "bundleId": "io.nself.chat",
+  "version": "1.0.0",
+  "buildNumber": "1",
+  "deploymentTarget": "14.0",
+  "developmentTeam": "",
+  "codeSignIdentity": "iPhone Developer",
+  "infoPlist": {
+    "CFBundleDisplayName": "nChat",
+    "CFBundleName": "nChat",
+    "CFBundleShortVersionString": "1.0.0",
+    "CFBundleVersion": "1",
+    "NSCameraUsageDescription": "nChat needs camera access to take photos and videos for messaging",
+    "NSPhotoLibraryUsageDescription": "nChat needs photo library access to share photos and videos",
+    "NSPhotoLibraryAddUsageDescription": "nChat needs permission to save photos and videos to your library",
+    "NSMicrophoneUsageDescription": "nChat needs microphone access for voice messages and calls",
+    "NSFaceIDUsageDescription": "nChat uses Face ID for secure authentication",
+    "NSLocationWhenInUseUsageDescription": "nChat needs location access to share your location",
+    "NSContactsUsageDescription": "nChat needs contacts access to help you find friends",
+    "NSCalendarsUsageDescription": "nChat needs calendar access to schedule meetings",
+    "UIBackgroundModes": ["audio", "voip", "remote-notification", "fetch"],
+    "UILaunchStoryboardName": "LaunchScreen",
+    "UIRequiredDeviceCapabilities": ["armv7"],
+    "UISupportedInterfaceOrientations": [
+      "UIInterfaceOrientationPortrait",
+      "UIInterfaceOrientationLandscapeLeft",
+      "UIInterfaceOrientationLandscapeRight"
+    ],
+    "UISupportedInterfaceOrientations~ipad": [
+      "UIInterfaceOrientationPortrait",
+      "UIInterfaceOrientationPortraitUpsideDown",
+      "UIInterfaceOrientationLandscapeLeft",
+      "UIInterfaceOrientationLandscapeRight"
+    ],
+    "CFBundleURLTypes": [
+      {
+        "CFBundleURLName": "io.nself.chat",
+        "CFBundleURLSchemes": ["nchat"]
+      }
+    ],
+    "LSApplicationQueriesSchemes": ["http", "https"],
+    "NSAppTransportSecurity": {
+      "NSAllowsArbitraryLoads": false,
+      "NSExceptionDomains": {
+        "localhost": {
+          "NSExceptionAllowsInsecureHTTPLoads": true
+        }
+      }
+    }
+  },
+  "entitlements": {
+    "com.apple.developer.associated-domains": [
+      "applinks:nchat.nself.org",
+      "webcredentials:nchat.nself.org"
+    ],
+    "aps-environment": "development",
+    "com.apple.security.application-groups": ["group.io.nself.chat"]
+  }
+}

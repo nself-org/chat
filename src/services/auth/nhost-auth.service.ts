@@ -135,6 +135,72 @@ export class NhostAuthService implements AuthService {
     }
   }
 
+  async updateProfile(data: Partial<AuthResponse['user']>): Promise<AuthResponse> {
+    try {
+      const session = nhost.auth.getSession()
+      if (!session || !session.user) {
+        throw new Error('Not authenticated')
+      }
+
+      const userId = session.user.id
+
+      // Update nchat_users table
+      const mutation = `
+        mutation UpdateUserProfile(
+          $userId: uuid!,
+          $username: String,
+          $displayName: String,
+          $avatarUrl: String
+        ) {
+          update_nchat_users(
+            where: {auth_user_id: {_eq: $userId}},
+            _set: {
+              username: $username,
+              display_name: $displayName,
+              avatar_url: $avatarUrl
+            }
+          ) {
+            affected_rows
+            returning {
+              username
+              display_name
+              avatar_url
+              role
+            }
+          }
+        }
+      `
+
+      const variables: Record<string, unknown> = { userId }
+      if (data.username) variables.username = data.username
+      if (data.displayName) variables.displayName = data.displayName
+      if (data.avatarUrl !== undefined) variables.avatarUrl = data.avatarUrl
+
+      const { data: mutationData, error } = await nhost.graphql.request(mutation, variables)
+
+      if (error) {
+        throw new Error(error.message || 'Failed to update profile')
+      }
+
+      const updatedUser = mutationData?.update_nchat_users?.returning?.[0]
+
+      return {
+        user: {
+          id: userId,
+          email: session.user.email!,
+          username: updatedUser?.username || data.username || session.user.email!.split('@')[0],
+          displayName: updatedUser?.display_name || data.displayName || session.user.displayName!,
+          avatarUrl: updatedUser?.avatar_url || data.avatarUrl,
+          role: updatedUser?.role || 'member',
+        },
+        token: session.accessToken,
+      }
+    } catch (error) {
+      console.error('NhostAuthService updateProfile error:', error)
+      throw error
+    }
+  }
+
   private async getUserWithRole(userId: string) {
     const query = `
       query GetUserWithRole($userId: uuid!) {

@@ -2,17 +2,20 @@
 
 **Real-time team communication platform - part of the ɳSelf ecosystem**
 
-Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat`
+Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `1.0.0`
 
 [![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
 [![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/acamarata/nself-chat/releases)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
+[![Tests](https://img.shields.io/badge/Tests-860%2B-success.svg)](https://github.com/acamarata/nself-chat)
+[![Accessibility](https://img.shields.io/badge/A11y-WCAG%20AA-blue.svg)](https://www.w3.org/WAI/WCAG2AA-Conformance)
 
-> **Note**: ɳChat is a demo project showcasing the [ɳSelf CLI](https://github.com/acamarata/nself) backend infrastructure. While fully functional for development and testing, production use should follow the deployment guidelines below.
+> **Production Ready**: ɳChat v1.0.0 is production-ready with 100+ features, 860+ tests, and WCAG AA accessibility compliance. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
 
 ---
 
@@ -81,7 +84,22 @@ pnpm dev
 3. **Customization** - Brand, theme, features, and auth in a few clicks
 4. **Deployment** - Get commands for Vercel, Docker, desktop apps, and mobile
 
-Development mode includes test users so you can immediately experience all features.
+Development mode includes 8 test users so you can immediately experience all features.
+
+### Screenshots
+
+Key screens to capture for documentation:
+
+1. **Setup Wizard** - Environment detection and backend setup flow
+2. **Chat Interface** - Main messaging view with channels sidebar
+3. **Rich Message Editor** - TipTap editor with formatting, mentions, emoji
+4. **Thread View** - Threaded conversations panel
+5. **Search Interface** - Command palette (Cmd+K) with filters
+6. **Admin Dashboard** - Analytics, user management, settings
+7. **Theme Customization** - Live theme preview with 27 presets
+8. **Mobile View** - Responsive mobile interface
+9. **Voice/Video Call** - WebRTC call interface
+10. **Bot Marketplace** - Bot SDK showcase with example bots
 
 ### Development Test Users
 
@@ -199,9 +217,21 @@ Each preset includes both light and dark mode variants with carefully tuned colo
 
 ## Production Deployment
 
-### With ɳSelf Backend (Recommended)
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for comprehensive deployment guide covering all platforms.
 
-The complete backend stack powered by **ɳSelf** in minutes:
+### Quick Deploy to Vercel (1 minute)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/acamarata/nself-chat)
+
+```bash
+# Or via CLI
+npm install -g vercel
+vercel
+```
+
+### Deploy with ɳSelf Backend (5 minutes)
+
+The complete backend stack powered by **ɳSelf**:
 
 ```bash
 # 1. Install ɳSelf CLI
@@ -214,18 +244,19 @@ nself build && nself start
 cd ..
 
 # 3. Configure frontend
-cp .env.example .env.local
-# Edit .env.local - set NEXT_PUBLIC_USE_DEV_AUTH=false
+cp .env.example .env.production
+# Edit .env.production with your settings
 
-# 4. Build and start production
+# 4. Build and start
 pnpm build && pnpm start
 ```
 
-Your **ɳSelf** backend services will be available at:
-- GraphQL API: https://api.local.nself.org
-- Auth Service: https://auth.local.nself.org
-- Storage: https://storage.local.nself.org
-- Email (dev): https://mail.local.nself.org
+Your **ɳSelf** backend services:
+- GraphQL API: `https://api.local.nself.org`
+- Auth Service: `https://auth.local.nself.org`
+- Storage: `https://storage.local.nself.org`
+- Email (dev): `https://mail.local.nself.org`
+- Admin UI: `https://admin.local.nself.org`
 
 ### With Docker
 
@@ -625,6 +656,11 @@ Full documentation available in the [docs/](docs/) folder:
 - [Features - Messaging](docs/Features-Messaging.md) - Messaging details
 - [Authentication](docs/Authentication.md) - Auth providers setup
 
+### API
+- [API Documentation](docs/API.md) - Complete API reference
+- [Interactive API Docs](/api-docs) - Swagger UI (when running)
+- [OpenAPI Specification](/openapi.yaml) - OpenAPI 3.0 spec
+
 ### Deployment
 - [Docker](docs/Deployment-Docker.md) - Docker deployment
 - [Kubernetes](docs/Deployment-Kubernetes.md) - K8s deployment
@@ -646,24 +682,77 @@ Full documentation available in the [docs/](docs/) folder:
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Framework** | Next.js 15, React 19 |
-| **Language** | TypeScript 5.7 |
-| **Styling** | Tailwind CSS 3.4, CSS Variables |
-| **Components** | Radix UI, Lucide Icons |
-| **State** | Zustand 5, React Context |
-| **Data Fetching** | Apollo Client, GraphQL, SWR |
-| **Real-time** | Socket.io, GraphQL Subscriptions |
-| **Forms** | React Hook Form, Zod |
-| **Editor** | TipTap (rich text) |
-| **Animation** | Framer Motion |
-| **Charts** | Recharts |
-| **Testing** | Jest, Playwright, Testing Library |
-| **Backend** | ɳSelf (Hasura, PostgreSQL, Nhost Auth, MinIO) |
-| **Desktop** | Tauri, Electron |
-| **Mobile** | Capacitor, React Native |
-| **Monitoring** | Sentry |
+### Frontend
+
+| Layer | Technology | Version |
+|-------|------------|---------|
+| **Framework** | Next.js | 15.1.6 |
+| **UI Library** | React | 19.0.0 |
+| **Language** | TypeScript | 5.7.3 |
+| **Styling** | Tailwind CSS | 3.4.17 |
+| **Components** | Radix UI | Latest |
+| **Icons** | Lucide React | 0.469.0 |
+| **State Management** | Zustand | 5.0.3 |
+| **Data Fetching** | Apollo Client | 3.12.8 |
+| **Real-time** | Socket.io Client | 4.8.1 |
+| **Forms** | React Hook Form | 7.54.2 |
+| **Validation** | Zod | 3.24.1 |
+| **Rich Text** | TipTap | 2.11.2 |
+| **Animation** | Framer Motion | 11.18.0 |
+| **Charts** | Recharts | 2.15.0 |
+
+### Backend (via ɳSelf)
+
+| Service | Technology | Purpose |
+|---------|------------|---------|
+| **GraphQL Engine** | Hasura | Auto-generated GraphQL API |
+| **Database** | PostgreSQL 15 | Primary data store |
+| **Authentication** | Nhost Auth | User auth with JWT |
+| **Storage** | MinIO | S3-compatible file storage |
+| **Search** | MeiliSearch | Full-text search (optional) |
+| **Cache** | Redis | Session cache (optional) |
+| **Email** | SMTP / MailPit | Transactional emails |
+
+### Real-Time & Communication
+
+| Feature | Technology |
+|---------|------------|
+| **WebSocket** | Socket.io |
+| **GraphQL Subscriptions** | graphql-ws |
+| **Voice/Video** | WebRTC |
+| **TURN Server** | Coturn (optional) |
+
+### Testing & Quality
+
+| Type | Tool | Tests |
+|------|------|-------|
+| **E2E Testing** | Playwright | 479 tests |
+| **Integration** | Jest | 381 tests |
+| **Component** | Testing Library | Comprehensive |
+| **Performance** | Lighthouse CI | Automated |
+| **Accessibility** | axe-core | WCAG AA |
+
+### DevOps & Monitoring
+
+| Category | Tool |
+|----------|------|
+| **CI/CD** | GitHub Actions |
+| **Containerization** | Docker |
+| **Orchestration** | Kubernetes + Helm |
+| **Error Tracking** | Sentry |
+| **Analytics** | Custom + GA4 (optional) |
+| **Logging** | Structured logging |
+
+### Multi-Platform
+
+| Platform | Framework | Build |
+|----------|-----------|-------|
+| **Web** | Next.js 15 | Production-ready |
+| **Desktop (Native)** | Tauri | Rust + WebView |
+| **Desktop (Cross-platform)** | Electron | Chromium + Node.js |
+| **Mobile (iOS/Android)** | Capacitor | Native containers |
+| **Mobile (React Native)** | React Native | Full native |
+| **PWA** | Next.js + SW | Installable web |
 
 ---
 

@@ -26,4 +26,5 @@ export interface AuthService {
   signOut(): Promise<void>
   getCurrentUser(): Promise<AuthUser | null>
   refreshToken(): Promise<string | null>
+  updateProfile(data: Partial<AuthUser>): Promise<AuthResponse>
 }

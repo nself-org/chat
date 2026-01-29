@@ -133,7 +133,7 @@ export function getAutoLaunchInfo(): AutoLaunchSettings {
   return {
     openAtLogin: loginSettings.openAtLogin,
     openAsHidden: loginSettings.openAsHidden ?? false,
-    path: loginSettings.executableWillLaunchAtLogin ?? process.execPath,
-    args: loginSettings.args ?? [],
+    path: loginSettings.executableWillLaunchAtLogin ? String(loginSettings.executableWillLaunchAtLogin) : process.execPath,
+    args: [],
   };
 }

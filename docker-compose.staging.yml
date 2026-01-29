@@ -1,0 +1,270 @@
+# ============================================================================
+# nself-chat Docker Compose - Staging Environment
+# ============================================================================
+# Staging environment with production-like setup but additional debugging
+#
+# Usage:
+#   docker compose -f docker-compose.staging.yml up -d
+#   docker compose -f docker-compose.staging.yml logs -f
+#   docker compose -f docker-compose.staging.yml down
+# ============================================================================
+
+name: nself-chat-staging
+
+services:
+  # --------------------------------------------------------------------------
+  # nself-chat Application (Staging)
+  # --------------------------------------------------------------------------
+  nchat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_GRAPHQL_URL: ${NEXT_PUBLIC_GRAPHQL_URL}
+        NEXT_PUBLIC_AUTH_URL: ${NEXT_PUBLIC_AUTH_URL}
+        NEXT_PUBLIC_STORAGE_URL: ${NEXT_PUBLIC_STORAGE_URL}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-nchat}
+        NEXT_PUBLIC_ENV: staging
+    image: nself-chat:staging
+    container_name: nchat-staging
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_ENV=staging
+      - NEXT_PUBLIC_USE_DEV_AUTH=false
+      - NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME:-nchat}
+      - NEXT_PUBLIC_GRAPHQL_URL=http://hasura:8080/v1/graphql
+      - NEXT_PUBLIC_AUTH_URL=http://auth:4000
+      - NEXT_PUBLIC_STORAGE_URL=http://storage:9000
+      - HASURA_ADMIN_SECRET=${HASURA_ADMIN_SECRET}
+    env_file:
+      - ./docker/.env.staging
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nchat-network
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nchat-staging.rule=Host(`staging.nchat.local`)"
+      - "traefik.http.services.nchat-staging.loadbalancer.server.port=3000"
+
+  # --------------------------------------------------------------------------
+  # PostgreSQL Database (with persistence)
+  # --------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: nchat-postgres-staging
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-nchat_staging}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./docker/postgres-backup:/backup
+    networks:
+      - nchat-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-nchat_staging}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c max_connections=200
+      -c log_statement=all
+      -c log_duration=on
+
+  # --------------------------------------------------------------------------
+  # Hasura GraphQL Engine
+  # --------------------------------------------------------------------------
+  hasura:
+    image: hasura/graphql-engine:v2.40.0
+    container_name: nchat-hasura-staging
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat_staging}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "false"
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
+      HASURA_GRAPHQL_CORS_DOMAIN: "*"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_LOG_LEVEL: info
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_REDIS_URL: redis://redis:6379
+      HASURA_GRAPHQL_RATE_LIMIT_REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nchat-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # --------------------------------------------------------------------------
+  # Nhost Auth Service
+  # --------------------------------------------------------------------------
+  auth:
+    image: nhost/hasura-auth:0.24.1
+    container_name: nchat-auth-staging
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      AUTH_HOST: 0.0.0.0
+      AUTH_PORT: 4000
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat_staging}
+      HASURA_GRAPHQL_GRAPHQL_URL: http://hasura:8080/v1/graphql
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256","key":"${JWT_SECRET}"}'
+      AUTH_CLIENT_URL: ${AUTH_CLIENT_URL:-http://localhost:3000}
+      AUTH_SERVER_URL: ${AUTH_SERVER_URL:-http://localhost:4000}
+      AUTH_SMTP_HOST: ${SMTP_HOST:-mailpit}
+      AUTH_SMTP_PORT: ${SMTP_PORT:-1025}
+      AUTH_SMTP_SECURE: ${SMTP_SECURE:-false}
+      AUTH_SMTP_USER: ${SMTP_USER:-}
+      AUTH_SMTP_PASS: ${SMTP_PASS:-}
+      AUTH_SMTP_SENDER: ${SMTP_SENDER:-noreply@nchat.staging}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
+    networks:
+      - nchat-network
+
+  # --------------------------------------------------------------------------
+  # MinIO Storage (S3-compatible)
+  # --------------------------------------------------------------------------
+  storage:
+    image: minio/minio:latest
+    container_name: nchat-storage-staging
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - nchat-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # --------------------------------------------------------------------------
+  # Redis Cache
+  # --------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: nchat-redis-staging
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+    networks:
+      - nchat-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # Mailpit (Email Testing)
+  # --------------------------------------------------------------------------
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: nchat-mailpit-staging
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    networks:
+      - nchat-network
+
+  # --------------------------------------------------------------------------
+  # Nginx Reverse Proxy
+  # --------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: nchat-nginx-staging
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/staging.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - nchat
+      - hasura
+    networks:
+      - nchat-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  nchat-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  postgres-data:
+    driver: local
+  minio-data:
+    driver: local
+  redis-data:
+    driver: local

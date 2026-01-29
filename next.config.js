@@ -13,7 +13,7 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // Temporarily ignore ESLint warnings in template code for build
   },
   experimental: {
     optimizePackageImports: [
@@ -27,6 +27,8 @@ const nextConfig = {
       'date-fns',
       'recharts',
     ],
+    // Enable instrumentation for Sentry
+    instrumentationHook: true,
   },
   images: {
     formats: ['image/avif', 'image/webp'],

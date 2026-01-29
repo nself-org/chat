@@ -5,7 +5,7 @@
  * Provides quick access to common actions and unread count badge.
  */
 
-import { Tray, Menu, app, nativeImage, nativeTheme } from 'electron';
+import { Tray, Menu, app, nativeImage, type NativeImage } from 'electron';
 import path from 'path';
 import log from 'electron-log';
 import { showMainWindow, toggleMainWindow, getMainWindow } from './window';
@@ -19,7 +19,7 @@ function getIconPath(): string {
   return path.join(__dirname, '..', 'resources', iconName);
 }
 
-function getIconWithBadge(count: number): nativeImage {
+function getIconWithBadge(_count: number): NativeImage {
   const iconPath = getIconPath();
   let icon = nativeImage.createFromPath(iconPath);
 

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { authConfig } from '@/config/auth.config'
 import { FauxAuthService } from '@/services/auth/faux-auth.service'
 import { NhostAuthService } from '@/services/auth/nhost-auth.service'
+import { setSentryUser, clearSentryUser, captureError } from '@/lib/sentry-utils'
 
 interface User {
   id: string
@@ -46,9 +47,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const currentUser = await authService.getCurrentUser()
         if (currentUser) {
           setUser(currentUser)
+          // Set user context in Sentry for error tracking
+          setSentryUser({
+            id: currentUser.id,
+            email: currentUser.email,
+            username: currentUser.username,
+            role: currentUser.role,
+          })
         }
       } catch (error) {
         console.error('Auth check failed:', error)
+        captureError(error as Error, {
+          tags: { context: 'auth-check' },
+          level: 'warning',
+        })
       } finally {
         setLoading(false)
       }
@@ -63,9 +75,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await authService.signIn(email, password)
       console.log('AuthContext: Setting user with role:', response.user.role)
       setUser(response.user)
+      // Set user context in Sentry
+      setSentryUser({
+        id: response.user.id,
+        email: response.user.email,
+        username: response.user.username,
+        role: response.user.role,
+      })
       router.push('/chat')
     } catch (error) {
       console.error('Sign in error:', error)
+      captureError(error as Error, {
+        tags: { context: 'sign-in' },
+        extra: { email },
+        level: 'error',
+      })
       throw error
     } finally {
       setLoading(false)
@@ -96,22 +120,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authService.signOut()
       setUser(null)
+      // Clear user context in Sentry
+      clearSentryUser()
       router.push('/')
     } catch (error) {
       console.error('Sign out error:', error)
+      captureError(error as Error, {
+        tags: { context: 'sign-out' },
+        level: 'warning',
+      })
       throw error
     }
   }
 
   const updateProfile = async (data: Partial<User>) => {
     try {
-      // TODO: Implement profile update for real auth
       if (authConfig.useDevAuth) {
         // In dev mode, just update the user locally
         setUser(prev => prev ? { ...prev, ...data } : null)
       } else {
-        // Real auth profile update would go here
-        throw new Error('Profile update not yet implemented for production')
+        // Production profile update via Nhost
+        const response = await authService.updateProfile(data)
+        if (response.user) {
+          setUser(response.user)
+        }
       }
     } catch (error) {
       console.error('Profile update error:', error)

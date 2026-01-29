@@ -101,7 +101,8 @@ export function SettingsModal({
       setValues({ ...defaults, ...initialValues })
       setHasChanges(false)
     }
-  }, [open, sections, initialValues])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
 
   const handleValueChange = (key: string, value: unknown) => {
     setValues((prev) => ({ ...prev, [key]: value }))

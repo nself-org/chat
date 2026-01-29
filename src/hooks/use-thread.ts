@@ -16,6 +16,7 @@ import {
   THREAD_MESSAGES_SUBSCRIPTION,
   THREAD_PARTICIPANTS_SUBSCRIPTION,
 } from '@/graphql/threads'
+import { MESSAGE_FULL_FRAGMENT } from '@/graphql/fragments'
 
 // ============================================================================
 // TYPES
@@ -330,7 +331,7 @@ export function useThread({
 
                   const newRef = cache.writeFragment({
                     data: newMessage,
-                    fragment: require('@/graphql/fragments').MESSAGE_FULL_FRAGMENT,
+                    fragment: MESSAGE_FULL_FRAGMENT,
                     fragmentName: 'MessageFull',
                   })
 

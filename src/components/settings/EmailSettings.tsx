@@ -31,9 +31,6 @@ export function EmailSettings({ className }: EmailSettingsProps) {
     setSuccess(false);
 
     try {
-      // TODO: Implement actual email change API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       // Validate email format
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         throw new Error('Please enter a valid email address');
@@ -44,9 +41,34 @@ export function EmailSettings({ className }: EmailSettingsProps) {
         throw new Error('Please enter your current password');
       }
 
-      setSuccess(true);
-      setCurrentPassword('');
-      setTimeout(() => setSuccess(false), 5000);
+      // In development mode, just update locally
+      if (process.env.NEXT_PUBLIC_USE_DEV_AUTH === 'true') {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setSuccess(true);
+        setCurrentPassword('');
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        // Production: Use Nhost to update email
+        const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/user/email/change`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            newEmail: email,
+          }),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to update email');
+        }
+
+        setSuccess(true);
+        setCurrentPassword('');
+        setTimeout(() => setSuccess(false), 5000);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update email');
     } finally {

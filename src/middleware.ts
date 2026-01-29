@@ -179,6 +179,68 @@ function isAdminRole(role: string): boolean {
 }
 
 /**
+ * Generate a random nonce for CSP
+ */
+function generateNonce(): string {
+  const array = new Uint8Array(16)
+  crypto.getRandomValues(array)
+  return Buffer.from(array).toString('base64')
+}
+
+/**
+ * Get Content Security Policy header value
+ */
+function getCSP(nonce: string, isDev: boolean): string {
+  const cspDirectives = [
+    `default-src 'self'`,
+    `script-src 'self' ${isDev ? "'unsafe-eval'" : ''} 'nonce-${nonce}' 'strict-dynamic'`,
+    `style-src 'self' 'unsafe-inline'`, // Tailwind requires unsafe-inline
+    `img-src 'self' data: blob: https:`,
+    `font-src 'self' data:`,
+    `connect-src 'self' ${isDev ? 'ws: wss:' : 'wss:'} ${process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost'} ${process.env.NEXT_PUBLIC_AUTH_URL || 'http://auth.localhost'}`,
+    `media-src 'self' blob:`,
+    `object-src 'none'`,
+    `base-uri 'self'`,
+    `form-action 'self'`,
+    `frame-ancestors 'none'`,
+    `upgrade-insecure-requests`,
+    isDev ? '' : `report-uri /api/csp-report`,
+  ]
+
+  return cspDirectives.filter(Boolean).join('; ')
+}
+
+/**
+ * Add security headers to response
+ */
+function addSecurityHeaders(response: NextResponse, isDev: boolean): NextResponse {
+  const nonce = generateNonce()
+
+  // Content Security Policy
+  response.headers.set('Content-Security-Policy', getCSP(nonce, isDev))
+
+  // Additional security headers
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('X-DNS-Prefetch-Control', 'on')
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+
+  // Strict-Transport-Security (only in production with HTTPS)
+  if (!isDev) {
+    response.headers.set(
+      'Strict-Transport-Security',
+      'max-age=63072000; includeSubDomains; preload'
+    )
+  }
+
+  // Store nonce in header for use by scripts
+  response.headers.set('X-Nonce', nonce)
+
+  return response
+}
+
+/**
  * Main middleware function
  */
 export function middleware(request: NextRequest) {
@@ -204,7 +266,8 @@ export function middleware(request: NextRequest) {
   if (isDev && useDevAuth) {
     // In dev mode, let client-side guards handle everything
     // This allows the auto-login feature to work properly
-    return NextResponse.next()
+    const response = NextResponse.next()
+    return addSecurityHeaders(response, isDev)
   }
 
   // Get session
@@ -217,9 +280,11 @@ export function middleware(request: NextRequest) {
     // If authenticated and trying to access login/signup, redirect to chat
     if (isAuthenticated && (pathname === '/login' || pathname === '/signup' ||
         pathname === '/auth/signin' || pathname === '/auth/signup')) {
-      return NextResponse.redirect(new URL('/chat', request.url))
+      const response = NextResponse.redirect(new URL('/chat', request.url))
+      return addSecurityHeaders(response, isDev)
     }
-    return NextResponse.next()
+    const response = NextResponse.next()
+    return addSecurityHeaders(response, isDev)
   }
 
   // Handle protected routes
@@ -228,7 +293,8 @@ export function middleware(request: NextRequest) {
     if (!isAuthenticated) {
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('returnTo', pathname)
-      return NextResponse.redirect(loginUrl)
+      const response = NextResponse.redirect(loginUrl)
+      return addSecurityHeaders(response, isDev)
     }
 
     // Check admin routes
@@ -237,16 +303,19 @@ export function middleware(request: NextRequest) {
         // Not authorized for admin routes - redirect to chat with error
         const chatUrl = new URL('/chat', request.url)
         chatUrl.searchParams.set('error', 'unauthorized')
-        return NextResponse.redirect(chatUrl)
+        const response = NextResponse.redirect(chatUrl)
+        return addSecurityHeaders(response, isDev)
       }
     }
 
     // User is authenticated and authorized
-    return NextResponse.next()
+    const response = NextResponse.next()
+    return addSecurityHeaders(response, isDev)
   }
 
   // For all other routes, proceed
-  return NextResponse.next()
+  const response = NextResponse.next()
+  return addSecurityHeaders(response, isDev)
 }
 
 /**

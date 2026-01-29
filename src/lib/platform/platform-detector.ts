@@ -494,12 +494,13 @@ function parseAndroidVersion(userAgent: string): string | null {
  * Parse browser name and version
  */
 function parseBrowserInfo(userAgent: string): { name: string; version: string } | null {
+  // Check most specific browsers first (Edge and Opera include Chrome in UA)
   const browsers = [
+    { name: 'Edge', regex: /Edg\/(\d+(?:\.\d+)*)/ },
+    { name: 'Opera', regex: /OPR\/(\d+(?:\.\d+)*)/ },
     { name: 'Chrome', regex: /Chrome\/(\d+(?:\.\d+)*)/ },
     { name: 'Firefox', regex: /Firefox\/(\d+(?:\.\d+)*)/ },
     { name: 'Safari', regex: /Version\/(\d+(?:\.\d+)*).*Safari/ },
-    { name: 'Edge', regex: /Edg\/(\d+(?:\.\d+)*)/ },
-    { name: 'Opera', regex: /OPR\/(\d+(?:\.\d+)*)/ },
   ];
 
   for (const browser of browsers) {
@@ -516,10 +517,10 @@ function parseBrowserInfo(userAgent: string): { name: string; version: string } 
  * Parse device model from user agent
  */
 function parseDeviceModel(userAgent: string): string | null {
-  // iOS device detection
-  if (/iPhone/.test(userAgent)) return 'iPhone';
-  if (/iPad/.test(userAgent)) return 'iPad';
+  // iOS device detection (check iPod before iPhone as iPod UA contains "iPhone OS")
   if (/iPod/.test(userAgent)) return 'iPod';
+  if (/iPad/.test(userAgent)) return 'iPad';
+  if (/iPhone/.test(userAgent)) return 'iPhone';
 
   // Android device model (simplified)
   const androidMatch = userAgent.match(/;\s*([^;)]+(?:\s+Build|\)))/);

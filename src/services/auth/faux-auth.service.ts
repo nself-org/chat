@@ -102,6 +102,26 @@ export class FauxAuthService {
     return this.isAuthenticated
   }
 
+  async updateProfile(data: Partial<any>): Promise<AuthResponse> {
+    if (!this.currentUser) {
+      throw new Error('Not authenticated')
+    }
+
+    // Update current user with new data
+    this.currentUser = {
+      ...this.currentUser,
+      ...data,
+    }
+
+    this.persistSession()
+
+    return {
+      user: this.currentUser,
+      accessToken: `dev-token-${Date.now()}`,
+      refreshToken: `dev-refresh-${Date.now()}`,
+    }
+  }
+
   // Quick user switching for dev mode
   async switchUser(userId: string): Promise<AuthResponse | null> {
     const user = authConfig.devAuth.availableUsers.find(u => u.id === userId)

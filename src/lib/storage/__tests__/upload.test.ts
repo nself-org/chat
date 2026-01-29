@@ -220,10 +220,10 @@ describe('getFileExtension', () => {
     expect(getFileExtension('archive.tar.gz')).toBe('gz');
   });
 
-  it('should return filename for files without extension', () => {
-    // When there's no dot, split('.').pop() returns the whole filename
-    expect(getFileExtension('README')).toBe('readme');
-    expect(getFileExtension('Makefile')).toBe('makefile');
+  it('should return empty string for files without extension', () => {
+    // Files without a dot should return empty string
+    expect(getFileExtension('README')).toBe('');
+    expect(getFileExtension('Makefile')).toBe('');
   });
 });
 
@@ -247,9 +247,9 @@ describe('generateUniqueFileName', () => {
     const name = generateUniqueFileName('README');
 
     expect(name).toContain('README-');
-    // Since getFileExtension returns the filename when there's no dot,
-    // the implementation appends it as an extension
-    expect(name).toMatch(/\.readme$/);
+    // Since getFileExtension returns empty string when there's no dot,
+    // the file won't have an extension
+    expect(name).not.toContain('.');
   });
 });
 

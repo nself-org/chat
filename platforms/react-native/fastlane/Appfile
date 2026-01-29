@@ -1,0 +1,15 @@
+# Appfile for nChat
+
+# iOS Configuration
+app_identifier("org.nself.nchat") # The bundle identifier of your app
+apple_id(ENV["APPLE_ID"]) # Your Apple email address
+
+itc_team_id(ENV["ITC_TEAM_ID"]) # App Store Connect Team ID
+team_id(ENV["TEAM_ID"]) # Developer Portal Team ID
+
+# Android Configuration (optional, for Google Play)
+json_key_file(ENV["PLAY_STORE_JSON_KEY"]) # Path to the json secret file
+package_name("org.nself.nchat") # Package name
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

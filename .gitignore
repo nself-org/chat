@@ -142,6 +142,11 @@ platforms/tauri/target/
 platforms/electron/dist/
 platforms/electron/out/
 platforms/electron/release/
+platforms/electron/main/**/*.js
+platforms/electron/main/**/*.js.map
+platforms/electron/preload/**/*.js
+platforms/electron/preload/**/*.js.map
+!platforms/electron/**/*.config.js
 
 # React Native
 platforms/react-native/android/app/build/
@@ -195,7 +200,7 @@ next-env.d.ts
 *.backup
 *.bak
 *.orig
-# AI assistant directories
+# AI assistant directories (allow .claude/ for project docs)
 .ai-assistant/
 .*aude/
 .claude/

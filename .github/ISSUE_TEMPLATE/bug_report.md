@@ -35,7 +35,7 @@ assignees: ''
 - **OS**: [e.g., macOS 14.2, Windows 11, Ubuntu 22.04]
 - **Node.js version**: [e.g., 20.10.0]
 - **pnpm version**: [e.g., 9.15.4]
-- **nself-chat version**: [e.g., 0.2.0]
+- **nself-chat version**: [e.g., 1.0.0]
 
 ## Console Errors
 
