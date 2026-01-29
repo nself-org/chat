@@ -1,8 +1,10 @@
 name: CD
 
 on:
-  push:
-    branches: [main]
+  # Only run CD on workflow_dispatch for now
+  # Enable push trigger once Vercel tokens are configured
+  # push:
+  #   branches: [main]
   workflow_dispatch:
     inputs:
       environment:
