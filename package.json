@@ -1,7 +1,7 @@
 {
   "name": "nself-chat",
-  "version": "0.2.0",
-  "description": "White-label team communication platform - Slack/Discord/Telegram clone powered by nself CLI",
+  "version": "0.3.0",
+  "description": "ɳChat - White-label team communication platform powered by ɳSelf",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "engines": {

@@ -1,4 +1,8 @@
-# nself-chat (nchat) - White-Label Team Communication Platform
+# ɳChat
+
+**Real-time team communication platform - part of the ɳSelf ecosystem**
+
+Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat`
 
 [![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
 [![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
@@ -8,19 +12,19 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
 
-> **Note**: nself-chat is a demo project showcasing the [nself CLI](https://github.com/acamarata/nself) backend infrastructure. While fully functional for development and testing, production use should follow the deployment guidelines below.
+> **Note**: ɳChat is a demo project showcasing the [ɳSelf CLI](https://github.com/acamarata/nself) backend infrastructure. While fully functional for development and testing, production use should follow the deployment guidelines below.
 
 ---
 
-Build your own Slack, Discord, or Telegram clone in minutes. A complete, production-ready team communication platform that you can fully customize and deploy as your own product - with **zero code required** via our comprehensive setup wizard.
+Build your own Slack, Discord, or Telegram clone with **ɳChat** - a complete, production-ready team communication platform powered by **ɳSelf**. Fully customizable with **zero code required** via our comprehensive setup wizard.
 
 **3 Commands. That's It.** Clone, install, run - the wizard handles everything else: backend setup, configuration, branding, and deployment.
 
-Powered by [nself CLI](https://nself.org) for backend infrastructure (PostgreSQL, Hasura GraphQL, Auth, Storage).
+Powered by [ɳSelf](https://nself.org) for backend infrastructure (PostgreSQL, Hasura GraphQL, Auth, Storage).
 
 ---
 
-## Why nself-chat?
+## Why ɳChat?
 
 ### Lightning Fast Setup
 - **Under 5 minutes** from zero to running chat application
@@ -195,12 +199,12 @@ Each preset includes both light and dark mode variants with carefully tuned colo
 
 ## Production Deployment
 
-### With nself CLI Backend (Recommended)
+### With ɳSelf Backend (Recommended)
 
-The complete backend stack in minutes:
+The complete backend stack powered by **ɳSelf** in minutes:
 
 ```bash
-# 1. Install nself CLI
+# 1. Install ɳSelf CLI
 curl -sSL https://install.nself.org | bash
 
 # 2. Initialize backend
@@ -217,7 +221,7 @@ cp .env.example .env.local
 pnpm build && pnpm start
 ```
 
-Your backend services will be available at:
+Your **ɳSelf** backend services will be available at:
 - GraphQL API: https://api.local.nself.org
 - Auth Service: https://auth.local.nself.org
 - Storage: https://storage.local.nself.org
@@ -432,13 +436,13 @@ pnpm format                 # Prettier format
 pnpm format:check           # Check formatting
 ```
 
-### Backend (nself CLI)
+### Backend (ɳSelf)
 
 ```bash
-pnpm backend:start          # Start backend services
-pnpm backend:stop           # Stop backend services
-pnpm backend:status         # Check service status
-pnpm backend:logs           # View backend logs
+pnpm backend:start          # Start ɳSelf backend services
+pnpm backend:stop           # Stop ɳSelf backend services
+pnpm backend:status         # Check ɳSelf service status
+pnpm backend:logs           # View ɳSelf backend logs
 ```
 
 ### Database
@@ -656,16 +660,16 @@ Full documentation available in the [docs/](docs/) folder:
 | **Animation** | Framer Motion |
 | **Charts** | Recharts |
 | **Testing** | Jest, Playwright, Testing Library |
-| **Backend** | nself CLI (Hasura, PostgreSQL, Nhost Auth, MinIO) |
+| **Backend** | ɳSelf (Hasura, PostgreSQL, Nhost Auth, MinIO) |
 | **Desktop** | Tauri, Electron |
 | **Mobile** | Capacitor, React Native |
 | **Monitoring** | Sentry |
 
 ---
 
-## nself-plugins (Future Extensibility)
+## ɳPlugins (Future Extensibility)
 
-Many features can be extracted as **nself-plugins** for modular deployment:
+Many features can be extracted as **ɳPlugins** for modular deployment:
 
 | Plugin | Description | Status |
 |--------|-------------|--------|
@@ -704,12 +708,25 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
+## Part of ɳSelf
+
+**ɳChat** is part of the **ɳSelf** platform - the open-source Firebase alternative:
+
+- [ɳSelf Core](https://github.com/nselforg/nself) - BaaS platform
+- [ɳAdmin](https://github.com/nselforg/nself-admin) - Admin dashboard
+- [ɳChat](https://github.com/acamarata/nself-chat) - Real-time chat (this project)
+- [ɳPlugins](https://github.com/nselforg/nself-plugins) - Plugin marketplace
+
+Learn more at [nself.org](https://nself.org)
+
+---
+
 ## Support
 
 - [GitHub Issues](https://github.com/acamarata/nself-chat/issues) - Bug reports & feature requests
 - [Documentation](docs/) - Full documentation
-- [nself CLI](https://nself.org) - Backend infrastructure
+- [ɳSelf](https://nself.org) - Backend infrastructure
 
 ---
 
-Built with [nself](https://nself.org) | Powered by Next.js 15 & React 19
+Built with [ɳSelf](https://nself.org) | Powered by Next.js 15 & React 19
