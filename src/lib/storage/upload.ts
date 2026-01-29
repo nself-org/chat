@@ -209,6 +209,7 @@ export function formatFileSize(bytes: number): string {
  * Get file extension from name
  */
 export function getFileExtension(filename: string): string {
+  if (!filename.includes('.')) return ''
   const ext = filename.split('.').pop()?.toLowerCase()
   return ext || ''
 }
