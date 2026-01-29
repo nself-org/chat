@@ -261,11 +261,12 @@ export class WorkflowExecutor {
       })
 
       // Check retry
+      const currentRetryCount = stepRun.retryCount ?? 0
       if (
         workflow.settings.retryOnFailure &&
-        stepRun.retryCount < (workflow.settings.maxRetries || 3)
+        currentRetryCount < (workflow.settings.maxRetries || 3)
       ) {
-        stepRun.retryCount++
+        stepRun.retryCount = currentRetryCount + 1
         this.log(run, 'info', `Retrying step: ${step.name}`, {
           attempt: stepRun.retryCount,
         })

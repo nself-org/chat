@@ -94,8 +94,8 @@ export class RealtimeWaveformAnalyzer {
   private updateCallback: WaveformUpdateCallback | null = null
   private _isRunning = false
   private _peakVolume = 0
-  private waveformBuffer: Uint8Array | null = null
-  private frequencyBuffer: Uint8Array | null = null
+  private waveformBuffer: Uint8Array<ArrayBuffer> | null = null
+  private frequencyBuffer: Uint8Array<ArrayBuffer> | null = null
 
   constructor(stream: MediaStream, options: WaveformAnalyzerOptions = {}) {
     this.stream = stream
@@ -220,7 +220,7 @@ export class RealtimeWaveformAnalyzer {
     this.animationFrameId = requestAnimationFrame(() => this.analyze())
   }
 
-  private calculateBars(frequencyData: Uint8Array): number[] {
+  private calculateBars(frequencyData: Uint8Array<ArrayBufferLike>): number[] {
     const bars: number[] = []
     const barCount = this.options.barCount
     const binCount = frequencyData.length
@@ -247,7 +247,7 @@ export class RealtimeWaveformAnalyzer {
     return bars
   }
 
-  private calculateVolume(waveformData: Uint8Array): number {
+  private calculateVolume(waveformData: Uint8Array<ArrayBufferLike>): number {
     // Calculate RMS (Root Mean Square) volume
     let sumSquares = 0
 

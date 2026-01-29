@@ -282,7 +282,7 @@ export function envUrl(
  */
 export function envJson<T>(
   name: string,
-  config: EnvVarConfig<T> & { default?: T } = {}
+  config: { default?: T; required?: boolean; validate?: (value: T) => boolean; description?: string } = {}
 ): T {
   const { default: defaultValue, required = false, validate } = config;
 
@@ -462,7 +462,7 @@ export function validateEnv(): { valid: boolean; errors: string[] } {
     'NEXT_PUBLIC_AUTH_URL',
   ];
 
-  const requiredServer = [
+  const requiredServer: string[] = [
     // Add server-side required vars here
   ];
 

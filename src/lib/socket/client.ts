@@ -310,6 +310,7 @@ export function off<K extends keyof ServerToClientEvents>(
 
 /**
  * Emit and wait for acknowledgment
+ * Note: This function bypasses strict typing to support acknowledgment callbacks
  */
 export function emitWithAck<K extends keyof ClientToServerEvents>(
   event: K,
@@ -325,10 +326,15 @@ export function emitWithAck<K extends keyof ClientToServerEvents>(
       reject(new Error('Socket emit timeout'));
     }, 10000);
 
-    socket.emit(event, ...args, (response: unknown) => {
+    // Use type assertion to handle acknowledgment callback
+    // Socket.io supports callbacks as the last argument for ack
+    const callback = (response: unknown) => {
       clearTimeout(timeout);
       resolve(response);
-    });
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (socket as any).emit(event, ...args, callback);
   });
 }
 

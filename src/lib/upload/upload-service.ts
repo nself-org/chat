@@ -89,10 +89,16 @@ const DEFAULT_CONFIG: Required<Omit<UploadConfig, 'authToken'>> = {
 export class UploadService {
   private config: Required<Omit<UploadConfig, 'authToken'>> & { authToken?: string };
 
-  constructor(config: UploadConfig = {}) {
+  constructor(config: Partial<UploadConfig> = {}) {
     this.config = {
       ...DEFAULT_CONFIG,
-      ...config,
+      storageUrl: config.storageUrl ?? DEFAULT_CONFIG.storageUrl,
+      bucket: config.bucket ?? DEFAULT_CONFIG.bucket,
+      maxRetries: config.maxRetries ?? DEFAULT_CONFIG.maxRetries,
+      retryDelay: config.retryDelay ?? DEFAULT_CONFIG.retryDelay,
+      chunkSize: config.chunkSize ?? DEFAULT_CONFIG.chunkSize,
+      generateThumbnails: config.generateThumbnails ?? DEFAULT_CONFIG.generateThumbnails,
+      authToken: config.authToken,
     };
   }
 
@@ -550,7 +556,7 @@ let uploadServiceInstance: UploadService | null = null;
 /**
  * Get the upload service singleton
  */
-export function getUploadService(config?: UploadConfig): UploadService {
+export function getUploadService(config?: Partial<UploadConfig>): UploadService {
   if (!uploadServiceInstance) {
     uploadServiceInstance = new UploadService(config);
   } else if (config) {
@@ -563,7 +569,7 @@ export function getUploadService(config?: UploadConfig): UploadService {
 /**
  * Create a new upload service instance
  */
-export function createUploadService(config?: UploadConfig): UploadService {
+export function createUploadService(config?: Partial<UploadConfig>): UploadService {
   return new UploadService(config);
 }
 

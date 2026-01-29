@@ -59,11 +59,11 @@ interface PendingUpload {
 // For now, we'll use a simple module-level map that's shared via import
 const pendingUploads = new Map<string, PendingUpload>()
 
-export function getPendingUpload(fileId: string): PendingUpload | undefined {
+function getPendingUpload(fileId: string): PendingUpload | undefined {
   return pendingUploads.get(fileId)
 }
 
-export function removePendingUpload(fileId: string): boolean {
+function removePendingUpload(fileId: string): boolean {
   return pendingUploads.delete(fileId)
 }
 
@@ -280,8 +280,9 @@ async function storeAttachment(attachment: Attachment): Promise<Attachment> {
 
 /**
  * Get attachment by ID
+ * Note: Not exported - internal helper function
  */
-export function getAttachment(id: string): Attachment | undefined {
+function getAttachment(id: string): Attachment | undefined {
   return attachments.get(id)
 }
 

@@ -134,7 +134,8 @@ export async function setSetting<K extends keyof AppSettings>(
 export async function getAllSettings(): Promise<AppSettings> {
   const api = getElectronAPI();
   if (api) {
-    return api.store.getAll() as Promise<AppSettings>;
+    const stored = await api.store.getAll();
+    return { ...defaultSettings, ...stored } as AppSettings;
   }
 
   // Web fallback

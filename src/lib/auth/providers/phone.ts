@@ -5,7 +5,12 @@
  * Can be used with various SMS providers (Twilio, AWS SNS, etc.)
  */
 
-import { AuthProvider, AuthResult, BaseProviderConfig, AuthError, AuthUser, AuthCredentials } from './types';
+import { AuthProvider, AuthResult, BaseProviderConfig, AuthCredentials, PhoneCredentials } from './types';
+
+// Extended phone credentials with OTP code for verification step
+interface PhoneCredentialsWithCode extends PhoneCredentials {
+  code?: string;
+}
 
 export interface PhoneAuthConfig extends BaseProviderConfig {
   provider: 'twilio' | 'aws-sns' | 'messagebird' | 'vonage' | 'custom';
@@ -32,6 +37,7 @@ export interface PhoneVerificationState {
   codeSentAt: number;
   attempts: number;
   verified: boolean;
+  _code?: string; // Internal code storage
 }
 
 // In-memory store for verification states (use Redis in production)
@@ -39,6 +45,9 @@ const verificationStates = new Map<string, PhoneVerificationState>();
 
 export class PhoneAuthProvider implements AuthProvider {
   private config: PhoneAuthConfig;
+
+  readonly type: 'phone' = 'phone';
+  readonly name: string;
 
   constructor(config: PhoneAuthConfig) {
     this.config = {
@@ -48,18 +57,36 @@ export class PhoneAuthProvider implements AuthProvider {
       cooldownPeriod: 60, // 1 minute
       ...config,
     };
+    this.name = config.displayName || 'Phone';
   }
 
   get id() {
     return 'phone';
   }
 
-  get name() {
-    return 'Phone';
-  }
-
   get icon() {
     return 'phone';
+  }
+
+  /**
+   * Check if the provider is properly configured
+   */
+  isConfigured(): boolean {
+    if (!this.config.enabled) {
+      return false;
+    }
+
+    switch (this.config.provider) {
+      case 'twilio':
+        return !!(this.config.twilioAccountSid && this.config.twilioAuthToken);
+      case 'aws-sns':
+        return !!(this.config.awsRegion && this.config.awsAccessKeyId && this.config.awsSecretAccessKey);
+      case 'custom':
+        return !!(this.config.sendCodeWebhook && this.config.verifyCodeWebhook);
+      default:
+        // Development mode - always configured
+        return true;
+    }
   }
 
   /**
@@ -140,7 +167,10 @@ export class PhoneAuthProvider implements AuthProvider {
 
       // Store code securely (in production, use encrypted storage)
       // For demo purposes, we store it in the state
-      (verificationStates.get(formattedPhone) as any)._code = code;
+      const storedState = verificationStates.get(formattedPhone);
+      if (storedState) {
+        storedState._code = code;
+      }
 
       return { success: true };
     } catch (error) {
@@ -257,7 +287,7 @@ export class PhoneAuthProvider implements AuthProvider {
     }
 
     // Verify code
-    const storedCode = (state as Record<string, unknown>)._code;
+    const storedCode = state._code;
     if (code !== storedCode) {
       state.attempts++;
       return {
@@ -295,8 +325,24 @@ export class PhoneAuthProvider implements AuthProvider {
    * Step 2: Call verifyCode with the received code
    */
   async authenticate(credentials?: AuthCredentials): Promise<AuthResult> {
-    const phoneNumber = credentials?.phone || credentials?.email || '';
-    const code = credentials?.code;
+    if (!credentials) {
+      return {
+        success: false,
+        error: { code: 'NO_CREDENTIALS', message: 'Phone credentials are required' },
+      };
+    }
+
+    // Handle phone credentials
+    if (credentials.type !== 'phone') {
+      return {
+        success: false,
+        error: { code: 'INVALID_CREDENTIALS', message: 'Phone credentials are required' },
+      };
+    }
+
+    const phoneCredentials = credentials as PhoneCredentialsWithCode;
+    const phoneNumber = phoneCredentials.phone || '';
+    const code = phoneCredentials.code;
 
     if (!code) {
       // Step 1: Send code
@@ -325,9 +371,12 @@ export class PhoneAuthProvider implements AuthProvider {
 // Helper to create phone auth provider
 export function createPhoneAuthProvider(
   provider: PhoneAuthConfig['provider'],
-  options?: Partial<PhoneAuthConfig>
+  options?: Partial<Omit<PhoneAuthConfig, 'provider' | 'enabled' | 'name' | 'displayName'>>
 ): PhoneAuthProvider {
   return new PhoneAuthProvider({
+    enabled: true,
+    name: 'phone',
+    displayName: 'Phone',
     provider,
     ...options,
   });
@@ -336,6 +385,9 @@ export function createPhoneAuthProvider(
 // Development phone auth provider (logs codes to console)
 export function createDevPhoneAuthProvider(): PhoneAuthProvider {
   return new PhoneAuthProvider({
+    enabled: true,
+    name: 'phone',
+    displayName: 'Phone',
     provider: 'custom',
     codeLength: 6,
     codeExpiry: 300,

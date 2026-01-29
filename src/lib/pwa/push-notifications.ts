@@ -160,7 +160,7 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
 
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey,
+      applicationServerKey: applicationServerKey.buffer as ArrayBuffer,
     });
 
     currentSubscription = subscription;
@@ -342,9 +342,11 @@ export async function showLocalNotification(
     data: payload.data,
     requireInteraction: payload.requireInteraction,
     silent: payload.silent,
-    vibrate: payload.vibrate || [100, 50, 100],
     actions: payload.actions,
-  });
+    // vibrate is part of the Notifications API but not in TS types
+    ...(payload.vibrate && { vibrate: payload.vibrate }),
+    ...(!payload.vibrate && { vibrate: [100, 50, 100] }),
+  } as NotificationOptions);
 }
 
 /**

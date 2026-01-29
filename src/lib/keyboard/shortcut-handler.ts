@@ -69,7 +69,7 @@ export class ShortcutHandler {
   private enabled: boolean = true;
   private bound: boolean = false;
 
-  private boundHandleKeydown: (event: KeyboardEvent) => void;
+  private boundHandleKeydown: EventListener;
 
   constructor(options: ShortcutHandlerOptions = {}) {
     this.target = options.target || document;
@@ -78,7 +78,7 @@ export class ShortcutHandler {
     this.onUnhandled = options.onUnhandled;
     this.debug = options.debug || false;
 
-    this.boundHandleKeydown = this.handleKeydown.bind(this);
+    this.boundHandleKeydown = this.handleKeydown.bind(this) as EventListener;
   }
 
   // ============================================================================

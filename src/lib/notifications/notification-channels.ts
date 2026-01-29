@@ -210,9 +210,10 @@ export async function subscribeToPush(
       return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
     };
 
+    const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+      applicationServerKey: applicationServerKey.buffer as ArrayBuffer,
     });
 
     return subscription;
@@ -264,13 +265,14 @@ export async function deliverPushNotification(
       tag: payload.tag || payload.id,
       requireInteraction: false,
       silent: !settings.playSound,
-      vibrate: settings.vibrate ? [200, 100, 200] : undefined,
       data: {
         ...payload.data,
         actionUrl: payload.actionUrl,
       },
       actions: payload.actions,
-    });
+      // vibrate is part of the Notifications API but not in TS types
+      ...(settings.vibrate && { vibrate: [200, 100, 200] }),
+    } as NotificationOptions);
 
     return {
       success: true,

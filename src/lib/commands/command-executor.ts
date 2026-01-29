@@ -17,7 +17,7 @@
  * ```
  */
 
-import type { ParsedArg } from './command-parser';
+import type { ParsedArg, ParsedCommand } from './command-parser';
 
 // ============================================================================
 // Types

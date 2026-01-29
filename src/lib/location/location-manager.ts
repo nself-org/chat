@@ -447,8 +447,9 @@ export class LocationManager {
       })
       this.options.onLocationReceived?.(event.location)
     }
-    socket.on(LocationSocketEvents.STARTED, handleStarted)
-    this.socketListeners.set(LocationSocketEvents.STARTED, handleStarted)
+    const handleStartedWrapper = handleStarted as (...args: unknown[]) => void
+    socket.on(LocationSocketEvents.STARTED, handleStartedWrapper)
+    this.socketListeners.set(LocationSocketEvents.STARTED, handleStartedWrapper)
 
     // Location update
     const handleUpdate = (event: LocationUpdateEvent) => {
@@ -468,8 +469,9 @@ export class LocationManager {
         })
       }
     }
-    socket.on(LocationSocketEvents.UPDATE, handleUpdate)
-    this.socketListeners.set(LocationSocketEvents.UPDATE, handleUpdate)
+    const handleUpdateWrapper = handleUpdate as (...args: unknown[]) => void
+    socket.on(LocationSocketEvents.UPDATE, handleUpdateWrapper)
+    this.socketListeners.set(LocationSocketEvents.UPDATE, handleUpdateWrapper)
 
     // Location stopped
     const handleStopped = (event: LocationStoppedEvent) => {
@@ -482,8 +484,9 @@ export class LocationManager {
         this.options.onLocationEnded?.(event.locationId, event.userId)
       }
     }
-    socket.on(LocationSocketEvents.STOPPED, handleStopped)
-    this.socketListeners.set(LocationSocketEvents.STOPPED, handleStopped)
+    const handleStoppedWrapper = handleStopped as (...args: unknown[]) => void
+    socket.on(LocationSocketEvents.STOPPED, handleStoppedWrapper)
+    this.socketListeners.set(LocationSocketEvents.STOPPED, handleStoppedWrapper)
   }
 
   private removeSocketListeners(): void {

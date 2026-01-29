@@ -367,7 +367,7 @@ export function updateStep(
   return {
     ...workflow,
     steps: workflow.steps.map((s) =>
-      s.id === stepId ? { ...s, ...updates } : s
+      s.id === stepId ? ({ ...s, ...updates } as WorkflowStep) : s
     ),
     updatedAt: new Date().toISOString(),
   }

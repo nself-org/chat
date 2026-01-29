@@ -12,6 +12,7 @@ import type {
   GitHubIssueData,
   SpotifyData,
   CodePreviewData,
+  PreviewType,
   URL_PATTERNS,
 } from './preview-types'
 import { extractDomain } from './preview-sanitizer'

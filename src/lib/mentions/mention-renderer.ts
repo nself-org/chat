@@ -181,10 +181,11 @@ export function splitIntoSegments(
     }
 
     // Check if this is a self-mention
-    const isSelfMention =
+    const isSelfMention = Boolean(
       currentUsername &&
       mention.type === 'user' &&
       mention.identifier.toLowerCase() === currentUsername.toLowerCase()
+    )
 
     // Add the mention
     segments.push({

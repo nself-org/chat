@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 // Test component to access theme context
 function TestComponent() {
   const { theme, setTheme, themeConfig, updateThemeConfig } = useTheme()
-  
+
   return (
     <div>
       <div data-testid="theme">{theme}</div>
@@ -17,6 +17,15 @@ function TestComponent() {
       <button onClick={() => setTheme('system')}>Set System</button>
       <button onClick={() => updateThemeConfig({ primary: '#FF0000' })}>
         Update Primary
+      </button>
+      <button onClick={() => updateThemeConfig({ secondary: '#00FF00' })}>
+        Update Secondary
+      </button>
+      <button onClick={() => updateThemeConfig({ accent: '#0000FF' })}>
+        Update Accent
+      </button>
+      <button onClick={() => updateThemeConfig({ primary: '#111111', secondary: '#222222', accent: '#333333' })}>
+        Update All Colors
       </button>
     </div>
   )
@@ -259,12 +268,195 @@ describe('useTheme hook', () => {
 
   it('updates theme config through hook', () => {
     const { result } = renderHook(() => useTheme(), { wrapper })
-    
+
     act(() => {
       result.current.updateThemeConfig({ primary: '#00FF00' })
     })
-    
+
     expect(result.current.themeConfig.primary).toBe('#00FF00')
     expect(result.current.themeConfig.secondary).toBe('#7B68EE')
+  })
+
+  it('updates multiple theme config properties at once', () => {
+    const { result } = renderHook(() => useTheme(), { wrapper })
+
+    act(() => {
+      result.current.updateThemeConfig({
+        primary: '#AAAAAA',
+        secondary: '#BBBBBB',
+        accent: '#CCCCCC',
+      })
+    })
+
+    expect(result.current.themeConfig.primary).toBe('#AAAAAA')
+    expect(result.current.themeConfig.secondary).toBe('#BBBBBB')
+    expect(result.current.themeConfig.accent).toBe('#CCCCCC')
+  })
+})
+
+describe('ThemeContext additional tests', () => {
+  beforeEach(() => {
+    document.documentElement.className = ''
+    document.documentElement.style.cssText = ''
+  })
+
+  it('updates secondary color correctly', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    const updateButton = screen.getByText('Update Secondary')
+
+    act(() => {
+      updateButton.click()
+    })
+
+    expect(screen.getByTestId('secondary-color')).toHaveTextContent('#00FF00')
+    expect(screen.getByTestId('primary-color')).toHaveTextContent('#5865F2')
+    expect(screen.getByTestId('accent-color')).toHaveTextContent('#00BFA5')
+  })
+
+  it('updates accent color correctly', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    const updateButton = screen.getByText('Update Accent')
+
+    act(() => {
+      updateButton.click()
+    })
+
+    expect(screen.getByTestId('accent-color')).toHaveTextContent('#0000FF')
+    expect(screen.getByTestId('primary-color')).toHaveTextContent('#5865F2')
+    expect(screen.getByTestId('secondary-color')).toHaveTextContent('#7B68EE')
+  })
+
+  it('updates all colors at once', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    const updateButton = screen.getByText('Update All Colors')
+
+    act(() => {
+      updateButton.click()
+    })
+
+    expect(screen.getByTestId('primary-color')).toHaveTextContent('#111111')
+    expect(screen.getByTestId('secondary-color')).toHaveTextContent('#222222')
+    expect(screen.getByTestId('accent-color')).toHaveTextContent('#333333')
+  })
+
+  it('applies CSS variables for all updated colors', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    const updateButton = screen.getByText('Update All Colors')
+
+    act(() => {
+      updateButton.click()
+    })
+
+    const styles = document.documentElement.style
+    expect(styles.getPropertyValue('--primary')).toBe('#111111')
+    expect(styles.getPropertyValue('--secondary')).toBe('#222222')
+    expect(styles.getPropertyValue('--accent')).toBe('#333333')
+  })
+
+  it('handles multiple sequential theme changes', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    const setDarkButton = screen.getByText('Set Dark')
+    const setLightButton = screen.getByText('Set Light')
+    const setSystemButton = screen.getByText('Set System')
+
+    act(() => {
+      setDarkButton.click()
+    })
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark')
+
+    act(() => {
+      setLightButton.click()
+    })
+    expect(screen.getByTestId('theme')).toHaveTextContent('light')
+
+    act(() => {
+      setSystemButton.click()
+    })
+    expect(screen.getByTestId('theme')).toHaveTextContent('system')
+
+    act(() => {
+      setDarkButton.click()
+    })
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark')
+  })
+
+  it('handles light mode media query preference', () => {
+    window.matchMedia = jest.fn().mockImplementation((query) => ({
+      matches: query === '(prefers-color-scheme: light)',
+      media: query,
+      onchange: null,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    }))
+
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    expect(document.documentElement).toHaveClass('light')
+  })
+
+  it('renders children correctly', () => {
+    render(
+      <ThemeProvider>
+        <div data-testid="child-element">Child Content</div>
+      </ThemeProvider>
+    )
+
+    expect(screen.getByTestId('child-element')).toBeInTheDocument()
+    expect(screen.getByTestId('child-element')).toHaveTextContent('Child Content')
+  })
+
+  it('maintains theme config when same values are applied', () => {
+    render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    )
+
+    const updateButton = screen.getByText('Update Primary')
+
+    act(() => {
+      updateButton.click()
+    })
+
+    expect(screen.getByTestId('primary-color')).toHaveTextContent('#FF0000')
+
+    act(() => {
+      updateButton.click()
+    })
+
+    expect(screen.getByTestId('primary-color')).toHaveTextContent('#FF0000')
+    expect(screen.getByTestId('secondary-color')).toHaveTextContent('#7B68EE')
   })
 })

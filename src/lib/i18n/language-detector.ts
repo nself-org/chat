@@ -102,7 +102,7 @@ function detectFromQueryString(paramName: string): string | null {
 function detectFromNavigator(): string | null {
   if (typeof navigator === 'undefined') return null;
 
-  const languages = navigator.languages || [navigator.language];
+  const languages: readonly string[] = navigator.languages || [navigator.language];
 
   for (const lang of languages) {
     // Try exact match first
@@ -110,7 +110,8 @@ function detectFromNavigator(): string | null {
     if (isValidLocale(exact)) return exact;
 
     // Try base language (e.g., 'en-US' -> 'en')
-    const base = exact.split('-')[0];
+    // Use lang directly to avoid type narrowing from isValidLocale guard
+    const base = lang.toLowerCase().split('-')[0];
     if (isValidLocale(base)) return base;
   }
 
@@ -322,13 +323,16 @@ export function parseAcceptLanguage(header: string): string | null {
   // Sort by quality
   languages.sort((a, b) => b.quality - a.quality);
 
-  for (const { code } of languages) {
+  for (const item of languages) {
+    const code = item.code;
+    // Compute base language before type narrowing
+    const baseLang = code.split('-')[0];
+
     // Try exact match
     if (isValidLocale(code)) return code;
 
     // Try base language
-    const base = code.split('-')[0];
-    if (isValidLocale(base)) return base;
+    if (isValidLocale(baseLang)) return baseLang;
   }
 
   return null;

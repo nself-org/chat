@@ -344,7 +344,7 @@ export async function generateThumbnail(
       return generateImageThumbnail(file, options);
 
     case 'video':
-      return generateVideoThumbnail(file, options);
+      return generateVideoThumbnailWithOptions(file, options);
 
     case 'audio':
       return getAudioThumbnail();

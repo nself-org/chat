@@ -201,6 +201,28 @@ export type Command =
   | ExecutableCommand;
 
 // ============================================================================
+// Command Execution Context Data
+// ============================================================================
+
+export interface CommandExecutionContextData {
+  /** Open a modal by type (accepts modal type and optional data) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  openModal?: (...args: any[]) => void;
+  /** Toggle theme between light and dark */
+  toggleTheme?: () => void;
+  /** Mark all messages as read */
+  markAllAsRead?: () => void;
+  /** Toggle Do Not Disturb mode */
+  toggleDND?: () => void;
+  /** Toggle sidebar visibility */
+  toggleSidebar?: () => void;
+  /** Sign out the current user */
+  signOut?: () => void;
+  /** Additional custom data */
+  [key: string]: unknown;
+}
+
+// ============================================================================
 // Command Execution Context
 // ============================================================================
 
@@ -216,7 +238,7 @@ export interface CommandExecutionContext {
   /** Search query if any */
   searchQuery?: string;
   /** Additional context data */
-  data?: Record<string, unknown>;
+  data?: CommandExecutionContextData;
 }
 
 // ============================================================================

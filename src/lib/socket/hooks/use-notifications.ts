@@ -153,11 +153,12 @@ function showDesktopNotification(
     const desktopNotification = new Notification(notification.title, {
       body: notification.body,
       icon: notification.iconUrl || DEFAULT_NOTIFICATION_ICON,
-      image: notification.imageUrl,
       tag: notification.id,
       requireInteraction: false,
       silent: true, // We handle sound separately
-    });
+      // image is part of the Notifications API but not in TS types
+      ...(notification.imageUrl && { image: notification.imageUrl }),
+    } as NotificationOptions);
 
     desktopNotification.onclick = () => {
       window.focus();

@@ -322,13 +322,11 @@ export async function exportAsZip(
 
   // Add CSS
   zip.file('css/variables.css', exportAsCSS(config))
-  zip.file('css/typography.css', generateFontCSS({
-    headingFont: config.typography.headingFont,
-    bodyFont: config.typography.bodyFont,
-    monoFont: config.typography.monoFont,
-    baseFontSize: config.typography.baseFontSize,
-    lineHeight: config.typography.lineHeight,
-  }))
+  zip.file('css/typography.css', generateFontCSS([
+    { family: config.typography.headingFont },
+    { family: config.typography.bodyFont },
+    { family: config.typography.monoFont },
+  ]))
 
   // Add SCSS
   zip.file('scss/_variables.scss', exportAsSCSS(config))

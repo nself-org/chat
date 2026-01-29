@@ -301,9 +301,9 @@ export function getDiscoveryResults(
   // Apply other filters
   filteredChannels = filterChannels(filteredChannels, filters)
 
-  // If there is a query, use search
+  // If there is a query, use discovery search
   if (filters.query) {
-    return searchChannels(filteredChannels, filters.query)
+    return discoverChannels(filteredChannels, filters.query, filters)
   }
 
   // Otherwise, just convert to results

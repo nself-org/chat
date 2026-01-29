@@ -140,6 +140,18 @@ export type ModalProps =
   | { type: 'settings'; props: SettingsModalProps }
   | { type: 'custom'; props: CustomModalProps }
 
+// Type map for modal type to props - better generic inference than Extract
+export type ModalPropsMap = {
+  confirm: ConfirmModalProps
+  alert: AlertModalProps
+  prompt: PromptModalProps
+  'image-lightbox': ImageLightboxProps
+  video: VideoModalProps
+  profile: ProfileModalProps
+  settings: SettingsModalProps
+  custom: CustomModalProps
+}
+
 // Modal state
 interface ModalState {
   modals: ModalConfig[]
@@ -150,7 +162,7 @@ interface ModalState {
 interface ModalActions {
   openModal: <T extends ModalType>(
     type: T,
-    props: Extract<ModalProps, { type: T }>['props'],
+    props: ModalPropsMap[T],
     options?: {
       id?: string
       onClose?: () => void

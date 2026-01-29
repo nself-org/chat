@@ -472,7 +472,10 @@ export async function compressImage(
       if (maxSizeBytes && blob) {
         while (blob.size > maxSizeBytes && quality > 0.1) {
           quality -= 0.1;
-          blob = await createBlob(quality);
+          const newBlob = await createBlob(quality);
+          if (newBlob) {
+            blob = newBlob;
+          }
         }
       }
 

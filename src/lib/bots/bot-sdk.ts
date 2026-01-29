@@ -6,9 +6,17 @@
 // Extend Reflect for metadata support (requires reflect-metadata polyfill)
 declare global {
   namespace Reflect {
-    function getMetadata(key: string, target: object): unknown
-    function defineMetadata(key: string, value: unknown, target: object): void
+    function getMetadata(key: string | symbol, target: object): unknown
+    function defineMetadata(key: string | symbol, value: unknown, target: object): void
   }
+}
+
+/**
+ * Type for command metadata stored via decorators
+ */
+interface CommandMetadata {
+  definition: BotCommandDefinition
+  methodName: string
 }
 
 import type {
@@ -398,7 +406,8 @@ export function Command(nameOrDef: string | BotCommandDefinition) {
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
-    const commands = Reflect.getMetadata(COMMAND_METADATA_KEY, target.constructor) || []
+    const existing = Reflect.getMetadata(COMMAND_METADATA_KEY, target.constructor)
+    const commands: CommandMetadata[] = Array.isArray(existing) ? existing : []
     const definition: BotCommandDefinition =
       typeof nameOrDef === 'string'
         ? { name: nameOrDef, description: '' }
@@ -453,7 +462,8 @@ export abstract class BaseBot {
    * Setup decorated commands
    */
   private setupCommands(bot: BotInstance): void {
-    const commands = Reflect.getMetadata(COMMAND_METADATA_KEY, this.constructor) || []
+    const existing = Reflect.getMetadata(COMMAND_METADATA_KEY, this.constructor)
+    const commands: CommandMetadata[] = Array.isArray(existing) ? existing : []
     for (const { definition, methodName } of commands) {
       const method = (this as Record<string, unknown>)[methodName] as CommandHandler
       if (typeof method === 'function') {

@@ -211,10 +211,10 @@ export function shouldRetainItem(
     );
     if (override) {
       const overrideDays = override.period === 'custom'
-        ? override.customDays
+        ? override.customDays ?? null
         : getDaysFromPeriod(override.period);
 
-      if (overrideDays === null) {
+      if (overrideDays === null || overrideDays === undefined) {
         return true; // Keep forever
       }
 
@@ -402,10 +402,10 @@ export function generatePolicySummary(policies: RetentionPolicy[]): PolicySummar
 
   for (const policy of enabledPolicies) {
     const days = policy.period === 'custom'
-      ? policy.customDays
+      ? policy.customDays ?? null
       : getDaysFromPeriod(policy.period);
 
-    if (days !== null) {
+    if (days !== null && days !== undefined) {
       if (!shortest || days < shortest.days) {
         shortest = { category: policy.dataCategory, days };
       }

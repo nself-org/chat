@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import {
   useModalStore,
   type ModalType,
-  type ModalProps,
+  type ModalPropsMap,
   type ConfirmModalProps,
   type AlertModalProps,
   type PromptModalProps,
@@ -26,7 +26,7 @@ export interface UseModalReturn {
   // Generic open
   open: <T extends ModalType>(
     type: T,
-    props: Extract<ModalProps, { type: T }>['props'],
+    props: ModalPropsMap[T],
     options?: UseModalOptions
   ) => string
 
@@ -88,7 +88,7 @@ export function useModal(): UseModalReturn {
   const open = useCallback(
     <T extends ModalType>(
       type: T,
-      props: Extract<ModalProps, { type: T }>['props'],
+      props: ModalPropsMap[T],
       options?: UseModalOptions
     ) => {
       return openModal(type, props, options)

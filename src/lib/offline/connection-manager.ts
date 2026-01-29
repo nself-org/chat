@@ -354,7 +354,10 @@ class ConnectionManager {
    * Check if network is online
    */
   private isNetworkOnline(): boolean {
-    return this.networkInfo?.state === 'online' ?? navigator?.onLine ?? true;
+    if (this.networkInfo) {
+      return this.networkInfo.state === 'online';
+    }
+    return navigator?.onLine ?? true;
   }
 
   /**

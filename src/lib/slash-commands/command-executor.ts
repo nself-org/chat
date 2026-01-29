@@ -453,7 +453,10 @@ async function executeWebhook(
     // Map response using configured paths
     let message = 'Webhook executed successfully'
     if (webhookConfig.responseMapping?.messagePath) {
-      message = getNestedValue(data, webhookConfig.responseMapping.messagePath) || message
+      const mappedMessage = getNestedValue(data, webhookConfig.responseMapping.messagePath)
+      if (typeof mappedMessage === 'string') {
+        message = mappedMessage
+      }
     }
 
     return {
@@ -493,8 +496,8 @@ async function executeWorkflow(
   const input: Record<string, unknown> = {}
   if (workflowConfig.inputMapping) {
     const args = argsToObject(parsed)
-    for (const [key, path] of Object.entries(workflowConfig.inputMapping)) {
-      input[key] = args[path] ?? context[path as keyof CommandContext]
+    for (const [key, argKey] of Object.entries(workflowConfig.inputMapping)) {
+      input[key] = args[argKey] ?? context[argKey as keyof CommandContext]
     }
   }
 

@@ -633,7 +633,7 @@ export interface ReportSchedule {
   timezone: string;
   enabled: boolean;
   recipients: string[];
-  format: 'pdf' | 'csv' | 'json';
+  format: 'pdf' | 'csv' | 'json' | 'html';
   lastRunAt?: Date;
   nextRunAt?: Date;
 }

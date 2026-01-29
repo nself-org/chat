@@ -9,6 +9,7 @@ import type {
   DiscordGuild,
   DiscordChannel,
   DiscordMessage,
+  DiscordMessageType,
   DiscordAuthor,
   DiscordAttachment,
   DiscordEmbed,
@@ -146,7 +147,7 @@ export class DiscordParser {
 
       return {
         id: msg.id as string,
-        type: (msg.type as string) || 'Default',
+        type: (msg.type as DiscordMessageType) || 'Default',
         timestamp: msg.timestamp as string,
         timestampEdited: msg.timestampEdited as string | undefined,
         isPinned: msg.isPinned as boolean || false,

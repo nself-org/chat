@@ -320,5 +320,5 @@ export function getServiceWorkerState(): ServiceWorkerState {
   };
 }
 
-// Export types for external use
-export type { ServiceWorkerRegistration };
+// Re-export ServiceWorkerState for external use
+// Note: ServiceWorkerRegistration is a global browser type and doesn't need to be re-exported

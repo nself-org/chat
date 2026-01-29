@@ -343,15 +343,17 @@ function storePendingUpload(data: {
 
 /**
  * Get pending upload by file ID
+ * Note: Not exported - internal helper function
  */
-export function getPendingUpload(fileId: string) {
+function getPendingUpload(fileId: string) {
   return pendingUploads.get(fileId)
 }
 
 /**
  * Remove pending upload
+ * Note: Not exported - internal helper function
  */
-export function removePendingUpload(fileId: string): boolean {
+function removePendingUpload(fileId: string): boolean {
   return pendingUploads.delete(fileId)
 }
 

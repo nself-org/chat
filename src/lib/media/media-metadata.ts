@@ -392,7 +392,7 @@ export function formatMetadataValue(
 
   switch (key) {
     case 'duration':
-      return formatDuration(value as number);
+      return formatMediaDuration(value as number);
 
     case 'dimensions':
       const dims = value as MediaDimensions;
