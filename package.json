@@ -204,7 +204,8 @@
     "overrides": {
       "react": "^19.0.0",
       "react-dom": "^19.0.0",
-      "tmp": "^0.2.4"
+      "tmp": "^0.2.4",
+      "tar": ">=7.5.4"
     },
     "peerDependencyRules": {
       "allowedVersions": {

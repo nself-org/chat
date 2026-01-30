@@ -71,11 +71,7 @@ export const MessageItem = memo(function MessageItem({
     messageId: message.id,
   })
 
-  // Check if this is a system message
-  if (message.type !== 'text') {
-    return <MessageSystem message={message} className={className} />
-  }
-
+  // Calculate values needed for callbacks (before early return)
   const isOwnMessage = user?.id === message.userId
   const userRole = user?.role || 'member'
   const permissions = getMessagePermissions(isOwnMessage, userRole)
@@ -93,6 +89,7 @@ export const MessageItem = memo(function MessageItem({
     canThread: permissions.canThread && featuresEnabled.threads,
   }
 
+  // Define all callbacks before any early returns (Rules of Hooks)
   const handleAction = useCallback(
     (action: MessageAction, data?: unknown) => {
       switch (action) {
@@ -142,6 +139,11 @@ export const MessageItem = memo(function MessageItem({
     },
     [message.id, onRemoveReaction]
   )
+
+  // Check if this is a system message (after all hooks are defined)
+  if (message.type !== 'text') {
+    return <MessageSystem message={message} className={className} />
+  }
 
   return (
     <MessageContextMenu

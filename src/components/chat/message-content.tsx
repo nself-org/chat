@@ -41,6 +41,12 @@ export const MessageContent = memo(function MessageContent({
   channelMentions = [],
   className,
 }: MessageContentProps) {
+  // Always call useMemo at the top level (Rules of Hooks)
+  // Parse and render content
+  const renderedContent = useMemo(() => {
+    return parseMessageContent(content, mentions, channelMentions)
+  }, [content, mentions, channelMentions])
+
   // Handle GIF message
   if (type === 'gif' && gifUrl) {
     return (
@@ -61,12 +67,6 @@ export const MessageContent = memo(function MessageContent({
       </div>
     )
   }
-
-  // Always call useMemo at the top level (Rules of Hooks)
-  // Parse and render content
-  const renderedContent = useMemo(() => {
-    return parseMessageContent(content, mentions, channelMentions)
-  }, [content, mentions, channelMentions])
 
   // If pre-rendered HTML is provided, use it
   if (contentHtml) {
