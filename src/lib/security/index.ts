@@ -59,3 +59,96 @@ export {
   type RevokeSessionResult,
   type SecurityAlertPreferences,
 } from './use-security'
+
+// PIN Lock
+export {
+  // Validation
+  isValidPinFormat,
+  getPinStrength,
+  // Hashing
+  generateSalt,
+  hashPin,
+  verifyPin,
+  // Storage
+  storePinSettings,
+  loadPinSettings,
+  clearPinSettings,
+  hasPinConfigured,
+  // Attempts
+  recordLocalPinAttempt,
+  getRecentFailedAttempts,
+  clearAttemptHistory,
+  checkLocalLockout,
+  // Setup/Change
+  setupPin,
+  changePin,
+  updatePinSettings,
+  disablePin,
+  type PinSettings,
+  type PinAttempt,
+  type LockoutStatus,
+  type PinSetupResult,
+} from './pin'
+
+// Session Management
+export {
+  // Activity tracking
+  updateLastActivity,
+  getLastActivityTime,
+  getTimeSinceLastActivity,
+  getMinutesSinceLastActivity,
+  // Visibility
+  getVisibilityState,
+  setupVisibilityListener,
+  // Timeout checking
+  checkSessionTimeout,
+  shouldLockOnBackground,
+  shouldLockOnClose,
+  // Lock state
+  getLockState,
+  lockSession,
+  unlockSession,
+  isSessionLocked,
+  clearLockState,
+  // Auto-lock
+  checkAndLockIfNeeded,
+  setupAutoLockChecker,
+  setupActivityListeners,
+  setupBeforeUnloadListener,
+  // App lifecycle
+  handleAppVisible,
+  handleAppHidden,
+  handleAppClose,
+  // Session info
+  getSessionActivity,
+  getFormattedTimeSinceActivity,
+  // Debug
+  forceLock,
+  getSessionDebugInfo,
+  type LockState,
+  type SessionActivity,
+} from './session'
+
+// Biometric Authentication
+export {
+  // Availability
+  isWebAuthnSupported,
+  isBiometricAvailable,
+  getBiometricType,
+  // Registration
+  registerBiometric,
+  // Verification
+  verifyBiometric,
+  // Credentials
+  getStoredCredentials,
+  removeCredential,
+  clearAllCredentials,
+  hasRegisteredCredentials,
+  // Utilities
+  getCredentialIcon,
+  getCredentialTypeDescription,
+  formatLastUsed,
+  type BiometricCredential,
+  type BiometricSetupResult,
+  type BiometricVerifyResult,
+} from './biometric'

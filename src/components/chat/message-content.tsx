@@ -1,12 +1,26 @@
 'use client'
 
-import { useMemo, memo } from 'react'
+import { useMemo, memo, useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 interface MessageContentProps {
   content: string
   contentHtml?: string
+  type?: 'text' | 'gif' | 'sticker' | 'file' | 'image' | 'video' | 'audio' | 'system'
+  gifUrl?: string
+  gifMetadata?: {
+    width?: number
+    height?: number
+    preview?: string
+    title?: string
+  }
+  sticker?: {
+    id: string
+    name: string
+    file_url: string
+    thumbnail_url?: string
+  }
   mentions?: string[]
   channelMentions?: string[]
   className?: string
@@ -19,10 +33,35 @@ interface MessageContentProps {
 export const MessageContent = memo(function MessageContent({
   content,
   contentHtml,
+  type = 'text',
+  gifUrl,
+  gifMetadata,
+  sticker,
   mentions = [],
   channelMentions = [],
   className,
 }: MessageContentProps) {
+  // Handle GIF message
+  if (type === 'gif' && gifUrl) {
+    return (
+      <div className={cn('message-content', className)}>
+        <GifContent url={gifUrl} metadata={gifMetadata} />
+        {content && (
+          <p className="mt-2 text-sm text-muted-foreground">{content}</p>
+        )}
+      </div>
+    )
+  }
+
+  // Handle sticker message
+  if (type === 'sticker' && sticker) {
+    return (
+      <div className={cn('message-content', className)}>
+        <StickerContent sticker={sticker} />
+      </div>
+    )
+  }
+
   // Always call useMemo at the top level (Rules of Hooks)
   // Parse and render content
   const renderedContent = useMemo(() => {
@@ -377,6 +416,114 @@ function Emoji({ name }: { name: string }) {
     <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-muted text-xs">
       :{name}:
     </span>
+  )
+}
+
+/**
+ * GIF content component
+ */
+function GifContent({
+  url,
+  metadata,
+}: {
+  url: string
+  metadata?: {
+    width?: number
+    height?: number
+    preview?: string
+    title?: string
+  }
+}) {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [hasError, setHasError] = useState(false)
+
+  // Calculate dimensions (max 400px wide, maintain aspect ratio)
+  const maxWidth = 400
+  const width = metadata?.width || maxWidth
+  const height = metadata?.height || 300
+  const aspectRatio = width / height
+  const displayWidth = Math.min(width, maxWidth)
+  const displayHeight = displayWidth / aspectRatio
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-lg border bg-muted/30"
+      style={{
+        width: `${displayWidth}px`,
+        height: `${displayHeight}px`,
+        maxWidth: '100%',
+      }}
+    >
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+        </div>
+      )}
+
+      {hasError && (
+        <div className="flex h-full items-center justify-center text-muted-foreground">
+          <p className="text-sm">Failed to load GIF</p>
+        </div>
+      )}
+
+      <img
+        src={url}
+        alt={metadata?.title || 'GIF'}
+        className={cn(
+          'h-full w-full object-contain transition-opacity',
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        )}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+      />
+    </div>
+  )
+}
+
+/**
+ * Sticker content component
+ */
+function StickerContent({
+  sticker,
+}: {
+  sticker: {
+    id: string
+    name: string
+    file_url: string
+    thumbnail_url?: string
+  }
+}) {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [hasError, setHasError] = useState(false)
+
+  const imageUrl = sticker.thumbnail_url || sticker.file_url
+
+  return (
+    <div className="relative inline-block" style={{ width: '128px', height: '128px' }}>
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+        </div>
+      )}
+
+      {hasError && (
+        <div className="flex h-full items-center justify-center text-muted-foreground">
+          <p className="text-xs">Error</p>
+        </div>
+      )}
+
+      <img
+        src={imageUrl}
+        alt={sticker.name}
+        className={cn(
+          'h-full w-full object-contain transition-opacity',
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        )}
+        title={sticker.name}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+      />
+    </div>
   )
 }
 

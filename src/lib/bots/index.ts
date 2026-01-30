@@ -223,3 +223,62 @@ export type {
   BotBuilderAction,
   BotBuilderCondition,
 } from './bot-types'
+
+// ============================================================================
+// BOT API - Token Management
+// ============================================================================
+
+export {
+  generateBotToken,
+  hashToken,
+  verifyToken,
+  extractTokenFromHeader,
+  isValidTokenFormat,
+  maskToken,
+  isTokenExpired,
+  generateWebhookSecret,
+  signWebhookPayload,
+  verifyWebhookSignature,
+  checkRateLimit,
+  clearRateLimitCache,
+  BOT_TOKEN_PREFIX,
+} from './tokens'
+
+// ============================================================================
+// BOT API - Permissions
+// ============================================================================
+
+export {
+  BotPermission as BotApiPermission,
+  PermissionCategory,
+  PERMISSION_DEFINITIONS,
+  getPermissionsByCategory,
+  getPermissionDefinition,
+  isDangerousPermission,
+  checkBotPermission,
+  checkBotPermissions,
+  getBotPermissions,
+  grantBotPermission,
+  revokeBotPermission,
+  grantBotPermissions,
+  revokeBotPermissions,
+  isValidPermissionFormat,
+  tokenHasPermission,
+} from './permissions'
+export type { PermissionDefinition } from './permissions'
+
+// ============================================================================
+// BOT API - Webhooks
+// ============================================================================
+
+export {
+  WebhookEvent,
+  triggerWebhooks,
+  testWebhook,
+  triggerMessageCreated,
+  triggerMessageDeleted,
+  triggerChannelCreated,
+  triggerUserJoined,
+  triggerReactionAdded,
+} from './webhooks'
+export type { WebhookPayload, WebhookDeliveryResult } from './webhooks'

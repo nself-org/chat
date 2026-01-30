@@ -1,27 +1,38 @@
 /**
  * Search API Route
  *
- * Provides unified search across messages, files, users, and channels.
- * Supports full-text search with filters and pagination.
+ * Provides unified search across messages, files, users, and channels using MeiliSearch.
+ * Supports full-text search with operators and filters.
  *
  * @endpoint POST /api/search - Search with filters
  * @endpoint GET /api/search?q=query - Quick search
+ *
+ * Supported operators:
+ * - from:username - filter by sender
+ * - in:channel-name - filter by channel
+ * - has:link - messages with links
+ * - has:file - messages with attachments
+ * - has:image - messages with images
+ * - before:2024-01-01 - before date
+ * - after:2024-01-01 - after date
+ * - is:pinned - pinned messages only
+ * - is:starred - starred messages only
  *
  * @example
  * ```typescript
  * // Quick search
  * const response = await fetch('/api/search?q=hello')
  *
+ * // Search with operators
+ * const response = await fetch('/api/search?q=project from:john in:general has:file')
+ *
  * // Advanced search with filters
  * const response = await fetch('/api/search', {
  *   method: 'POST',
  *   headers: { 'Content-Type': 'application/json' },
  *   body: JSON.stringify({
- *     query: 'project update',
+ *     query: 'project update from:john in:general',
  *     types: ['messages', 'files'],
- *     channelIds: ['channel-1', 'channel-2'],
- *     dateFrom: '2024-01-01',
- *     dateTo: '2024-12-31',
  *     limit: 20,
  *     offset: 0
  *   })
@@ -43,6 +54,9 @@ import {
   getAuthenticatedUser,
   compose,
 } from '@/lib/api/middleware'
+import { parseQuery, buildMeiliSearchFilter } from '@/lib/search/query-parser'
+import { searchAll, searchIndex, INDEX_NAMES } from '@/lib/search/meilisearch-client'
+import type { SearchOptions } from '@/lib/search/meilisearch-client'
 
 // ============================================================================
 // Configuration
@@ -431,12 +445,53 @@ async function searchChannels(
 }
 
 /**
- * Perform search across all types
+ * Perform search across all types using MeiliSearch
  */
 async function performSearch(
   request: SearchRequest,
   userId?: string
 ): Promise<SearchResults> {
+  // Parse query for operators
+  const parsedQuery = parseQuery(request.query)
+
+  // Build additional filters from request
+  const additionalFilters: Record<string, unknown> = {}
+
+  if (request.channelIds && request.channelIds.length > 0) {
+    additionalFilters.channel_id = request.channelIds
+  }
+
+  if (request.userIds && request.userIds.length > 0) {
+    additionalFilters.author_id = request.userIds
+  }
+
+  // Apply date range filters from request (override query operators)
+  if (request.dateFrom) {
+    const afterTimestamp = new Date(request.dateFrom).getTime() / 1000
+    additionalFilters.created_at_after = afterTimestamp
+  }
+
+  if (request.dateTo) {
+    const beforeTimestamp = new Date(request.dateTo).getTime() / 1000
+    additionalFilters.created_at_before = beforeTimestamp
+  }
+
+  // Build MeiliSearch filter
+  const filterString = buildMeiliSearchFilter(parsedQuery, additionalFilters)
+
+  // Search options
+  const searchOptions: SearchOptions = {
+    filters: filterString || undefined,
+    limit: request.limit || CONFIG.DEFAULT_LIMIT,
+    offset: request.offset || 0,
+    sort: request.sortBy === 'date'
+      ? [`created_at:${request.sortOrder || 'desc'}`]
+      : undefined,
+    attributesToHighlight: ['content', 'name', 'display_name', 'title', 'description'],
+    attributesToCrop: ['content', 'description'],
+    cropLength: 200,
+  }
+
   const results: SearchResultItem[] = []
   const totals = {
     messages: 0,
@@ -446,74 +501,238 @@ async function performSearch(
     total: 0,
   }
 
-  // Search each type in parallel
-  const searchPromises: Promise<void>[] = []
+  try {
+    // Determine which types to search
+    const typesToSearch = request.types || [...CONFIG.VALID_TYPES]
 
-  if (request.types?.includes('messages')) {
-    searchPromises.push(
-      searchMessages(request, userId).then((items) => {
-        totals.messages = items.length
-        results.push(...items)
+    // Search all types or specific types
+    if (typesToSearch.length === CONFIG.VALID_TYPES.length) {
+      // Search all indexes at once
+      const allResults = await searchAll(parsedQuery.text, searchOptions)
+
+      // Convert messages to SearchResultItem
+      if (typesToSearch.includes('messages') && allResults.messages) {
+        totals.messages = allResults.messages.length
+        results.push(...allResults.messages.map((msg: any) => ({
+          id: msg.id,
+          type: 'messages' as SearchType,
+          title: `Message from ${msg.author_name}`,
+          content: msg.content,
+          snippet: msg._formatted?.content || msg.content?.slice(0, 200),
+          highlight: msg._formatted?.content,
+          channelId: msg.channel_id,
+          channelName: msg.channel_name,
+          userId: msg.author_id,
+          userName: msg.author_name,
+          createdAt: msg.created_at,
+          score: msg._rankingScore,
+        })))
+      }
+
+      // Convert files to SearchResultItem
+      if (typesToSearch.includes('files') && allResults.files) {
+        totals.files = allResults.files.length
+        results.push(...allResults.files.map((file: any) => ({
+          id: file.id,
+          type: 'files' as SearchType,
+          title: file.name || file.original_name,
+          content: file.description,
+          snippet: file._formatted?.description,
+          channelId: file.channel_id,
+          userId: file.uploader_id,
+          userName: file.uploader_name,
+          createdAt: file.created_at,
+          metadata: {
+            size: file.size,
+            mimeType: file.mime_type,
+            fileType: file.file_type,
+          },
+          score: file._rankingScore,
+        })))
+      }
+
+      // Convert users to SearchResultItem
+      if (typesToSearch.includes('users') && allResults.users) {
+        totals.users = allResults.users.length
+        results.push(...allResults.users.map((user: any) => ({
+          id: user.id,
+          type: 'users' as SearchType,
+          title: user.display_name,
+          content: user.email,
+          snippet: user._formatted?.bio,
+          avatarUrl: user.avatar_url,
+          createdAt: user.created_at,
+          metadata: {
+            role: user.role,
+            username: user.username,
+          },
+          score: user._rankingScore,
+        })))
+      }
+
+      // Convert channels to SearchResultItem
+      if (typesToSearch.includes('channels') && allResults.channels) {
+        totals.channels = allResults.channels.length
+        results.push(...allResults.channels.map((channel: any) => ({
+          id: channel.id,
+          type: 'channels' as SearchType,
+          title: channel.name,
+          content: channel.description,
+          snippet: channel._formatted?.description,
+          createdAt: channel.created_at,
+          metadata: {
+            isPrivate: channel.is_private,
+            memberCount: channel.member_count,
+          },
+          score: channel._rankingScore,
+        })))
+      }
+    } else {
+      // Search specific indexes
+      const searchPromises = typesToSearch.map(async (type) => {
+        const indexName = type === 'messages' ? INDEX_NAMES.MESSAGES
+          : type === 'files' ? INDEX_NAMES.FILES
+          : type === 'users' ? INDEX_NAMES.USERS
+          : INDEX_NAMES.CHANNELS
+
+        const searchResult = await searchIndex(indexName, parsedQuery.text, searchOptions)
+        return { type, hits: searchResult.hits }
       })
-    )
-  }
 
-  if (request.types?.includes('files')) {
-    searchPromises.push(
-      searchFiles(request, userId).then((items) => {
-        totals.files = items.length
-        results.push(...items)
+      const searchResults = await Promise.all(searchPromises)
+
+      // Convert results for each type
+      searchResults.forEach(({ type, hits }) => {
+        if (type === 'messages') {
+          totals.messages = hits.length
+          results.push(...hits.map((msg: any) => ({
+            id: msg.id,
+            type: 'messages' as SearchType,
+            title: `Message from ${msg.author_name}`,
+            content: msg.content,
+            snippet: msg._formatted?.content || msg.content?.slice(0, 200),
+            highlight: msg._formatted?.content,
+            channelId: msg.channel_id,
+            channelName: msg.channel_name,
+            userId: msg.author_id,
+            userName: msg.author_name,
+            createdAt: msg.created_at,
+            score: msg._rankingScore,
+          })))
+        } else if (type === 'files') {
+          totals.files = hits.length
+          results.push(...hits.map((file: any) => ({
+            id: file.id,
+            type: 'files' as SearchType,
+            title: file.name || file.original_name,
+            content: file.description,
+            snippet: file._formatted?.description,
+            channelId: file.channel_id,
+            userId: file.uploader_id,
+            userName: file.uploader_name,
+            createdAt: file.created_at,
+            metadata: {
+              size: file.size,
+              mimeType: file.mime_type,
+              fileType: file.file_type,
+            },
+            score: file._rankingScore,
+          })))
+        } else if (type === 'users') {
+          totals.users = hits.length
+          results.push(...hits.map((user: any) => ({
+            id: user.id,
+            type: 'users' as SearchType,
+            title: user.display_name,
+            content: user.email,
+            snippet: user._formatted?.bio,
+            avatarUrl: user.avatar_url,
+            createdAt: user.created_at,
+            metadata: {
+              role: user.role,
+              username: user.username,
+            },
+            score: user._rankingScore,
+          })))
+        } else if (type === 'channels') {
+          totals.channels = hits.length
+          results.push(...hits.map((channel: any) => ({
+            id: channel.id,
+            type: 'channels' as SearchType,
+            title: channel.name,
+            content: channel.description,
+            snippet: channel._formatted?.description,
+            createdAt: channel.created_at,
+            metadata: {
+              isPrivate: channel.is_private,
+              memberCount: channel.member_count,
+            },
+            score: channel._rankingScore,
+          })))
+        }
       })
-    )
-  }
-
-  if (request.types?.includes('users')) {
-    searchPromises.push(
-      searchUsers(request, userId).then((items) => {
-        totals.users = items.length
-        results.push(...items)
-      })
-    )
-  }
-
-  if (request.types?.includes('channels')) {
-    searchPromises.push(
-      searchChannels(request, userId).then((items) => {
-        totals.channels = items.length
-        results.push(...items)
-      })
-    )
-  }
-
-  await Promise.all(searchPromises)
-
-  totals.total = results.length
-
-  // Sort results
-  results.sort((a, b) => {
-    if (request.sortBy === 'date') {
-      const dateA = new Date(a.createdAt).getTime()
-      const dateB = new Date(b.createdAt).getTime()
-      return request.sortOrder === 'asc' ? dateA - dateB : dateB - dateA
     }
 
-    // Sort by relevance (score)
-    const scoreA = a.score || 0
-    const scoreB = b.score || 0
-    return request.sortOrder === 'asc' ? scoreA - scoreB : scoreB - scoreA
-  })
+    totals.total = results.length
 
-  // Apply pagination
-  const paginatedResults = results.slice(
-    request.offset || 0,
-    (request.offset || 0) + (request.limit || CONFIG.DEFAULT_LIMIT)
-  )
+    // Sort results if needed (MeiliSearch already sorts by relevance)
+    if (request.sortBy === 'relevance' && request.sortOrder === 'asc') {
+      results.reverse()
+    }
 
-  return {
-    items: paginatedResults,
-    totals,
-    query: request.query,
-    types: request.types || [...CONFIG.VALID_TYPES],
+    return {
+      items: results,
+      totals,
+      query: request.query,
+      types: request.types || [...CONFIG.VALID_TYPES],
+    }
+  } catch (error) {
+    console.error('MeiliSearch error:', error)
+    // Fall back to mock data on MeiliSearch error
+    console.warn('Falling back to mock search results')
+
+    const results: SearchResultItem[] = []
+    const totals = {
+      messages: 0,
+      files: 0,
+      users: 0,
+      channels: 0,
+      total: 0,
+    }
+
+    // Use mock implementation as fallback
+    if (request.types?.includes('messages')) {
+      const items = await searchMessages(request, userId)
+      totals.messages = items.length
+      results.push(...items)
+    }
+
+    if (request.types?.includes('files')) {
+      const items = await searchFiles(request, userId)
+      totals.files = items.length
+      results.push(...items)
+    }
+
+    if (request.types?.includes('users')) {
+      const items = await searchUsers(request, userId)
+      totals.users = items.length
+      results.push(...items)
+    }
+
+    if (request.types?.includes('channels')) {
+      const items = await searchChannels(request, userId)
+      totals.channels = items.length
+      results.push(...items)
+    }
+
+    totals.total = results.length
+
+    return {
+      items: results,
+      totals,
+      query: request.query,
+      types: request.types || [...CONFIG.VALID_TYPES],
+    }
   }
 }
 

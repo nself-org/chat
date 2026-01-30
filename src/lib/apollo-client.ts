@@ -153,3 +153,8 @@ export function reconnectWebSocket(): void {
     wsClient.dispose()
   }
 }
+
+// Utility function to get the Apollo Client instance
+export function getApolloClient(): ApolloClient<NormalizedCacheObject> {
+  return apolloClient
+}

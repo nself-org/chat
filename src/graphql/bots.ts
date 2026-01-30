@@ -692,6 +692,315 @@ export const DELETE_BOT = gql`
 `
 
 // ============================================================================
+// BOT API - Token Management
+// ============================================================================
+
+/**
+ * Get bot tokens
+ */
+export const GET_BOT_TOKENS = gql`
+  query GetBotTokens($botId: uuid!) {
+    nchat_bot_tokens(
+      where: { bot_id: { _eq: $botId } }
+      order_by: { created_at: desc }
+    ) {
+      id
+      name
+      scopes
+      created_at
+      last_used_at
+      expires_at
+      is_active
+    }
+  }
+`
+
+/**
+ * Create bot token
+ */
+export const CREATE_BOT_TOKEN = gql`
+  mutation CreateBotToken(
+    $botId: uuid!
+    $name: String!
+    $tokenHash: String!
+    $scopes: [String!]!
+    $expiresAt: timestamptz
+  ) {
+    insert_nchat_bot_tokens_one(
+      object: {
+        bot_id: $botId
+        name: $name
+        token_hash: $tokenHash
+        scopes: $scopes
+        expires_at: $expiresAt
+      }
+    ) {
+      id
+      name
+      scopes
+      created_at
+      expires_at
+    }
+  }
+`
+
+/**
+ * Revoke bot token
+ */
+export const REVOKE_BOT_TOKEN = gql`
+  mutation RevokeBotToken($tokenId: uuid!) {
+    update_nchat_bot_tokens_by_pk(
+      pk_columns: { id: $tokenId }
+      _set: { is_active: false }
+    ) {
+      id
+      is_active
+    }
+  }
+`
+
+/**
+ * Delete bot token
+ */
+export const DELETE_BOT_TOKEN = gql`
+  mutation DeleteBotToken($tokenId: uuid!) {
+    delete_nchat_bot_tokens_by_pk(id: $tokenId) {
+      id
+    }
+  }
+`
+
+// ============================================================================
+// BOT API - Webhook Management
+// ============================================================================
+
+/**
+ * Get bot webhooks
+ */
+export const GET_BOT_WEBHOOKS = gql`
+  query GetBotWebhooks($botId: uuid!) {
+    nchat_bot_webhooks(
+      where: { bot_id: { _eq: $botId } }
+      order_by: { created_at: desc }
+    ) {
+      id
+      url
+      events
+      is_active
+      created_at
+      updated_at
+      last_triggered_at
+      delivery_count
+      failure_count
+    }
+  }
+`
+
+/**
+ * Create bot webhook
+ */
+export const CREATE_BOT_WEBHOOK = gql`
+  mutation CreateBotWebhook(
+    $botId: uuid!
+    $url: String!
+    $events: [String!]!
+    $secret: String!
+  ) {
+    insert_nchat_bot_webhooks_one(
+      object: {
+        bot_id: $botId
+        url: $url
+        events: $events
+        secret: $secret
+      }
+    ) {
+      id
+      url
+      events
+      created_at
+    }
+  }
+`
+
+/**
+ * Update bot webhook
+ */
+export const UPDATE_BOT_WEBHOOK = gql`
+  mutation UpdateBotWebhook(
+    $webhookId: uuid!
+    $url: String
+    $events: [String!]
+    $isActive: Boolean
+  ) {
+    update_nchat_bot_webhooks_by_pk(
+      pk_columns: { id: $webhookId }
+      _set: {
+        url: $url
+        events: $events
+        is_active: $isActive
+      }
+    ) {
+      id
+      url
+      events
+      is_active
+      updated_at
+    }
+  }
+`
+
+/**
+ * Delete bot webhook
+ */
+export const DELETE_BOT_WEBHOOK = gql`
+  mutation DeleteBotWebhook($webhookId: uuid!) {
+    delete_nchat_bot_webhooks_by_pk(id: $webhookId) {
+      id
+    }
+  }
+`
+
+/**
+ * Get webhook logs
+ */
+export const GET_WEBHOOK_LOGS = gql`
+  query GetWebhookLogs($webhookId: uuid!, $limit: Int = 50) {
+    nchat_bot_webhook_logs(
+      where: { webhook_id: { _eq: $webhookId } }
+      order_by: { created_at: desc }
+      limit: $limit
+    ) {
+      id
+      event_type
+      payload
+      status_code
+      response_body
+      success
+      attempt_number
+      created_at
+    }
+  }
+`
+
+// ============================================================================
+// BOT API - Permissions Management
+// ============================================================================
+
+/**
+ * Get bot permissions
+ */
+export const GET_BOT_PERMISSIONS = gql`
+  query GetBotPermissions($botId: uuid!) {
+    nchat_bot_permissions(
+      where: { bot_id: { _eq: $botId } }
+      order_by: { permission: asc }
+    ) {
+      id
+      permission
+      granted_by
+      created_at
+      granter {
+        id
+        display_name
+      }
+    }
+  }
+`
+
+/**
+ * Grant bot permission
+ */
+export const GRANT_BOT_PERMISSION = gql`
+  mutation GrantBotPermission(
+    $botId: uuid!
+    $permission: String!
+    $grantedBy: uuid!
+  ) {
+    insert_nchat_bot_permissions_one(
+      object: {
+        bot_id: $botId
+        permission: $permission
+        granted_by: $grantedBy
+      }
+      on_conflict: {
+        constraint: bot_permission_unique
+        update_columns: []
+      }
+    ) {
+      id
+      permission
+      created_at
+    }
+  }
+`
+
+/**
+ * Revoke bot permission
+ */
+export const REVOKE_BOT_PERMISSION = gql`
+  mutation RevokeBotPermission($botId: uuid!, $permission: String!) {
+    delete_nchat_bot_permissions(
+      where: {
+        bot_id: { _eq: $botId }
+        permission: { _eq: $permission }
+      }
+    ) {
+      affected_rows
+    }
+  }
+`
+
+/**
+ * Get permission definitions
+ */
+export const GET_PERMISSION_DEFINITIONS = gql`
+  query GetPermissionDefinitions {
+    nchat_bot_permission_definitions(order_by: { category: asc, permission: asc }) {
+      permission
+      description
+      category
+      is_dangerous
+    }
+  }
+`
+
+/**
+ * Get bot API logs
+ */
+export const GET_BOT_API_LOGS = gql`
+  query GetBotApiLogs($botId: uuid!, $limit: Int = 100) {
+    nchat_bot_api_logs(
+      where: { bot_id: { _eq: $botId } }
+      order_by: { created_at: desc }
+      limit: $limit
+    ) {
+      id
+      endpoint
+      method
+      status_code
+      response_time_ms
+      created_at
+      user_agent
+      ip_address
+    }
+  }
+`
+
+// ============================================================================
+// ALIASES (for backward compatibility)
+// ============================================================================
+
+/**
+ * Alias: GET_BOTS -> GET_MARKETPLACE_BOTS
+ */
+export const GET_BOTS = GET_MARKETPLACE_BOTS
+
+/**
+ * Alias: CREATE_BOT -> REGISTER_BOT
+ */
+export const CREATE_BOT = REGISTER_BOT
+
+// ============================================================================
 // SUBSCRIPTIONS
 // ============================================================================
 

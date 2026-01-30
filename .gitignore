@@ -184,6 +184,7 @@ docs/private/
 # -----------------------------------------------------------------------------
 *.generated.*
 *.auto.*
+*.tsbuildinfo
 next-env.d.ts
 
 # -----------------------------------------------------------------------------
@@ -200,7 +201,8 @@ next-env.d.ts
 *.backup
 *.bak
 *.orig
-# AI assistant directories (allow .claude/ for project docs)
+# AI assistant directories
 .ai-assistant/
 .*aude/
+# .claude/ - Keep this directory for AI-assisted development context and project documentation
 .claude/

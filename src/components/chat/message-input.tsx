@@ -34,6 +34,8 @@ import {
   Mic,
   Gift,
   Loader2,
+  Image as ImageGif,
+  Sticker,
 } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
 import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react'
@@ -56,7 +58,11 @@ import { useMessageStore } from '@/stores/message-store'
 import { useUIStore } from '@/stores/ui-store'
 import { useChannelTyping } from '@/hooks/use-channel-typing'
 import { ReplyPreview, EditPreview } from './reply-preview'
+import { GifPicker } from './GifPicker'
+import { StickerPicker } from './StickerPicker'
 import type { Message, MentionSuggestion } from '@/types/message'
+import type { TenorGif } from '@/lib/tenor-client'
+import type { Sticker as StickerType } from '@/hooks/use-stickers'
 
 // ============================================================================
 // Types
@@ -68,6 +74,8 @@ interface MessageInputProps {
   disabled?: boolean
   maxLength?: number
   onSend: (content: string, attachments?: File[]) => void | Promise<void>
+  onSendGif?: (gif: TenorGif) => void | Promise<void>
+  onSendSticker?: (sticker: StickerType) => void | Promise<void>
   onTyping?: () => void
   onEdit?: (messageId: string, content: string) => void | Promise<void>
   onCancelEdit?: () => void
@@ -110,6 +118,8 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
       disabled = false,
       maxLength = 4000,
       onSend,
+      onSendGif,
+      onSendSticker,
       onTyping,
       onEdit,
       onCancelEdit,
@@ -125,6 +135,8 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
     const containerRef = useRef<HTMLDivElement>(null)
     const [isSending, setIsSending] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+    const [showGifPicker, setShowGifPicker] = useState(false)
+    const [showStickerPicker, setShowStickerPicker] = useState(false)
     const [attachments, setAttachments] = useState<File[]>([])
     const [showFormatting, setShowFormatting] = useState(false)
     const lastTypingTimeRef = useRef<number>(0)
@@ -144,6 +156,8 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
     const features = {
       fileUploads: config?.features?.fileUploads ?? true,
       reactions: config?.features?.reactions ?? true,
+      gifs: config?.features?.gifs ?? true,
+      stickers: config?.features?.stickers ?? true,
     }
 
     // Initialize TipTap editor
@@ -332,6 +346,42 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
         editor?.commands.focus()
       },
       [editor]
+    )
+
+    // Handle GIF selection
+    const handleGifSelect = useCallback(
+      async (gif: TenorGif) => {
+        if (onSendGif) {
+          setIsSending(true)
+          try {
+            await onSendGif(gif)
+            setShowGifPicker(false)
+          } catch (error) {
+            console.error('Failed to send GIF:', error)
+          } finally {
+            setIsSending(false)
+          }
+        }
+      },
+      [onSendGif]
+    )
+
+    // Handle sticker selection
+    const handleStickerSelect = useCallback(
+      async (sticker: StickerType) => {
+        if (onSendSticker) {
+          setIsSending(true)
+          try {
+            await onSendSticker(sticker)
+            setShowStickerPicker(false)
+          } catch (error) {
+            console.error('Failed to send sticker:', error)
+          } finally {
+            setIsSending(false)
+          }
+        }
+      },
+      [onSendSticker]
     )
 
     // Remove attachment
@@ -536,6 +586,68 @@ export const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
                     </TooltipTrigger>
                     <TooltipContent>Mention someone</TooltipContent>
                   </Tooltip>
+
+                  {/* GIF picker */}
+                  {features.gifs && (
+                    <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={disabled}
+                              className="h-8 w-8 p-0"
+                            >
+                              <ImageGif className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>GIF</TooltipContent>
+                      </Tooltip>
+                      <PopoverContent
+                        side="top"
+                        align="start"
+                        className="w-[450px] border-0 p-0 shadow-xl"
+                      >
+                        <GifPicker
+                          onSelect={handleGifSelect}
+                          onClose={() => setShowGifPicker(false)}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
+
+                  {/* Sticker picker */}
+                  {features.stickers && (
+                    <Popover open={showStickerPicker} onOpenChange={setShowStickerPicker}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={disabled}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Sticker className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>Sticker</TooltipContent>
+                      </Tooltip>
+                      <PopoverContent
+                        side="top"
+                        align="start"
+                        className="w-[400px] border-0 p-0 shadow-xl"
+                      >
+                        <StickerPicker
+                          onSelect={handleStickerSelect}
+                          onClose={() => setShowStickerPicker(false)}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </TooltipProvider>
               </div>
 

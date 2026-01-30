@@ -2,12 +2,12 @@
 
 **Real-time team communication platform - part of the ɳSelf ecosystem**
 
-Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `1.0.0`
+Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.3.0`
 
 [![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
 [![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/acamarata/nself-chat/releases)
+[![Version](https://img.shields.io/badge/Version-0.3.0-brightgreen.svg)](https://github.com/acamarata/nself-chat/releases)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
@@ -15,7 +15,7 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 [![Tests](https://img.shields.io/badge/Tests-860%2B-success.svg)](https://github.com/acamarata/nself-chat)
 [![Accessibility](https://img.shields.io/badge/A11y-WCAG%20AA-blue.svg)](https://www.w3.org/WAI/WCAG2AA-Conformance)
 
-> **Production Ready**: ɳChat v1.0.0 is production-ready with 100+ features, 860+ tests, and WCAG AA accessibility compliance. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
+> **v0.3.0 Release**: Advanced messaging features including scheduled messages, message forwarding, translations, polls, and social media integrations. Plus full-text search, Bot API, and comprehensive monitoring. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
 
 ---
 
@@ -36,10 +36,14 @@ Powered by [ɳSelf](https://nself.org) for backend infrastructure (PostgreSQL, H
 - Auto-login in development mode for rapid iteration
 
 ### Complete Feature Set
-- **78+ Features**: Messaging, channels, threads, reactions, file uploads, and more
+- **90+ Features**: Messaging, channels, threads, reactions, file uploads, and more
 - **11 Auth Providers**: Email, magic links, Google, GitHub, Apple, ID.me, and more
 - **Bot SDK**: Build custom bots with slash commands, events, and rich responses
 - **Real-time**: WebSocket-powered typing indicators, read receipts, and presence
+- **Advanced Messaging**: Scheduled messages, forwarding, translations, polls, reactions
+- **Full-Text Search**: MeiliSearch-powered fast and accurate search
+- **Social Media**: Connect Twitter, Instagram, and LinkedIn accounts
+- **Monitoring**: Sentry error tracking and performance monitoring
 
 ### White-Label Everything
 - **12-Step Setup Wizard**: Complete guided experience with environment detection
@@ -120,23 +124,24 @@ Key screens to capture for documentation:
 
 ## Features at a Glance
 
-### 78+ Features Across 13 Categories
+### 90+ Features Across 14 Categories
 
 | Category | Count | Features |
 |----------|-------|----------|
-| **Messaging** | 14 | Channels, DMs, threads, reactions, pins, bookmarks, voice messages, scheduled messages, code blocks, markdown, link previews, mentions, quotes, forward |
+| **Messaging** | 17 | Channels, DMs, threads, reactions, pins, bookmarks, voice messages, scheduled messages, code blocks, markdown, link previews, mentions, quotes, forward, translations, polls, reminders |
 | **Channels** | 9 | Public, private, direct messages, group DMs, categories, topics, archive, favorites, mute |
 | **Files & Media** | 8 | Upload, images, documents, audio, video, preview, drag & drop, clipboard paste |
 | **Users & Presence** | 7 | Online/away status, custom status, profiles, roles, blocking, avatars, display names |
 | **Real-time** | 5 | Typing indicators, read receipts, presence updates, live messages, live notifications |
-| **Search** | 6 | Messages, files, users, global search, filters, highlighting |
+| **Search** | 7 | Messages, files, users, global search, filters, highlighting, MeiliSearch full-text search |
 | **Notifications** | 6 | Desktop, sound, email, mobile push, do not disturb, quiet hours |
 | **Emoji & Reactions** | 4 | Emoji picker, custom emoji, GIF picker, stickers |
-| **Polls & Voting** | 3 | Create polls, anonymous voting, timed polls |
-| **Bots & Automation** | 6 | Bot SDK, slash commands, webhooks, custom bots, bot marketplace, event handlers |
+| **Polls & Voting** | 4 | Create polls, anonymous voting, timed polls, poll results |
+| **Bots & Automation** | 8 | Bot SDK, slash commands, webhooks, custom bots, bot marketplace, event handlers, bot authentication, bot permissions |
 | **Admin** | 6 | Dashboard, user management, analytics, audit logs, bulk operations, data export |
 | **Moderation** | 6 | Content moderation, reporting, auto-filter, warnings, bans, slow mode |
 | **Integrations** | 4 | Slack import, GitHub, Jira, Google Drive |
+| **Social Media** | 5 | Twitter integration, Instagram integration, LinkedIn integration, OAuth connections, encrypted token storage |
 
 ---
 
@@ -643,40 +648,27 @@ const weatherBot = bot('weather-bot')
 
 ## Documentation
 
-Full documentation available in the [docs/](docs/) folder:
+**Full documentation is organized as a GitHub Wiki-compatible structure** in the [docs/](docs/) folder.
 
-### Getting Started
-- [Home](docs/Home.md) - Documentation overview
-- [Getting Started](docs/Getting-Started.md) - Quick start guide
-- [Installation](docs/Installation.md) - Detailed installation
-- [Configuration](docs/Configuration.md) - Configuration reference
+**📖 [Read the Documentation](docs/Home.md)** - Start here for comprehensive guides and references.
 
-### Features
-- [Features Overview](docs/Features.md) - All 78+ features
-- [Features - Messaging](docs/Features-Messaging.md) - Messaging details
-- [Authentication](docs/Authentication.md) - Auth providers setup
+### Quick Links
 
-### API
-- [API Documentation](docs/API.md) - Complete API reference
+| Category | Key Docs |
+|----------|----------|
+| **Getting Started** | [Quick Start](docs/getting-started/Getting-Started.md) · [Installation](docs/getting-started/Installation.md) |
+| **Features** | [Features Overview](docs/features/Features.md) · [Messaging](docs/features/Features-Messaging.md) · [White-Label Guide](docs/features/White-Label-Guide.md) |
+| **Configuration** | [Configuration](docs/configuration/Configuration.md) · [Authentication](docs/configuration/Authentication.md) · [Environment Variables](docs/configuration/Environment-Variables.md) |
+| **API** | [API Overview](docs/api/API.md) · [API Documentation](docs/api/API-DOCUMENTATION.md) |
+| **Deployment** | [Deployment Guide](docs/deployment/DEPLOYMENT.md) · [Docker](docs/deployment/Deployment-Docker.md) · [Kubernetes](docs/deployment/Deployment-Kubernetes.md) |
+| **Guides** | [User Guide](docs/guides/USER-GUIDE.md) · [Sentry Setup](docs/guides/README-SENTRY.md) · [Testing](docs/guides/testing-guide.md) |
+| **Reference** | [Architecture](docs/reference/Architecture.md) · [Database Schema](docs/reference/Database-Schema.md) · [Project Structure](docs/reference/Project-Structure.md) |
+| **About** | [Changelog](docs/about/Changelog.md) · [Contributing](docs/about/Contributing.md) · [Roadmap](docs/about/Roadmap.md) |
+
+### Interactive API Documentation
+
 - [Interactive API Docs](/api-docs) - Swagger UI (when running)
 - [OpenAPI Specification](/openapi.yaml) - OpenAPI 3.0 spec
-
-### Deployment
-- [Docker](docs/Deployment-Docker.md) - Docker deployment
-- [Kubernetes](docs/Deployment-Kubernetes.md) - K8s deployment
-- [Helm](docs/Deployment-Helm.md) - Helm charts
-
-### Extending
-- [Bots](docs/Bots.md) - Bot SDK documentation
-- [Plugins](docs/Plugins.md) - Plugin architecture
-- [Plugins List](docs/Plugins-List.md) - Available plugins
-
-### Development
-- [Architecture](docs/Architecture.md) - System design
-- [White-Label Guide](docs/White-Label-Guide.md) - Customization
-- [Contributing](docs/Contributing.md) - How to contribute
-- [Changelog](docs/Changelog.md) - Version history
-- [Roadmap](docs/Roadmap.md) - Future plans
 
 ---
 

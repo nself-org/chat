@@ -90,6 +90,8 @@ export interface AppConfig {
     inviteLinks: boolean
     channelCategories: boolean
     customEmojis: boolean
+    gifs: boolean
+    stickers: boolean
     messageScheduling: boolean
     videoConferencing: boolean
   }
@@ -263,6 +265,8 @@ export const defaultAppConfig: AppConfig = {
     inviteLinks: true,
     channelCategories: false,
     customEmojis: false,
+    gifs: true,
+    stickers: true,
     messageScheduling: false,
     videoConferencing: false,
   },
