@@ -10,8 +10,18 @@
 # -----------------------------------------------------------------------------
 FROM node:20-alpine AS deps
 
-# Install libc6-compat for Alpine compatibility
-RUN apk add --no-cache libc6-compat
+# Install system dependencies for canvas and native modules
+RUN apk add --no-cache \
+    libc6-compat \
+    python3 \
+    py3-pip \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev \
+    pixman-dev
 
 WORKDIR /app
 
@@ -62,6 +72,14 @@ RUN pnpm build
 # Stage 3: Production Runner
 # -----------------------------------------------------------------------------
 FROM node:20-alpine AS runner
+
+# Install runtime dependencies for canvas
+RUN apk add --no-cache \
+    cairo \
+    pango \
+    giflib \
+    pixman \
+    libjpeg-turbo
 
 WORKDIR /app
 
