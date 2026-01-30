@@ -1,7 +1,11 @@
 /**
  * Next.js Middleware
  *
- * Handles authentication and authorization at the edge.
+ * Handles:
+ * 1. Multi-tenant routing (subdomain/custom domain resolution)
+ * 2. Authentication and authorization at the edge
+ * 3. Security headers
+ *
  * This middleware runs before page rendering for protected routes.
  *
  * NOTE: This middleware provides basic route protection. Client-side guards
@@ -11,6 +15,10 @@
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import {
+  tenantMiddleware,
+  getDefaultTenantConfig,
+} from '@/lib/tenants/tenant-middleware'
 
 /**
  * Routes that don't require authentication
@@ -243,12 +251,28 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): NextRespons
 /**
  * Main middleware function
  */
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip middleware for ignored paths
   if (shouldIgnore(pathname)) {
     return NextResponse.next()
+  }
+
+  // 1. MULTI-TENANT ROUTING (if enabled)
+  const enableMultiTenancy = process.env.ENABLE_MULTI_TENANCY === 'true'
+
+  if (enableMultiTenancy) {
+    const tenantConfig = getDefaultTenantConfig()
+    const tenantResponse = await tenantMiddleware(request, tenantConfig)
+
+    // If tenant middleware returned a redirect or error, return it
+    if (tenantResponse.status !== 200) {
+      return tenantResponse
+    }
+
+    // Continue with tenant-aware request
+    request = tenantResponse.request || request
   }
 
   // In development mode with dev auth enabled, be more permissive
