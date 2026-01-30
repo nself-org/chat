@@ -278,7 +278,6 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {showExport && (
         <AnalyticsExport
           onExport={(format) => {
-            console.log(`Exporting as ${format}`)
             setShowExport(false)
           }}
         />

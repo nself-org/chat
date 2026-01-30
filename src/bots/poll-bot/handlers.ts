@@ -296,7 +296,6 @@ export async function handleVoteReaction(
 
   if (!result.success) {
     // Could send ephemeral message here
-    console.log(`[PollBot] Vote failed: ${result.message}`)
   }
 }
 

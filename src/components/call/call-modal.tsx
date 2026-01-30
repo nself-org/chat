@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogPortal, DialogOverlay } from '@/components
 import { CallControls, formatCallDuration } from './call-controls'
 import { CallParticipants, type Participant } from './call-participants'
 import { CallStats, type CallStatsData } from './call-stats'
+import { ScreenSharePanel } from './screen-share-panel'
 import { cn } from '@/lib/utils'
 import { Maximize2, Minimize2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -39,6 +40,8 @@ export interface CallModalProps {
   callStats?: CallStatsData
   isMinimized?: boolean
   onToggleMinimize?: () => void
+  currentUserId?: string
+  currentUserName?: string
   className?: string
 }
 
@@ -65,6 +68,8 @@ export function CallModal({
   callStats,
   isMinimized = false,
   onToggleMinimize,
+  currentUserId = 'current-user',
+  currentUserName = 'You',
   className,
 }: CallModalProps) {
   const videoRef = React.useRef<HTMLVideoElement>(null)
@@ -169,26 +174,39 @@ export function CallModal({
 
           {/* Main Content */}
           <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-            {/* Local Video Preview (Picture-in-Picture) */}
-            {callType === 'video' && isVideoEnabled && localStream && (
-              <div className="absolute top-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white/20 shadow-xl z-10">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full h-full object-cover mirror"
-                />
-              </div>
-            )}
+            {/* Screen Share View */}
+            {isScreenSharing ? (
+              <ScreenSharePanel
+                userId={currentUserId}
+                userName={currentUserName}
+                showAnnotations
+                showRecording
+                className="w-full h-full"
+              />
+            ) : (
+              <>
+                {/* Local Video Preview (Picture-in-Picture) */}
+                {callType === 'video' && isVideoEnabled && localStream && (
+                  <div className="absolute top-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white/20 shadow-xl z-10">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover mirror"
+                    />
+                  </div>
+                )}
 
-            {/* Participants */}
-            <CallParticipants
-              participants={participants}
-              callType={callType}
-              isScreenSharing={isScreenSharing}
-              className="w-full h-full"
-            />
+                {/* Participants */}
+                <CallParticipants
+                  participants={participants}
+                  callType={callType}
+                  isScreenSharing={false}
+                  className="w-full h-full"
+                />
+              </>
+            )}
           </div>
 
           {/* Controls */}

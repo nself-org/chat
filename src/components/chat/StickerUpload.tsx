@@ -178,7 +178,7 @@ export function StickerUpload({ packId, onComplete, className }: StickerUploadPr
               {stickers.length} sticker{stickers.length !== 1 ? 's' : ''}
             </p>
             {hasPending && (
-              <Button onClick={handleUploadAll} disabled={isLoading}>
+              <Button onClick={uploadAll} disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

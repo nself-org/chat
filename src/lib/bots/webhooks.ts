@@ -101,14 +101,14 @@ const LOG_WEBHOOK_DELIVERY = gql`
 const UPDATE_WEBHOOK_STATS = gql`
   mutation UpdateWebhookStats(
     $webhookId: uuid!
-    $success: Boolean!
+    $failureIncrement: Int!
   ) {
     update_nchat_bot_webhooks_by_pk(
       pk_columns: { id: $webhookId }
       _set: { last_triggered_at: "now()" }
       _inc: {
         delivery_count: 1
-        failure_count: ${!success ? 1 : 0}
+        failure_count: $failureIncrement
       }
     ) {
       id
@@ -184,7 +184,6 @@ async function deliverWebhookWithRetry(
     // If failed and we have attempts left, retry with backoff
     if (!success && attemptNumber < maxAttempts) {
       const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber), 60000); // Max 60s
-      console.log(`Webhook delivery failed, retrying in ${backoffMs}ms (attempt ${attemptNumber + 1}/${maxAttempts})`);
 
       await new Promise(resolve => setTimeout(resolve, backoffMs));
       return deliverWebhookWithRetry(webhookId, url, secret, payload, attemptNumber + 1);
@@ -292,7 +291,7 @@ export async function triggerWebhooks(
           mutation: UPDATE_WEBHOOK_STATS,
           variables: {
             webhookId: webhook.id,
-            success: result.success,
+            failureIncrement: result.success ? 0 : 1,
           },
         });
 

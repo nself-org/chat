@@ -74,7 +74,6 @@ export function LocationPreview({
     const success = await copyCoordinates(coordinates)
     if (success) {
       // Could show a toast here
-      console.log('Coordinates copied to clipboard')
     }
   }
 

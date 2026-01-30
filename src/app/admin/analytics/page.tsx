@@ -136,7 +136,6 @@ export default function AnalyticsPage() {
 
   const handleExport = () => {
     // In production, this would generate a CSV/PDF report
-    console.log('Exporting analytics data...')
   }
 
   if (!canViewAnalytics) {

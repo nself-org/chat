@@ -2,7 +2,7 @@
  * Hook for managing sticker packs (admin only)
  */
 
-import { useMutation, useQueryClient } from '@apollo/client'
+import { useMutation, useApolloClient } from '@apollo/client'
 import { gql } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import { usePermission } from '@/hooks/use-permission'
@@ -168,7 +168,7 @@ export interface UseStickerPacksManagementResult {
 export function useStickerPacksManagement(): UseStickerPacksManagementResult {
   const { user } = useAuth()
   const { hasPermission } = usePermission()
-  const queryClient = useQueryClient()
+  const apolloClient = useApolloClient()
 
   // Check if user can manage sticker packs (owner or admin)
   const canManage = hasPermission('manage_stickers') ||
@@ -193,7 +193,8 @@ export function useStickerPacksManagement(): UseStickerPacksManagementResult {
 
   // Invalidate cache after mutations
   const invalidateCache = () => {
-    queryClient.invalidateQueries({ queryKey: ['GetStickerPacks'] })
+    // Refetch sticker packs query after mutation
+    apolloClient.refetchQueries({ include: ['GetStickerPacks'] })
   }
 
   const createPack = async (input: {

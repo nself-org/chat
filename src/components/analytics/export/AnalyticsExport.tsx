@@ -25,7 +25,6 @@ export function AnalyticsExport({ className, onExport }: AnalyticsExportProps) {
     if (onExport) {
       onExport(format)
     } else {
-      console.log(`Exporting analytics as ${format}`)
     }
   }
 

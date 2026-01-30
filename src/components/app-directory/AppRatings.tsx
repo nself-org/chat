@@ -263,7 +263,6 @@ function WriteReviewForm({ onCancel, onSubmit }: WriteReviewFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would submit to the server
-    console.log('Submitting review:', { rating, review });
     onSubmit();
   };
 

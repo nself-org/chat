@@ -1,7 +1,9 @@
 /**
  * Screen Share Hook
  *
- * Manages screen sharing functionality independently or as part of a call.
+ * Manages screen sharing functionality with advanced features.
+ * Supports screen/window/tab capture, system audio, quality controls,
+ * and integration with the new ScreenCaptureManager.
  */
 
 'use client'
@@ -13,6 +15,14 @@ import {
   type ScreenShareOptions,
   DEFAULT_SCREEN_SHARE_OPTIONS,
 } from '@/lib/webrtc/media-manager'
+import {
+  ScreenCaptureManager,
+  createScreenCaptureManager,
+  type ScreenCaptureOptions,
+  type ScreenShare,
+  supportsSystemAudio,
+  getOptimalQuality,
+} from '@/lib/webrtc/screen-capture'
 import { useCallStore } from '@/stores/call-store'
 
 // =============================================================================
@@ -20,9 +30,12 @@ import { useCallStore } from '@/stores/call-store'
 // =============================================================================
 
 export interface UseScreenShareOptions {
+  userId?: string
+  userName?: string
   onScreenShareStarted?: (stream: MediaStream) => void
   onScreenShareStopped?: () => void
   onError?: (error: Error) => void
+  useAdvancedCapture?: boolean // Use new ScreenCaptureManager
 }
 
 export interface UseScreenShareReturn {
@@ -32,11 +45,18 @@ export interface UseScreenShareReturn {
   error: string | null
 
   // Actions
-  startScreenShare: (options?: ScreenShareOptions) => Promise<MediaStream | null>
+  startScreenShare: (options?: ScreenShareOptions | ScreenCaptureOptions) => Promise<MediaStream | null>
   stopScreenShare: () => void
+
+  // Advanced features (when useAdvancedCapture is true)
+  activeShares: ScreenShare[]
+  updateQuality: (quality: 'auto' | '720p' | '1080p' | '4k') => Promise<void>
+  updateFrameRate: (frameRate: number) => Promise<void>
+  getVideoSettings: () => MediaTrackSettings | null
 
   // Helper
   isSupported: boolean
+  supportsSystemAudio: boolean
 }
 
 // =============================================================================
@@ -44,7 +64,14 @@ export interface UseScreenShareReturn {
 // =============================================================================
 
 export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenShareReturn {
-  const { onScreenShareStarted, onScreenShareStopped, onError } = options
+  const {
+    userId = 'default-user',
+    userName = 'User',
+    onScreenShareStarted,
+    onScreenShareStopped,
+    onError,
+    useAdvancedCapture = true, // Default to new advanced capture
+  } = options
 
   // Store
   const activeCall = useCallStore((state) => state.activeCall)
@@ -54,9 +81,12 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
   const [isScreenSharing, setIsScreenSharing] = useState(false)
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [activeShares, setActiveShares] = useState<ScreenShare[]>([])
 
   // Refs
   const mediaManagerRef = useRef<MediaManager | null>(null)
+  const captureManagerRef = useRef<ScreenCaptureManager | null>(null)
+  const currentShareRef = useRef<ScreenShare | null>(null)
 
   // Check if screen sharing is supported
   const isSupported =
@@ -65,11 +95,45 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
     'getDisplayMedia' in navigator.mediaDevices
 
   // ==========================================================================
+  // Initialize
+  // ==========================================================================
+
+  useEffect(() => {
+    if (useAdvancedCapture) {
+      captureManagerRef.current = createScreenCaptureManager({
+        onStreamStarted: (stream) => {
+          // Stream started
+        },
+        onStreamEnded: (streamId) => {
+          setActiveShares((prev) => prev.filter((s) => s.id !== streamId))
+          if (currentShareRef.current?.id === streamId) {
+            stopScreenShare()
+          }
+        },
+        onError: (err) => {
+          setError(err.message)
+          onError?.(err)
+        },
+        onTrackEnded: (kind) => {
+          if (kind === 'video') {
+            stopScreenShare()
+          }
+        },
+      })
+
+      return () => {
+        captureManagerRef.current?.cleanup()
+        captureManagerRef.current = null
+      }
+    }
+  }, [useAdvancedCapture, onError]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ==========================================================================
   // Start Screen Share
   // ==========================================================================
 
   const startScreenShare = useCallback(
-    async (shareOptions: ScreenShareOptions = DEFAULT_SCREEN_SHARE_OPTIONS) => {
+    async (shareOptions: ScreenShareOptions | ScreenCaptureOptions = DEFAULT_SCREEN_SHARE_OPTIONS) => {
       if (!isSupported) {
         const err = new Error('Screen sharing is not supported in this browser')
         setError(err.message)
@@ -80,36 +144,54 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
       try {
         setError(null)
 
-        // Initialize media manager if not exists
-        if (!mediaManagerRef.current) {
-          mediaManagerRef.current = createMediaManager({
-            onStreamError: (err) => {
-              setError(err.message)
-              onError?.(err)
-            },
-            onTrackEnded: () => {
-              // Screen share was stopped (e.g., user clicked browser's stop button)
-              stopScreenShare()
-            },
-          })
-        }
+        if (useAdvancedCapture && captureManagerRef.current) {
+          // Use new advanced capture manager
+          const share = await captureManagerRef.current.startCapture(
+            userId,
+            userName,
+            shareOptions as ScreenCaptureOptions
+          )
 
-        // Get display media
-        const stream = await mediaManagerRef.current.getDisplayMedia(shareOptions)
+          currentShareRef.current = share
+          setScreenStream(share.stream)
+          setActiveShares((prev) => [...prev, share])
+          setIsScreenSharing(true)
+          setLocalScreenSharing(true)
+          onScreenShareStarted?.(share.stream)
 
-        // Handle track ended (user stops sharing from browser UI)
-        stream.getVideoTracks().forEach((track) => {
-          track.onended = () => {
-            stopScreenShare()
+          return share.stream
+        } else {
+          // Use legacy media manager
+          if (!mediaManagerRef.current) {
+            mediaManagerRef.current = createMediaManager({
+              onStreamError: (err) => {
+                setError(err.message)
+                onError?.(err)
+              },
+              onTrackEnded: () => {
+                stopScreenShare()
+              },
+            })
           }
-        })
 
-        setScreenStream(stream)
-        setIsScreenSharing(true)
-        setLocalScreenSharing(true)
-        onScreenShareStarted?.(stream)
+          const stream = await mediaManagerRef.current.getDisplayMedia(
+            shareOptions as ScreenShareOptions
+          )
 
-        return stream
+          // Handle track ended
+          stream.getVideoTracks().forEach((track) => {
+            track.onended = () => {
+              stopScreenShare()
+            }
+          })
+
+          setScreenStream(stream)
+          setIsScreenSharing(true)
+          setLocalScreenSharing(true)
+          onScreenShareStarted?.(stream)
+
+          return stream
+        }
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to start screen share')
         setError(error.message)
@@ -117,7 +199,15 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
         return null
       }
     },
-    [isSupported, onError, onScreenShareStarted, setLocalScreenSharing]
+    [
+      isSupported,
+      useAdvancedCapture,
+      userId,
+      userName,
+      onError,
+      onScreenShareStarted,
+      setLocalScreenSharing,
+    ]
   )
 
   // ==========================================================================
@@ -125,7 +215,10 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
   // ==========================================================================
 
   const stopScreenShare = useCallback(() => {
-    if (mediaManagerRef.current) {
+    if (useAdvancedCapture && captureManagerRef.current && currentShareRef.current) {
+      captureManagerRef.current.stopCapture(currentShareRef.current.id)
+      currentShareRef.current = null
+    } else if (mediaManagerRef.current) {
       mediaManagerRef.current.stopScreenShare()
     }
 
@@ -133,7 +226,49 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
     setIsScreenSharing(false)
     setLocalScreenSharing(false)
     onScreenShareStopped?.()
-  }, [onScreenShareStopped, setLocalScreenSharing])
+  }, [useAdvancedCapture, onScreenShareStopped, setLocalScreenSharing])
+
+  // ==========================================================================
+  // Update Quality (Advanced Mode Only)
+  // ==========================================================================
+
+  const updateQuality = useCallback(
+    async (quality: 'auto' | '720p' | '1080p' | '4k'): Promise<void> => {
+      if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+        throw new Error('Advanced capture not enabled or no active share')
+      }
+
+      await captureManagerRef.current.updateQuality(currentShareRef.current.id, quality)
+    },
+    [useAdvancedCapture]
+  )
+
+  // ==========================================================================
+  // Update Frame Rate (Advanced Mode Only)
+  // ==========================================================================
+
+  const updateFrameRate = useCallback(
+    async (frameRate: number): Promise<void> => {
+      if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+        throw new Error('Advanced capture not enabled or no active share')
+      }
+
+      await captureManagerRef.current.updateFrameRate(currentShareRef.current.id, frameRate)
+    },
+    [useAdvancedCapture]
+  )
+
+  // ==========================================================================
+  // Get Video Settings (Advanced Mode Only)
+  // ==========================================================================
+
+  const getVideoSettings = useCallback((): MediaTrackSettings | null => {
+    if (!useAdvancedCapture || !captureManagerRef.current || !currentShareRef.current) {
+      return null
+    }
+
+    return captureManagerRef.current.getVideoSettings(currentShareRef.current.id)
+  }, [useAdvancedCapture])
 
   // ==========================================================================
   // Cleanup on unmount
@@ -159,11 +294,23 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
   }, [activeCall, isScreenSharing, stopScreenShare])
 
   return {
+    // State
     isScreenSharing,
     screenStream,
     error,
+
+    // Actions
     startScreenShare,
     stopScreenShare,
+
+    // Advanced features
+    activeShares,
+    updateQuality,
+    updateFrameRate,
+    getVideoSettings,
+
+    // Helper
     isSupported,
+    supportsSystemAudio: supportsSystemAudio(),
   }
 }

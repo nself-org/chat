@@ -105,7 +105,6 @@ export default function UserDetailPage({ params }: PageProps) {
 
   useEffect(() => {
     // In production, fetch user data based on id
-    console.log('Fetching user:', id)
   }, [id])
 
   const handleSave = async () => {
@@ -130,7 +129,6 @@ export default function UserDetailPage({ params }: PageProps) {
       ...prev,
       status: prev.status === 'banned' ? 'active' : 'banned',
     }))
-    console.log('Ban action:', data)
   }
 
   const handleAddWarning = async () => {

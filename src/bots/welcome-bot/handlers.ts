@@ -83,7 +83,6 @@ export async function handleUserJoin(
   // Handle DM if enabled (in a real implementation)
   if (template.sendDm && template.dmMessage) {
     // In production, use api.sendDirectMessage or similar
-    console.log(`[WelcomeBot] Would send DM to ${ctx.user.userId}: ${template.dmMessage}`)
   }
 
   return res.build()
@@ -97,7 +96,6 @@ export async function handleUserLeave(
   api: BotApi
 ): Promise<BotResponse | void> {
   // Optional: Log departures or send farewell messages
-  console.log(`[WelcomeBot] User ${ctx.user.displayName} left ${ctx.channel.name}`)
 
   // By default, don't send any message on leave
   // Could be enabled via settings

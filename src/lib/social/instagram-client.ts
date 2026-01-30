@@ -258,6 +258,5 @@ export class InstagramClient implements SocialAPIClient {
   async revokeAccess(accessToken: string): Promise<void> {
     // Instagram doesn't have a direct revoke endpoint
     // Users must revoke access through their Facebook settings
-    console.log('Instagram access revocation must be done through Facebook settings')
   }
 }

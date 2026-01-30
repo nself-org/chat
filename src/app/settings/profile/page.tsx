@@ -79,13 +79,11 @@ export default function ProfileSettingsPage() {
 
   const handleAvatarUpload = async (file: File) => {
     // TODO: Implement avatar upload
-    console.log('Avatar upload:', file.name)
     // In a real implementation, you would upload to storage and update the user's avatarUrl
   }
 
   const handleAvatarRemove = async () => {
     // TODO: Implement avatar removal
-    console.log('Avatar remove')
   }
 
   if (!user) {

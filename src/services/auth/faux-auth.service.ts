@@ -43,7 +43,6 @@ export class FauxAuthService {
       createdAt: new Date().toISOString(),
     }
 
-    console.log('Dev Auth: Signing in as', user.email, 'with role', user.role)
 
     this.currentUser = user
     this.isAuthenticated = true

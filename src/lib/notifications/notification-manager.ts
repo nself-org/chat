@@ -562,7 +562,6 @@ export class NotificationManager {
 
   private log(message: string): void {
     if (this.options.debug) {
-      console.log(`[NotificationManager] ${message}`);
     }
   }
 }

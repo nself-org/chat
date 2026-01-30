@@ -318,7 +318,6 @@ export class ReminderBot implements Bot {
 
   private sendReminder(reminder: Reminder) {
     // In production, this would send an actual notification
-    console.log(`[Reminder Bot] Reminder for ${reminder.userId}: ${reminder.message}`);
   }
 
   private formatDateTime(date: Date): string {

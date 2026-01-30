@@ -104,7 +104,6 @@ export function A11yProvider({
   // Placeholder announce function - will be replaced by AnnouncerProvider
   const announce = useCallback((message: string, priority?: 'polite' | 'assertive') => {
     // This will be handled by AnnouncerProvider
-    console.log(`[A11y Announce ${priority || 'polite'}]: ${message}`);
   }, []);
 
   const contextValue: A11yProviderContextValue = {

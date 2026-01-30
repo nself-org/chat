@@ -211,7 +211,6 @@ export function useUnreadMentions({
 
       // Navigate to the message (this would typically use router)
       // window.location.href = `/chat/${mention.channelSlug}?message=${mention.messageId}`
-      console.log('Jump to mention:', mention.channelSlug, mention.messageId)
     },
     [markAsRead]
   )
@@ -227,7 +226,6 @@ export function useUnreadMentions({
       // In a real implementation, this would fetch from the API
       // const response = await fetchMentions(userId)
       // setMentions(response.mentions)
-      console.log('Refreshing mentions for user:', userId)
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to fetch mentions'

@@ -268,7 +268,6 @@ export function logEnvStatus(): void {
   const status = getEnvStatus()
 
   if (status.valid) {
-    console.log('✅ Environment variables validated successfully')
     return
   }
 
@@ -356,7 +355,6 @@ if (process.env.NODE_ENV !== 'test') {
       process.exit(1)
     }
   } else if (isDevelopment()) {
-    console.log('✅ Environment variables validated')
 
     // Log warnings in development
     const status = getEnvStatus()

@@ -89,7 +89,6 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 
   try {
     const permission = await Notification.requestPermission();
-    console.log('[Push] Permission result:', permission);
     return permission;
   } catch (error) {
     console.error('[Push] Error requesting permission:', error);
@@ -144,7 +143,6 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
     const existingSubscription = await registration.pushManager.getSubscription();
 
     if (existingSubscription) {
-      console.log('[Push] Using existing subscription');
       currentSubscription = existingSubscription;
       return existingSubscription;
     }
@@ -164,7 +162,6 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
     });
 
     currentSubscription = subscription;
-    console.log('[Push] Subscribed successfully');
 
     // Send subscription to server
     await sendSubscriptionToServer(subscription);
@@ -189,7 +186,6 @@ export async function unsubscribeFromPush(): Promise<boolean> {
   }
 
   if (!currentSubscription) {
-    console.log('[Push] No subscription to unsubscribe');
     return true;
   }
 
@@ -201,7 +197,6 @@ export async function unsubscribeFromPush(): Promise<boolean> {
     const result = await currentSubscription.unsubscribe();
     currentSubscription = null;
 
-    console.log('[Push] Unsubscribed successfully');
     return result;
   } catch (error) {
     console.error('[Push] Error unsubscribing:', error);
@@ -258,7 +253,6 @@ async function sendSubscriptionToServer(subscription: PushSubscription): Promise
       throw new Error(`Failed to send subscription: ${response.status}`);
     }
 
-    console.log('[Push] Subscription sent to server');
   } catch (error) {
     console.error('[Push] Error sending subscription to server:', error);
     // Don't throw - subscription is still valid locally
@@ -284,7 +278,6 @@ async function removeSubscriptionFromServer(subscription: PushSubscription): Pro
       throw new Error(`Failed to remove subscription: ${response.status}`);
     }
 
-    console.log('[Push] Subscription removed from server');
   } catch (error) {
     console.error('[Push] Error removing subscription from server:', error);
     // Continue with local unsubscribe anyway
@@ -405,7 +398,6 @@ export async function enablePushNotifications(): Promise<PushSubscription | null
   const permission = await requestNotificationPermission();
 
   if (permission !== 'granted') {
-    console.log('[Push] Permission not granted');
     return null;
   }
 

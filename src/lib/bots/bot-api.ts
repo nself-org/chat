@@ -215,27 +215,21 @@ export function createMockServices(): BotServices {
   return {
     messaging: {
       async send(channelId, response) {
-        console.log(`[MockMessaging] Send to ${channelId}:`, response)
         return `msg_${Date.now()}`
       },
       async reply(messageId, response) {
-        console.log(`[MockMessaging] Reply to ${messageId}:`, response)
         return `msg_${Date.now()}`
       },
       async edit(messageId, response) {
-        console.log(`[MockMessaging] Edit ${messageId}:`, response)
       },
       async delete(messageId) {
-        console.log(`[MockMessaging] Delete ${messageId}`)
       },
     },
 
     reactions: {
       async add(messageId, emoji) {
-        console.log(`[MockReactions] Add ${emoji} to ${messageId}`)
       },
       async remove(messageId, emoji) {
-        console.log(`[MockReactions] Remove ${emoji} from ${messageId}`)
       },
     },
 
@@ -296,7 +290,6 @@ export function createMockServices(): BotServices {
       async schedule(botId, channelId, response, delay) {
         const id = `sched_${Date.now()}`
         const timeout = setTimeout(() => {
-          console.log(`[MockScheduler] Executing ${id}:`, { channelId, response })
           schedules.delete(id)
         }, delay)
         schedules.set(id, timeout)
@@ -375,10 +368,8 @@ export function withLogging(api: BotApi, botId: string): BotApi {
       const value = target[prop as keyof BotApi]
       if (typeof value === 'function') {
         return async (...args: unknown[]) => {
-          console.log(`[Bot:${botId}] ${String(prop)}`, args)
           try {
             const result = await (value as Function).apply(target, args)
-            console.log(`[Bot:${botId}] ${String(prop)} -> `, result)
             return result
           } catch (error) {
             console.error(`[Bot:${botId}] ${String(prop)} ERROR:`, error)

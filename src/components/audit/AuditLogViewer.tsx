@@ -153,7 +153,6 @@ export function AuditLogViewer({
   }, [selectEntry])
 
   const handleExportComplete = useCallback((filename: string, recordCount: number) => {
-    console.log(`Exported ${recordCount} records to ${filename}`)
   }, [])
 
   // Displayed entries (with local filtering if using external entries)

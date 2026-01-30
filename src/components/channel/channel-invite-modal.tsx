@@ -163,7 +163,6 @@ export function ChannelInviteModal({
         .map((e) => e.trim())
         .filter((e) => e.includes('@'))
 
-      console.log('Sending invites to:', emails)
       onOpenChange(false)
     } catch (error) {
       console.error('Failed to send email invites:', error)

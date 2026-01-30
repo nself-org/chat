@@ -472,7 +472,6 @@ export function createLoggingHandler(source: string): WebhookHandler {
   return {
     source,
     handle: async (payload: IncomingWebhookPayload): Promise<WebhookHandlerResult> => {
-      console.log(`[Webhook] ${payload.source}:${payload.event}`, payload.payload)
       return {
         success: true,
         message: `Logged ${payload.source}:${payload.event}`,

@@ -37,7 +37,6 @@ export class DatabaseAuthService {
       }
 
       const data = await response.json()
-      console.log('DatabaseAuthService received user with role:', data.user.role)
 
       this.accessToken = data.accessToken
       this.refreshToken = data.refreshToken

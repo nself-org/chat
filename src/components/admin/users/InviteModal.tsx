@@ -70,7 +70,6 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
     setIsSubmitting(true)
     try {
       // In production, call the API
-      console.log('Sending invite:', { email, role, message, sendEmail })
       await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate API call
       handleClose()
     } catch (error) {
@@ -94,7 +93,6 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
     setIsSubmitting(true)
     try {
       // In production, call the API
-      console.log('Sending bulk invites:', { emails: bulkValidation.valid, role: bulkRole })
       await new Promise((resolve) => setTimeout(resolve, 1000))
       handleClose()
     } catch (error) {

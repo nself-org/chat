@@ -556,7 +556,6 @@ export class AnalyticsClient {
 
   private log(message: string, data?: unknown): void {
     if (this.config.debug) {
-      console.log(`[Analytics] ${message}`, data !== undefined ? data : '');
     }
   }
 }

@@ -269,11 +269,6 @@ async function createWebhookMessage(
   // Mock implementation
   const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
-  console.log(`[Webhook] Created message ${messageId} in channel ${webhook.channel_id}:`, {
-    content: payload.content,
-    username: payload.username || webhook.name,
-  })
-
   return { messageId }
 }
 

@@ -18,7 +18,6 @@ export function SettingsManagement() {
 
   const handleSave = () => {
     // TODO: Save settings to backend
-    console.log('Saving settings:', settings)
   }
 
   return (

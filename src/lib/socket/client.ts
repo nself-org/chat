@@ -108,18 +108,15 @@ function initializeSocketHandlers(
 ): void {
   // Connection events
   sock.on('connect', () => {
-    console.log('[Socket] Connected:', sock.id);
     setConnectionState('connected');
   });
 
   sock.on('disconnect', (reason) => {
-    console.log('[Socket] Disconnected:', reason);
     setConnectionState('disconnected');
 
     // Handle specific disconnect reasons
     if (reason === 'io server disconnect') {
       // Server initiated disconnect, may need to reconnect manually
-      console.log('[Socket] Server initiated disconnect');
     }
   });
 
@@ -130,12 +127,10 @@ function initializeSocketHandlers(
 
   // Reconnection events
   sock.io.on('reconnect_attempt', (attempt) => {
-    console.log('[Socket] Reconnection attempt:', attempt);
     setConnectionState('reconnecting');
   });
 
   sock.io.on('reconnect', (attempt) => {
-    console.log('[Socket] Reconnected after', attempt, 'attempts');
     setConnectionState('connected');
   });
 

@@ -97,7 +97,6 @@ export class ShortcutHandler {
     this.bound = true;
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Bound to', this.target);
     }
   }
 
@@ -113,7 +112,6 @@ export class ShortcutHandler {
     this.bound = false;
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Unbound from', this.target);
     }
   }
 
@@ -124,7 +122,6 @@ export class ShortcutHandler {
     this.enabled = enabled;
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Enabled:', enabled);
     }
   }
 
@@ -160,7 +157,6 @@ export class ShortcutHandler {
     handlers.sort((a, b) => (b.priority || 0) - (a.priority || 0));
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Registered:', shortcutId, 'context:', context);
     }
 
     // Return unregister function
@@ -187,7 +183,6 @@ export class ShortcutHandler {
     }
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Unregistered:', shortcutId);
     }
   }
 
@@ -219,7 +214,6 @@ export class ShortcutHandler {
     this.activeContexts.add(context);
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Activated context:', context);
     }
   }
 
@@ -230,7 +224,6 @@ export class ShortcutHandler {
     this.activeContexts.delete(context);
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Deactivated context:', context);
     }
   }
 
@@ -241,7 +234,6 @@ export class ShortcutHandler {
     this.activeContexts = new Set(contexts);
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Set contexts:', contexts);
     }
   }
 
@@ -276,7 +268,6 @@ export class ShortcutHandler {
     if (!shortcutString) return;
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Key pressed:', shortcutString);
     }
 
     // Find matching shortcut
@@ -295,7 +286,6 @@ export class ShortcutHandler {
     // Check if shortcut is enabled
     if (!store.isShortcutEnabled(id)) {
       if (this.debug) {
-        console.log('[ShortcutHandler] Shortcut disabled:', id);
       }
       return;
     }
@@ -308,7 +298,6 @@ export class ShortcutHandler {
 
     if (shouldIgnore) {
       if (this.debug) {
-        console.log('[ShortcutHandler] Ignored (input focused):', id);
       }
       return;
     }
@@ -320,7 +309,6 @@ export class ShortcutHandler {
       );
       if (!hasActiveScope) {
         if (this.debug) {
-          console.log('[ShortcutHandler] No active scope for:', id);
         }
         return;
       }
@@ -380,7 +368,6 @@ export class ShortcutHandler {
 
         // Handler executed
         if (this.debug) {
-          console.log('[ShortcutHandler] Executed handler for:', id);
         }
         return true;
       }
@@ -391,7 +378,6 @@ export class ShortcutHandler {
       const result = this.onAction(event, { ...shortcut, id });
       if (result !== false) {
         if (this.debug) {
-          console.log('[ShortcutHandler] Executed default action for:', id);
         }
         return true;
       }
@@ -443,7 +429,6 @@ export class ShortcutHandler {
     this.handlers.clear();
 
     if (this.debug) {
-      console.log('[ShortcutHandler] Cleared all handlers');
     }
   }
 }

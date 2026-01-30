@@ -246,7 +246,6 @@ class SettingsSync {
     // });
 
     // For now, just log
-    console.log('Settings would be pushed to server:', settings);
   }
 
   // --------------------------------------------------------------------------

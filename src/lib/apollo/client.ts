@@ -101,10 +101,8 @@ function createWsClient() {
     lazy: true, // Connect only when subscription is made
     on: {
       connected: () => {
-        console.log('[GraphQL WS] Connected');
       },
       closed: (event) => {
-        console.log('[GraphQL WS] Closed', event);
       },
       error: (error) => {
         console.error('[GraphQL WS] Error', error);
@@ -268,16 +266,8 @@ const loggerLink =
             ? operationType.operation
             : 'unknown';
 
-        console.log(
-          `[GraphQL ${opType}] ${operation.operationName}`,
-          operation.variables
-        );
-
         return forward(operation).map((result) => {
           const duration = Date.now() - startTime;
-          console.log(
-            `[GraphQL ${opType}] ${operation.operationName} completed in ${duration}ms`
-          );
           return result;
         });
       })

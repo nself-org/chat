@@ -176,13 +176,11 @@ export default function UserProfilePage() {
   // Handle message
   const handleMessage = () => {
     // TODO: Navigate to or open DM
-    console.log('Message user:', profileUser?.displayName)
   }
 
   // Handle call
   const handleCall = () => {
     // TODO: Implement call feature
-    console.log('Call user:', profileUser?.displayName)
   }
 
   // Handle block
@@ -202,7 +200,6 @@ export default function UserProfilePage() {
   // Handle report
   const handleReport = () => {
     // TODO: Open report modal
-    console.log('Report user:', profileUser?.displayName)
   }
 
   // Handle edit profile
@@ -218,7 +215,6 @@ export default function UserProfilePage() {
   // Handle file click
   const handleFileClick = (file: SharedFile) => {
     // TODO: Open file preview or download
-    console.log('Open file:', file.name)
   }
 
   return (

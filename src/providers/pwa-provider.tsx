@@ -91,16 +91,13 @@ export function PWAProvider({
     pushHandlers: {
       onNotificationClick: (data) => {
         // Handle notification click
-        console.log('[PWA] Notification clicked:', data);
         window.dispatchEvent(
           new CustomEvent('nchat:notification-click', { detail: data })
         );
       },
       onNotificationDismissed: (data) => {
-        console.log('[PWA] Notification dismissed:', data);
       },
       onSyncComplete: (data) => {
-        console.log('[PWA] Sync complete:', data);
         window.dispatchEvent(
           new CustomEvent('nchat:sync-complete', { detail: data })
         );
@@ -131,11 +128,9 @@ export function PWAProvider({
             <InstallPrompt
               showDelay={installPromptDelay}
               onInstall={() => {
-                console.log('[PWA] App installed');
                 window.dispatchEvent(new CustomEvent('nchat:installed'));
               }}
               onDismiss={() => {
-                console.log('[PWA] Install prompt dismissed');
               }}
             />
           )}
@@ -145,10 +140,8 @@ export function PWAProvider({
             <UpdatePrompt
               autoReload={true}
               onUpdate={() => {
-                console.log('[PWA] Update applied');
               }}
               onDismiss={() => {
-                console.log('[PWA] Update prompt dismissed');
               }}
             />
           )}

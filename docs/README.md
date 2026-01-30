@@ -13,96 +13,170 @@
 
 **White-Label Team Communication Platform**
 
-[Quick Start](#quick-start) • [Installation](#installation) • [Features](#features) • [Deployment](#deployment) • [API](#api) • [Contributing](about/Contributing)
+[Quick Start](getting-started/QUICK-START) • [Installation](getting-started/INSTALLATION) • [Features](#features) • [Deployment](deployment/DEPLOYMENT) • [API](api/API-DOCUMENTATION) • [Contributing](../CONTRIBUTING)
 
 </div>
 
 ---
 
-## Table of Contents
+## Documentation Structure
 
-### Getting Started
-- [Quick Start Guide](QUICK-START) - Get running in 5 minutes
-- [Installation Guide](INSTALLATION) - Detailed installation instructions
-- [Configuration Guide](configuration/Configuration) - Complete configuration reference
-- [First Steps](getting-started/Getting-Started) - After installation
+This documentation is organized into the following sections:
 
-### Core Documentation
-- [Architecture](reference/Architecture) - System design and architecture
-- [Architecture Diagrams](ARCHITECTURE-DIAGRAMS) - Visual system documentation
-- [Features Overview](features/Features) - All features at a glance
-- [API Reference](api/API-DOCUMENTATION) - Complete API documentation
-- [API Code Examples](api/API-EXAMPLES) - Multi-language examples
-- [Database Schema](reference/Database-Schema) - Database structure
+### 📚 [Getting Started](getting-started/)
+Start here if you're new to nself-chat.
 
-### Feature Documentation (v0.3.0)
+- **[Quick Start Guide](getting-started/QUICK-START)** - Get running in 5 minutes
+- **[Installation Guide](getting-started/INSTALLATION)** - Detailed installation instructions
+- **[Getting Started](getting-started/Getting-Started)** - First steps after installation
 
-#### Advanced Messaging
-- [Advanced Messaging Features](advanced-messaging-implementation-summary) - Edit, delete, forward, pin, star
-- [Quick Reference](advanced-messaging-quick-reference) - Common operations
+### ✨ [Features](features/)
+Learn about all the features nself-chat offers.
 
-#### GIFs & Stickers
-- [GIF & Sticker Implementation](GIF-Sticker-Implementation) - Tenor integration & custom stickers
+#### Core Features
+- **[Features Overview](features/Features)** - Complete feature list
+- **[Messaging Features](features/Features-Messaging)** - Chat capabilities
+- **[Feature Completion Matrix](features/Features-Complete)** - Feature parity comparison
 
-#### Polls & Interactive Messages
-- [Polls Implementation](Polls-Implementation) - Create and manage polls
-- [Polls Quick Start](Polls-Quick-Start) - Get started with polls
+#### Communication Features
+- **[Voice Calling](features/VOICE-CALLING-COMPLETE)** - Voice call implementation
+- **[Live Streaming](features/LIVE_STREAMING_IMPLEMENTATION_SUMMARY)** - Live streaming capabilities
+- **[Screen Sharing](features/SCREEN-SHARING-SUMMARY)** - Screen sharing features
+- **[Mobile Calls](features/MOBILE-CALLS-IMPLEMENTATION)** - Mobile call optimization
+
+#### Interactive Features
+- **[GIFs & Stickers](features/GIF-Sticker-Implementation)** - GIF picker and sticker packs
+- **[Polls](features/Polls-Implementation)** - Create and manage polls
+- **[Social Media Integration](features/Social-Media-Integration)** - Twitter, Instagram, LinkedIn integration
+
+#### Advanced Features
+- **[Search](features/SEARCH_IMPLEMENTATION_SUMMARY)** - Enhanced search with MeiliSearch
+- **[Social Media Posting](features/SOCIAL-MEDIA-IMPLEMENTATION-SUMMARY)** - Auto-posting to social platforms
+
+#### Customization
+- **[White-Label Guide](features/White-Label-Guide)** - Branding and theming
+- **[Bots](features/Bots)** - Bot development and integration
+- **[Plugins](features/Plugins)** - Plugin system
+- **[Plugin List](features/Plugins-List)** - Available plugins
+- **[Media Server](features/Media-Server-Setup)** - Media server configuration
+
+### 📖 [Guides](guides/)
+Step-by-step implementation and usage guides.
+
+#### Implementation Guides
+- **[Advanced Messaging](guides/advanced-messaging-implementation-summary)** - Edit, delete, forward, pin, star messages
+- **[E2EE (End-to-End Encryption)](guides/E2EE-Implementation)** - Encryption implementation
+- **[Search Implementation](guides/Search-Implementation)** - MeiliSearch integration
+- **[Live Streaming](guides/Live-Streaming-Implementation)** - Stream implementation
+- **[Screen Sharing](guides/Screen-Sharing-Implementation)** - Screen sharing setup
+- **[Video Calling](guides/Video-Calling-Implementation)** - Video call setup
+- **[Voice Calling](guides/Voice-Calling-Implementation)** - Voice call implementation
+- **[Call Management](guides/Call-Management-Guide)** - Call system management
+- **[Mobile Call Optimizations](guides/Mobile-Call-Optimizations)** - Mobile-specific optimizations
+
+#### User Guides
+- **[User Guide](guides/USER-GUIDE)** - End-user documentation
+- **[Settings Quick Start](guides/Settings-Quick-Start)** - User settings guide
+- **[Testing Guide](guides/testing-guide)** - Testing strategies
+- **[Integration Examples](guides/integration-examples)** - Code examples
+- **[Utilities Guide](guides/README)** - Development utilities
+
+### 📚 [Reference](reference/)
+Technical reference documentation.
+
+#### Architecture & Design
+- **[Architecture](reference/Architecture)** - System architecture
+- **[Architecture Diagrams](reference/ARCHITECTURE-DIAGRAMS)** - Visual documentation
+- **[Database Schema](reference/Database-Schema)** - Database structure
+- **[Project Structure](reference/Project-Structure)** - Codebase organization
+- **[TypeScript Types](reference/Types)** - Type definitions
+- **[SPORT Reference](reference/SPORT)** - Complete API reference
+
+#### Quick References
+- **[2FA Quick Reference](reference/2FA-Quick-Reference)** - Two-factor authentication
+- **[Advanced Messaging Quick Reference](reference/advanced-messaging-quick-reference)** - Messaging shortcuts
+- **[Call Management Quick Reference](reference/Call-Management-Quick-Reference)** - Call system shortcuts
+- **[Call State Machine](reference/Call-State-Machine-Diagram)** - Call state diagram
+- **[E2EE Quick Reference](reference/E2EE-Quick-Reference)** - Encryption quick reference
+- **[Live Streaming Quick Start](reference/Live-Streaming-Quick-Start)** - Streaming quick start
+- **[Mobile Calls Quick Reference](reference/Mobile-Calls-Quick-Reference)** - Mobile call shortcuts
+- **[PIN Lock Quick Start](reference/PIN-LOCK-QUICK-START)** - PIN lock setup
+- **[Polls Quick Start](reference/Polls-Quick-Start)** - Polls quick reference
+- **[Screen Sharing Quick Reference](reference/Screen-Sharing-Quick-Reference)** - Screen sharing shortcuts
+- **[Search Quick Start](reference/Search-Quick-Start)** - Search operators and filters
+- **[Social Media Quick Reference](reference/Social-Media-Quick-Reference)** - Social integration shortcuts
+- **[Voice Calling Quick Start](reference/Voice-Calling-Quick-Start)** - Voice call quick start
+
+### ⚙️ [Configuration](configuration/)
+Configure nself-chat for your needs.
+
+- **[Configuration Guide](configuration/Configuration)** - Complete configuration reference
+- **[Authentication Setup](configuration/Authentication)** - Auth provider configuration
+- **[Environment Variables](configuration/Environment-Variables)** - All environment variables
+
+### 📡 [API](api/)
+API documentation and examples.
+
+- **[API Overview](api/API)** - GraphQL API overview
+- **[API Documentation](api/API-DOCUMENTATION)** - Complete API reference
+- **[API Examples](api/API-EXAMPLES)** - Multi-language code examples
+- **[Bot API Implementation](api/BOT_API_IMPLEMENTATION)** - Bot API reference
+
+### 🚀 [Deployment](deployment/)
+Deploy nself-chat to production.
+
+- **[Deployment Overview](deployment/DEPLOYMENT)** - Production deployment guide
+- **[Docker Deployment](deployment/Deployment-Docker)** - Deploy with Docker
+- **[Kubernetes Deployment](deployment/Deployment-Kubernetes)** - Deploy to K8s
+- **[Helm Charts](deployment/Deployment-Helm)** - Helm deployment
+- **[Production Checklist](deployment/Production-Deployment-Checklist)** - Pre-deployment checklist
+- **[Production Validation](deployment/Production-Validation)** - Post-deployment validation
+
+### 🔐 [Security](security/)
+Security features and best practices.
 
 #### Security Features
-- [Two-Factor Authentication (2FA)](2FA-Implementation-Summary) - TOTP 2FA setup
-- [2FA Quick Reference](2FA-Quick-Reference) - Common 2FA operations
-- [PIN Lock System](PIN-LOCK-SYSTEM) - PIN lock and biometric auth
-- [PIN Lock Implementation](PIN-LOCK-IMPLEMENTATION-SUMMARY) - Technical details
-- [PIN Lock Quick Start](PIN-LOCK-QUICK-START) - Setup guide
+- **[Security Overview](security/SECURITY)** - Security architecture
+- **[Security Audit](security/SECURITY-AUDIT)** - Security audit results
+- **[Performance Optimization](security/PERFORMANCE-OPTIMIZATION)** - Performance guide
 
-#### Search & Discovery
-- [Enhanced Search](Search-Implementation) - MeiliSearch integration
-- [Search Quick Start](Search-Quick-Start) - Search operators and filters
+#### Authentication & Authorization
+- **[2FA Implementation](security/2FA-Implementation-Summary)** - Two-factor authentication
+- **[PIN Lock System](security/PIN-LOCK-SYSTEM)** - PIN lock and biometric auth
+- **[PIN Lock Implementation](security/PIN-LOCK-IMPLEMENTATION-SUMMARY)** - Technical details
 
-#### Integrations
-- [Social Media Integration](Social-Media-Integration) - Twitter, Instagram, LinkedIn
-- [Social Media Quick Reference](Social-Media-Quick-Reference) - Common operations
+#### Encryption
+- **[E2EE Implementation Summary](security/E2EE-Implementation-Summary)** - End-to-end encryption
+- **[E2EE Security Audit](security/E2EE-Security-Audit)** - Encryption audit
 
-### Configuration & Setup
-- [Configuration Reference](configuration/Configuration) - All configuration options
-- [Authentication Setup](configuration/Authentication) - Configure auth providers
-- [Environment Variables](configuration/Environment-Variables) - All environment variables
-- [White-Label Customization](features/White-Label-Guide) - Branding and theming
+### 🆘 [Troubleshooting](troubleshooting/)
+Common issues and solutions.
 
-### Deployment
-- [Deployment Overview](deployment/DEPLOYMENT) - Production deployment guide
-- [Docker Deployment](deployment/Deployment-Docker) - Deploy with Docker
-- [Kubernetes Deployment](deployment/Deployment-Kubernetes) - Deploy to K8s
-- [Helm Charts](deployment/Deployment-Helm) - Helm deployment
-- [Production Checklist](deployment/Production-Deployment-Checklist) - Pre-deployment checklist
-- [Production Validation](deployment/Production-Validation) - Post-deployment validation
+- **[FAQ](troubleshooting/FAQ)** - Frequently asked questions
+- **[Troubleshooting Guide](troubleshooting/TROUBLESHOOTING)** - Common issues
+- **[Operations Runbook](troubleshooting/RUNBOOK)** - Operations guide
 
-### Development
-- [Contributing Guide](../CONTRIBUTING) - How to contribute
-- [Testing Guide](guides/testing-guide) - Testing strategies
-- [Project Structure](reference/Project-Structure) - Codebase organization
-- [Utilities & Hooks](guides/README) - Development utilities guide
+### ℹ️ [About](about/)
+Project information and planning.
 
-### Troubleshooting & Support
-- [Troubleshooting Guide](troubleshooting/TROUBLESHOOTING) - Common issues and solutions
-- [FAQ](troubleshooting/FAQ) - Frequently asked questions
-- [Runbook](troubleshooting/RUNBOOK) - Operations guide
+#### Release Information
+- **[Changelog](about/Changelog)** - Version history
+- **[Release Notes v0.3.0](about/RELEASE-NOTES-v0.3.0)** - Latest release notes
+- **[Release Checklist v0.3.0](about/RELEASE-CHECKLIST-v0.3.0)** - Release checklist
+- **[Implementation Complete](about/IMPLEMENTATION_COMPLETE)** - v0.3.0 completion status
 
-### Reference
-- [API Documentation](api/API-DOCUMENTATION) - GraphQL API reference
-- [TypeScript Types](reference/Types) - Type definitions
-- [SPORT Reference](reference/SPORT) - Complete reference documentation
-- [Bots](features/Bots) - Bot development guide
-- [Plugins](features/Plugins) - Plugin system
+#### Planning & Roadmap
+- **[Roadmap](about/Roadmap)** - Future plans
+- **[Roadmap v0.2](about/Roadmap-v0.2)** - v0.2 planning
+- **[Upgrade Guide](about/UPGRADE-GUIDE)** - Version upgrade guide
+- **[Contributing](about/Contributing)** - How to contribute
 
-### About
-- [Changelog](about/Changelog) - Version history
-- [Roadmap](about/Roadmap) - Future plans
-- [Upgrade Guide](about/UPGRADE-GUIDE) - Upgrading between versions
-- [Security Overview](security/SECURITY) - Security features
-- [Security Audit](security/SECURITY-AUDIT) - Security audit results
-- [Performance Optimization](security/PERFORMANCE-OPTIMIZATION) - Performance guide
-- [Documentation Audit](DOCUMENTATION-AUDIT) - Documentation quality assessment
+#### Documentation
+- **[Documentation Audit](about/DOCUMENTATION-AUDIT)** - Documentation quality assessment
+- **[Documentation Map](about/DOCUMENTATION-MAP)** - Documentation structure
+- **[Documentation Improvements](about/DOCUMENTATION-IMPROVEMENT-SUMMARY)** - Improvement summary
+- **[Documentation Improvements v0.3.0](about/DOCUMENTATION-IMPROVEMENT-SUMMARY-v0.3.0)** - v0.3.0 improvements
+- **[Advanced Messaging Report](about/ADVANCED_MESSAGING_REPORT)** - Feature report
 
 ---
 
@@ -127,155 +201,91 @@ open http://localhost:3000
 
 **Next Steps:**
 1. Complete the [9-step setup wizard](http://localhost:3000/setup)
-2. Explore the [feature documentation](#feature-documentation-v030)
-3. Check out the [configuration guide](CONFIGURATION)
+2. Explore the [feature documentation](features/)
+3. Check out the [configuration guide](configuration/Configuration)
 
-**[Full Quick Start Guide →](QUICK-START)**
+**[Full Quick Start Guide →](getting-started/QUICK-START)**
 
 ---
 
 ## What's New in v0.3.0
 
-🎉 **Major Feature Release** - 8 new feature sets, 85+ individual features
+### Major Feature Release - 8 new feature sets, 85+ individual features
 
-### Highlights
+#### Highlights
 
-#### 1. Advanced Messaging Features ✅
-- Edit messages with edit history
-- Delete messages (soft delete)
-- Forward messages to multiple channels
-- Pin important messages
-- Star/save messages for later
-- Message read receipts
-- Real-time typing indicators
+1. **Advanced Messaging Features** ✅
+   - Edit messages with edit history
+   - Delete messages (soft delete)
+   - Forward messages to multiple channels
+   - Pin important messages
+   - Star/save messages for later
+   - Message read receipts
+   - Real-time typing indicators
+   - [Learn More →](guides/advanced-messaging-implementation-summary)
 
-**[Learn More →](advanced-messaging-implementation-summary)**
+2. **GIFs and Stickers** 🎨
+   - GIF search integration (Tenor API)
+   - GIF picker in message composer
+   - Sticker packs management
+   - Custom sticker upload (admin/owner)
+   - 2 default sticker packs included
+   - [Learn More →](features/GIF-Sticker-Implementation)
 
-#### 2. GIFs and Stickers 🎨
-- GIF search integration (Tenor API)
-- GIF picker in message composer
-- Sticker packs management
-- Custom sticker upload (admin/owner)
-- 2 default sticker packs included
+3. **Polls and Interactive Messages** 📊
+   - Create polls with multiple options
+   - Single-choice and multiple-choice
+   - Anonymous voting option
+   - Poll expiration/deadline
+   - Live poll results
+   - [Learn More →](features/Polls-Implementation)
 
-**[Learn More →](GIF-Sticker-Implementation)**
+4. **Two-Factor Authentication (2FA)** 🔒
+   - TOTP 2FA setup with QR code
+   - Support for authenticator apps
+   - 10 backup codes per user
+   - 2FA enforcement option
+   - Remember device (30 days)
+   - Recovery process
+   - [Learn More →](security/2FA-Implementation-Summary)
 
-#### 3. Polls and Interactive Messages 📊
-- Create polls with multiple options
-- Single-choice and multiple-choice
-- Anonymous voting option
-- Poll expiration/deadline
-- Live poll results
+5. **PIN Lock & Session Security** 🔐
+   - PIN lock setup (4-6 digits)
+   - Lock on app close/background
+   - Auto-lock after timeout
+   - Biometric unlock (WebAuthn)
+   - Emergency unlock with password
+   - Failed attempt lockout
+   - [Learn More →](security/PIN-LOCK-SYSTEM)
 
-**[Learn More →](Polls-Implementation)**
+6. **Enhanced Search** 🔍
+   - Search messages, files, users, channels
+   - Advanced filters (date, channel, user, type)
+   - Search within threads
+   - Search operators (from:, in:, has:, before:, after:)
+   - Search history and saved searches
+   - Keyboard shortcuts (Cmd+K)
+   - [Learn More →](guides/Search-Implementation)
 
-#### 4. Two-Factor Authentication (2FA) 🔒
-- TOTP 2FA setup with QR code
-- Support for authenticator apps
-- 10 backup codes per user
-- 2FA enforcement option
-- Remember device (30 days)
-- Recovery process
+7. **Bot API Foundation** 🤖
+   - Bot user type
+   - Bot token generation
+   - Bot API endpoints (5 endpoints)
+   - Webhook delivery
+   - Bot permissions system (16 permissions)
+   - Bot management UI
+   - [Learn More →](features/Bots)
 
-**[Learn More →](2FA-Implementation-Summary)**
-
-#### 5. PIN Lock & Session Security 🔐
-- PIN lock setup (4-6 digits)
-- Lock on app close/background
-- Auto-lock after timeout
-- Biometric unlock (WebAuthn)
-- Emergency unlock with password
-- Failed attempt lockout
-
-**[Learn More →](PIN-LOCK-SYSTEM)**
-
-#### 6. Enhanced Search 🔍
-- Search messages, files, users, channels
-- Advanced filters (date, channel, user, type)
-- Search within threads
-- Search operators (from:, in:, has:, before:, after:)
-- Search history and saved searches
-- Keyboard shortcuts (Cmd+K)
-
-**[Learn More →](Search-Implementation)**
-
-#### 7. Bot API Foundation 🤖
-- Bot user type
-- Bot token generation
-- Bot API endpoints (5 endpoints)
-- Webhook delivery
-- Bot permissions system (16 permissions)
-- Bot management UI
-
-**[Learn More →](features/Bots)**
-
-#### 8. Social Media Integration 🌐
-- Link social accounts (Twitter, Instagram, LinkedIn)
-- Monitor accounts for new posts
-- Auto-post to announcement channels
-- Rich embeds for social posts
-- Enable/disable per account
-- Post filtering (hashtags, keywords)
-
-**[Learn More →](Social-Media-Integration)**
-
-### Stats
-- **Feature Parity**: Increased from 18% to ~40% (+122%)
-- **Files Created**: 120+
-- **Lines of Code**: ~15,000
-- **Database Tables**: 28 new tables
-- **API Endpoints**: 25+
-- **Dependencies Added**: 4 (meilisearch, otplib, qrcode, speakeasy)
+8. **Social Media Integration** 🌐
+   - Link social accounts (Twitter, Instagram, LinkedIn)
+   - Monitor accounts for new posts
+   - Auto-post to announcement channels
+   - Rich embeds for social posts
+   - Enable/disable per account
+   - Post filtering (hashtags, keywords)
+   - [Learn More →](features/Social-Media-Integration)
 
 **[Full Changelog →](about/Changelog)**
-
----
-
-## Feature Parity Matrix
-
-### Comparison with Major Chat Platforms
-
-| Feature Category | nself-chat v0.3.0 | Slack | Discord | Telegram | WhatsApp | Signal |
-|-----------------|-------------------|-------|---------|----------|----------|--------|
-| **Messaging** | | | | | | |
-| Basic messaging | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Edit messages | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| Delete messages | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Forward messages | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| Pin messages | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| Reactions | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Threads | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Media** | | | | | | |
-| GIFs | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| Stickers | ✅ | ❌ | ✅ | ✅ | ✅ | ❌ |
-| File sharing | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Interactive** | | | | | | |
-| Polls | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Security** | | | | | | |
-| 2FA | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| PIN Lock | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| Biometric auth | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| E2E encryption | ⏳ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Search** | | | | | | |
-| Advanced search | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| Search operators | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Automation** | | | | | | |
-| Bots/webhooks | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| Slash commands | ⏳ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Integrations** | | | | | | |
-| Social media | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Third-party apps | ⏳ | ✅ | ✅ | ✅ | ❌ | ❌ |
-
-**Legend:**
-- ✅ Fully implemented
-- ⏳ Planned for future release
-- ❌ Not available
-
-**Unique Advantages:**
-- Social media integration (auto-posting from Twitter, Instagram, LinkedIn)
-- Complete white-label customization
-- Self-hosted option with full data ownership
-- Open source with MIT license
 
 ---
 
@@ -342,28 +352,25 @@ open http://localhost:3000
 - **CI/CD**: 19 GitHub Actions workflows
 - **Monitoring**: Sentry 8.47.0
 
-**[Complete Tech Stack →](reference/Architecture#tech-stack)**
-
 ---
 
 ## Key Features
 
-### 🎨 White-Label Everything
+### White-Label Everything
 - Complete branding customization (name, logo, colors)
 - 25+ theme presets with light/dark modes
 - Custom CSS injection support
 - Landing page templates (5 options)
 - Feature toggles for selective functionality
 
-### 🔐 Dual Authentication
+### Dual Authentication
 - **Development Mode**: 8 test users for fast iteration
 - **Production Mode**: Nhost Auth with 11 provider options
-  - Email/password
-  - Magic links
+  - Email/password, Magic links
   - Google, Facebook, Twitter, GitHub, Discord, Slack
   - ID.me (military, police, first responders, government)
 
-### 💬 Advanced Messaging
+### Advanced Messaging
 - Edit/delete messages with history
 - Forward to multiple channels
 - Pin important messages
@@ -372,7 +379,7 @@ open http://localhost:3000
 - Threaded conversations
 - Rich text editing (markdown, code blocks)
 
-### 🔍 Powerful Search
+### Powerful Search
 - MeiliSearch integration (sub-50ms queries)
 - Search operators: `from:`, `in:`, `has:`, `before:`, `after:`, `is:`
 - Filter by date, channel, user, file type
@@ -380,7 +387,7 @@ open http://localhost:3000
 - Saved searches and history
 - Keyboard shortcuts (Cmd+K)
 
-### 🔒 Enterprise Security
+### Enterprise Security
 - Two-factor authentication (TOTP)
 - PIN lock with biometric support
 - Session management with device tracking
@@ -388,36 +395,38 @@ open http://localhost:3000
 - Audit logging for admin actions
 - Content moderation and filtering
 
-### 🤖 Bot Ecosystem
-- Complete bot API (5 REST endpoints)
-- Webhook integrations (incoming/outgoing)
-- 16 granular permissions across 6 categories
-- HMAC-SHA256 webhook signing
-- Rate limiting (100 req/min per bot)
-- Interactive API documentation
+---
 
-### 🌐 Social Integration (Unique!)
-- Auto-post from Twitter, Instagram, LinkedIn
-- Rich embeds with platform branding
-- Post filtering (hashtags, keywords, engagement)
-- OAuth 2.0 authentication
-- AES-256-GCM token encryption
-- Automated polling every 5 minutes
+## Documentation By Audience
 
-### 📊 Polls & Interactive Content
-- Single-choice and multiple-choice polls
-- Anonymous voting option
-- Poll expiration/deadline
-- Live results with real-time updates
-- "Add option" for non-anonymous polls
-- Winning option highlighting
+### For End Users
+- [Quick Start](getting-started/QUICK-START)
+- [User Guide](guides/USER-GUIDE)
+- [Settings Guide](guides/Settings-Quick-Start)
+- [FAQ](troubleshooting/FAQ)
 
-### 🎨 GIFs & Stickers
-- Tenor API integration with autocomplete search
-- 2 default sticker packs (Reactions, Emoji)
-- Custom sticker upload (admin/owner only)
-- Feature flags for enabling/disabling
-- Message type support for GIF/sticker
+### For Administrators
+- [Installation](getting-started/INSTALLATION)
+- [Configuration](configuration/Configuration)
+- [Deployment Guide](deployment/DEPLOYMENT)
+- [Production Checklist](deployment/Production-Deployment-Checklist)
+- [Runbook](troubleshooting/RUNBOOK)
+- [Security Overview](security/SECURITY)
+
+### For Developers
+- [Architecture](reference/Architecture)
+- [API Reference](api/API-DOCUMENTATION)
+- [Contributing Guide](about/Contributing)
+- [Testing Guide](guides/testing-guide)
+- [Bot Development](features/Bots)
+- [Plugin Development](features/Plugins)
+
+### For DevOps
+- [Docker Deployment](deployment/Deployment-Docker)
+- [Kubernetes Deployment](deployment/Deployment-Kubernetes)
+- [Helm Charts](deployment/Deployment-Helm)
+- [Production Validation](deployment/Production-Validation)
+- [Runbook](troubleshooting/RUNBOOK)
 
 ---
 
@@ -436,45 +445,7 @@ open http://localhost:3000
 | **Theme Presets** | 25+ themes |
 | **Auth Providers** | 11 providers |
 | **CI Workflows** | 19 workflows |
-| **Test Coverage** | 860+ tests (planned) |
-| **Documentation Pages** | 58+ pages |
-| **Lines of Code** | ~15,000 (v0.3.0) |
-
----
-
-## Documentation Organization
-
-### By Audience
-
-#### For End Users
-- [Quick Start](QUICK-START)
-- [User Guide](guides/USER-GUIDE)
-- [Settings Guide](guides/Settings-Quick-Start)
-- [FAQ](troubleshooting/FAQ)
-
-#### For Administrators
-- [Installation](INSTALLATION)
-- [Configuration](CONFIGURATION)
-- [Deployment Guide](deployment/DEPLOYMENT)
-- [Production Checklist](deployment/Production-Deployment-Checklist)
-- [Runbook](troubleshooting/RUNBOOK)
-- [Security Overview](security/SECURITY)
-
-#### For Developers
-- [Architecture](reference/Architecture)
-- [API Reference](API-REFERENCE)
-- [Contributing Guide](about/Contributing)
-- [Code Standards](../.ai/CODE-STANDARDS)
-- [Testing Guide](guides/testing-guide)
-- [Bot Development](features/Bots)
-- [Plugin Development](features/Plugins)
-
-#### For DevOps
-- [Docker Deployment](deployment/Deployment-Docker)
-- [Kubernetes Deployment](deployment/Deployment-Kubernetes)
-- [Helm Charts](deployment/Deployment-Helm)
-- [Production Validation](deployment/Production-Validation)
-- [Runbook](troubleshooting/RUNBOOK)
+| **Documentation Pages** | 70+ pages |
 
 ---
 

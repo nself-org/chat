@@ -121,7 +121,6 @@ export class WelcomeBot implements Bot {
     // If DM welcome is enabled, send a private message too
     if (config.dmWelcome) {
       // In production, this would send an actual DM
-      console.log(`[Welcome Bot] Sending DM to ${context.newMember.id}`);
     }
 
     return {

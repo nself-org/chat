@@ -88,7 +88,6 @@ export function createReminderBot() {
 
     // Initialization
     .onInit(async (instance, api) => {
-      console.log(`[ReminderBot] Initialized`)
 
       // Set up the trigger callback to send messages when reminders fire
       setTriggerCallback(async (reminder) => {
@@ -97,7 +96,6 @@ export function createReminderBot() {
         try {
           const message = buildReminderMessage(reminder)
           await api.sendMessage(reminder.channelId, message)
-          console.log(`[ReminderBot] Triggered reminder: ${reminder.id}`)
         } catch (error) {
           console.error(`[ReminderBot] Failed to send reminder:`, error)
         }
@@ -115,17 +113,14 @@ export function createReminderBot() {
               console.error(`[ReminderBot] Failed to send reminder:`, error)
             }
           })
-          console.log(`[ReminderBot] Restored ${savedReminders.length} reminders`)
         }
       } catch (error) {
-        console.log(`[ReminderBot] No saved reminders to restore`)
       }
 
       // Periodic cleanup of old reminders
       const cleanupInterval = setInterval(() => {
         const deleted = cleanupOldReminders()
         if (deleted > 0) {
-          console.log(`[ReminderBot] Cleaned up ${deleted} old reminder(s)`)
         }
       }, 60 * 60 * 1000) // Every hour
 

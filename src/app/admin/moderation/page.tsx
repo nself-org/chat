@@ -223,7 +223,6 @@ export default function ModerationPage() {
     notifyUser?: boolean
   ) => {
     // In production, this would call the API
-    console.log('Banning user:', { userId, reason, duration, notifyUser })
     setBanModalOpen(false)
     setBanTarget(null)
   }

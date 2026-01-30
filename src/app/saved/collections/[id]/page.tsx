@@ -54,17 +54,14 @@ export default function CollectionPage() {
 
   const handleEditCollection = () => {
     // Would open edit modal
-    console.log('Edit collection');
   };
 
   const handleShareCollection = () => {
     // Would open share modal
-    console.log('Share collection');
   };
 
   const handleDeleteCollection = () => {
     // Would delete and redirect
-    console.log('Delete collection');
   };
 
   if (!collection) {

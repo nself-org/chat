@@ -92,12 +92,10 @@ class SocketManager {
 
     // Track connection events
     socket.on('connect', () => {
-      console.log('[Socket] Connected:', socket.id)
       this.stats.activeConnections++
     })
 
     socket.on('disconnect', (reason) => {
-      console.log('[Socket] Disconnected:', reason)
       this.stats.activeConnections--
 
       // Attempt reconnect for unexpected disconnects
@@ -113,7 +111,6 @@ class SocketManager {
     })
 
     socket.on('reconnect', (attemptNumber) => {
-      console.log('[Socket] Reconnected after', attemptNumber, 'attempts')
       this.stats.reconnections++
     })
 
@@ -284,7 +281,6 @@ class SocketManager {
         this.pool.delete(id)
         this.poolTimestamps.delete(id)
         this.stats.idleConnections--
-        console.log('[Socket] Cleaned up idle connection:', id)
       }
     }
   }

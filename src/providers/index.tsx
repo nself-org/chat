@@ -24,6 +24,8 @@ import { AppConfigProvider } from '@/contexts/app-config-context';
 import { AuthProvider, useAuth } from '@/contexts/auth-context';
 import { ChatProvider } from '@/contexts/chat-context';
 import { TemplateProvider } from '@/templates/hooks/use-template';
+// TEMPORARILY DISABLED: E2EE uses native Node.js modules that can't be bundled for browser
+// import { E2EEProvider } from '@/contexts/e2ee-context';
 
 // Socket
 import { SocketProvider } from '@/lib/socket/providers/socket-provider';
@@ -182,11 +184,9 @@ function SocketAuthProvider({ children }: { children: ReactNode }) {
       userId={user?.id ?? null}
       autoConnect={!!user}
       onConnect={() => {
-        console.log('[Socket] Connected');
         window.dispatchEvent(new CustomEvent('nchat:connected'));
       }}
       onDisconnect={(reason) => {
-        console.log('[Socket] Disconnected:', reason);
         window.dispatchEvent(new CustomEvent('nchat:disconnected'));
       }}
       onError={(error) => {
@@ -316,10 +316,11 @@ function SkipLinks() {
  * 6. ApolloProvider - GraphQL client
  * 7. AuthProvider - Authentication state
  * 8. AuthTokenSync - Sync auth token with Apollo
- * 9. SocketAuthProvider - Socket.io with auth
- * 10. ChatProvider - Chat state
- * 11. ModalProvider - Modal management
- * 12. NotificationProvider - Toast notifications
+ * 9. E2EEProvider - End-to-End Encryption (TEMPORARILY DISABLED)
+ * 10. SocketAuthProvider - Socket.io with auth
+ * 11. ChatProvider - Chat state
+ * 12. ModalProvider - Modal management
+ * 13. NotificationProvider - Toast notifications
  */
 export function AppProviders({ children }: AppProvidersProps) {
   return (
@@ -337,6 +338,7 @@ export function AppProviders({ children }: AppProvidersProps) {
               <ApolloProvider client={apolloClient}>
                 <AuthProvider>
                   <AuthTokenSync>
+                    {/* E2EEProvider temporarily disabled - uses Node.js native modules */}
                     <SocketAuthProvider>
                       <ChatProvider>
                         <ModalProvider>

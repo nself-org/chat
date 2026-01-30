@@ -37,13 +37,6 @@ export function OwnerInfoStep({ config, onUpdate, onValidate }: OwnerInfoStepPro
 
   const initialValues = getInitialValues()
 
-  console.log('🚀 OwnerInfoStep:', {
-    isDev,
-    hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown',
-    initialValues,
-    configOwner: config.owner
-  })
-
   const [formData, setFormData] = useState(initialValues)
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -81,7 +74,6 @@ export function OwnerInfoStep({ config, onUpdate, onValidate }: OwnerInfoStepPro
   useEffect(() => {
     // On mount in dev mode, immediately update parent with prefilled values
     if (isDev) {
-      console.log('📝 Dev mode: Updating parent config with prefilled values:', initialValues)
       onUpdate({
         owner: initialValues
       })

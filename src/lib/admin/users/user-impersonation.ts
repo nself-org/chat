@@ -274,5 +274,4 @@ export function logImpersonationAction(
 ): void {
   // This would be called internally to log actions during impersonation
   // In production, this would send to the server
-  console.log('[Impersonation Audit]', { action, details, timestamp: new Date().toISOString() })
 }

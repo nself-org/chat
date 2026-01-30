@@ -264,7 +264,6 @@ export async function deleteMedia(
   try {
     // In production, this would call the backend API
     // For now, just return success
-    console.log('Deleting media:', item.id, options);
 
     // Revoke blob URLs if they exist
     if (item.url.startsWith('blob:')) {

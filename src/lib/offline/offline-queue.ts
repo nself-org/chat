@@ -201,7 +201,6 @@ class OfflineQueue {
     await queueStorage.add(action as QueuedAction);
 
     this.emit({ type: 'item_added', item: action as QueuedAction });
-    console.log(`[OfflineQueue] Added ${type} action to queue`);
 
     return action;
   }
@@ -355,7 +354,6 @@ class OfflineQueue {
   async clear(): Promise<void> {
     await queueStorage.clear();
     this.emit({ type: 'queue_cleared' });
-    console.log('[OfflineQueue] Queue cleared');
   }
 
   /**
@@ -485,7 +483,6 @@ class OfflineQueue {
     }
 
     if (removed > 0) {
-      console.log(`[OfflineQueue] Cleaned up ${removed} old items`);
     }
 
     // Also remove completed items
@@ -515,7 +512,6 @@ class OfflineQueue {
       await this.remove(sorted[i].id);
     }
 
-    console.log(`[OfflineQueue] Evicted ${toRemove} low-priority items`);
   }
 
   // ===========================================================================

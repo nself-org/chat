@@ -252,13 +252,11 @@ export default function AdminMessageHistoryPage() {
 
   const handleBulkDelete = async () => {
     // In production, call the API
-    console.log('Bulk delete:', selectedIds)
     setSelectedIds([])
   }
 
   const handleExport = () => {
     // In production, export data
-    console.log('Export history data')
   }
 
   if (!canModerate) {
@@ -549,10 +547,8 @@ export default function AdminMessageHistoryPage() {
           canRestore={isAdmin}
           canClear={isAdmin}
           onRestore={async (version, reason) => {
-            console.log('Restore version:', version.versionNumber, reason)
           }}
           onClear={async (keepOriginal, reason) => {
-            console.log('Clear history:', keepOriginal, reason)
           }}
         />
       </div>

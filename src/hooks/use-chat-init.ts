@@ -356,7 +356,6 @@ export function useChatInit(options: UseChatInitOptions = {}): UseChatInitReturn
       Notification.permission === 'default'
     ) {
       Notification.requestPermission().then((permission) => {
-        console.log('[ChatInit] Notification permission:', permission);
       });
     }
 
@@ -458,7 +457,6 @@ export function useChatInit(options: UseChatInitOptions = {}): UseChatInitReturn
     if (!channelsLoading && !userChannelsLoading && !error && !initRef.current) {
       initRef.current = true;
       setIsReady(true);
-      console.log('[ChatInit] Chat initialization complete');
     }
   }, [channelsLoading, userChannelsLoading, error]);
 

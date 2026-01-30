@@ -67,7 +67,6 @@ export class BotInstance {
     if (manifest.commands) {
       for (const cmd of manifest.commands) {
         // Commands will be registered by the bot implementation
-        console.log(`[BotInstance] Command defined: /${cmd.name}`)
       }
     }
   }
@@ -212,7 +211,6 @@ export class BotInstance {
    */
   start(): void {
     this.state.status = 'active'
-    console.log(`[BotInstance] Bot '${this.manifest.name}' started`)
   }
 
   /**
@@ -220,7 +218,6 @@ export class BotInstance {
    */
   stop(): void {
     this.state.status = 'inactive'
-    console.log(`[BotInstance] Bot '${this.manifest.name}' stopped`)
   }
 
   /**
@@ -293,7 +290,6 @@ export class BotRuntime {
     bot.commands.register(helpCmd.definition, helpCmd.handler)
 
     this.bots.set(manifest.id, bot)
-    console.log(`[BotRuntime] Registered bot: ${manifest.name}`)
 
     return bot
   }
@@ -306,7 +302,6 @@ export class BotRuntime {
     if (bot) {
       bot.stop()
       this.bots.delete(botId)
-      console.log(`[BotRuntime] Unregistered bot: ${botId}`)
       return true
     }
     return false

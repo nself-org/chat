@@ -649,7 +649,6 @@ function executeLog(
 
   const processedMessage = processVariableValue(logMessage, context)
 
-  console.log(`[Workflow ${context.workflowId}] [${logLevel?.toUpperCase() || 'INFO'}] ${processedMessage}`)
 
   return {
     success: true,

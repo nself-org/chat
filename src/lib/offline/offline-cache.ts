@@ -417,7 +417,6 @@ class OfflineCache {
     this.missCount = 0;
 
     this.emit({ type: 'cache_clear' });
-    console.log('[OfflineCache] All cache cleared');
   }
 
   /**
@@ -435,7 +434,6 @@ class OfflineCache {
       }
 
       if (expired.length > 0) {
-        console.log(`[OfflineCache] Removed ${expired.length} expired entries`);
       }
 
       // Check and handle storage limits
@@ -533,7 +531,6 @@ class OfflineCache {
       await this.removeChannelMessages(channel.id);
     }
 
-    console.log(`[OfflineCache] Evicted ${toRemove} old channel caches`);
   }
 
   /**

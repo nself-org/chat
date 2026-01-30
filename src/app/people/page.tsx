@@ -208,13 +208,11 @@ export default function PeoplePage() {
   // Handle message - would open DM
   const handleMessage = (targetUser: ExtendedUserProfile) => {
     // TODO: Navigate to or open DM with user
-    console.log('Message user:', targetUser.displayName)
   }
 
   // Handle call - placeholder
   const handleCall = (targetUser: ExtendedUserProfile) => {
     // TODO: Implement calling feature
-    console.log('Call user:', targetUser.displayName)
   }
 
   // Handle refresh
@@ -226,7 +224,6 @@ export default function PeoplePage() {
   // Handle invite
   const handleInvite = () => {
     // TODO: Open invite modal
-    console.log('Invite new user')
   }
 
   return (

@@ -223,17 +223,14 @@ export function createWelcomeBot() {
 
     // Initialization
     .onInit(async (instance, api) => {
-      console.log(`[WelcomeBot] Initialized`)
 
       // Try to load saved templates from storage
       try {
         const savedTemplates = await api.getStorage<Record<string, WelcomeTemplate>>('templates')
         if (savedTemplates) {
           importTemplates(savedTemplates)
-          console.log(`[WelcomeBot] Restored ${Object.keys(savedTemplates).length} channel templates`)
         }
       } catch (error) {
-        console.log(`[WelcomeBot] No saved templates to restore`)
       }
 
       // Periodic save to storage

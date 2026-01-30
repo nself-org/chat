@@ -89,10 +89,8 @@ if (typeof window !== 'undefined') {
     // Event handlers for connection state management
     on: {
       connected: () => {
-        console.log('[WebSocket] Connected to GraphQL subscriptions')
       },
       closed: (event) => {
-        console.log('[WebSocket] Connection closed', event)
       },
       error: (error) => {
         console.error('[WebSocket] Connection error', error)

@@ -83,7 +83,6 @@ export default function ActivityPage() {
 
     // Navigate to activity context
     // In real app, this would use router.push() with proper URL
-    console.log('Navigate to activity:', activity.id);
   }, [markAsRead]);
 
   // Category counts for tabs

@@ -51,7 +51,6 @@ export function createHelloBot() {
 
     // Initialization
     .onInit((instance, api) => {
-      console.log(`[HelloBot] Initialized with settings:`, api.getBotConfig().settings)
     })
 
     .build()

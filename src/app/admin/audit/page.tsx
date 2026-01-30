@@ -314,14 +314,14 @@ export default function AuditLogPage() {
           <TabsContent value="security">
             <AuditSecurityEvents
               entries={entries}
-              onEntryClick={(entry) => console.log('Security entry clicked:', entry.id)}
+              onEntryClick={(entry) => {}}
             />
           </TabsContent>
 
           <TabsContent value="admin">
             <AuditAdminActions
               entries={entries}
-              onEntryClick={(entry) => console.log('Admin entry clicked:', entry.id)}
+              onEntryClick={(entry) => {}}
             />
           </TabsContent>
         </Tabs>

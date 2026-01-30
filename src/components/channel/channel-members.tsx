@@ -321,7 +321,6 @@ export function ChannelMembers({ channelId, className }: ChannelMembersProps) {
 
   const handleMessage = (userId: string) => {
     // TODO: Navigate to or create DM with user
-    console.log('Message user:', userId)
   }
 
   const handlePromote = (userId: string) => {

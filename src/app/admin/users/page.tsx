@@ -167,7 +167,6 @@ export default function UsersManagementPage() {
           : u
       )
     )
-    console.log('Ban action:', data)
   }
 
   const handleConfirmRoleChange = async () => {

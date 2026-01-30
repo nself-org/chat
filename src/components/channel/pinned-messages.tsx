@@ -214,7 +214,6 @@ export function PinnedMessages({
       confirmLabel: 'Unpin',
       onConfirm: () => {
         // In production, this would call an API
-        console.log('Unpinning message:', messageId)
       },
     })
   }

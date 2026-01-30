@@ -142,7 +142,6 @@ export default function SettingsPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     setIsSaving(false)
     setHasChanges(false)
-    console.log('Settings saved:', settings)
   }
 
   if (!canManageSettings) {

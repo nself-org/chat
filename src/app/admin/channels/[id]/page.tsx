@@ -144,7 +144,6 @@ export default function ChannelDetailPage({ params }: PageProps) {
 
   useEffect(() => {
     // In production, fetch channel data based on id
-    console.log('Fetching channel:', id)
   }, [id])
 
   const handleSave = async () => {

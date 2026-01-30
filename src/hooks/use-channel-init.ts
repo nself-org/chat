@@ -462,7 +462,6 @@ export function useChannelInit(options: UseChannelInitOptions): UseChannelInitRe
   useEffect(() => {
     if (skip || !channelId || channelId === prevChannelIdRef.current) return;
 
-    console.log('[ChannelInit] Channel changed:', channelId);
     prevChannelIdRef.current = channelId;
 
     // Clear previous state

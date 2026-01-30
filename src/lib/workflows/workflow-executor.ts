@@ -377,7 +377,6 @@ export class WorkflowExecutor {
     }
 
     // In a real implementation, this would send the message
-    console.log(`[Workflow] Sending message: ${content}`)
 
     return {
       success: true,

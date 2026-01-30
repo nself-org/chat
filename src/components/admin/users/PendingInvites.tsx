@@ -41,7 +41,6 @@ export function PendingInvites() {
 
   const handleResend = async (invite: UserInvite) => {
     // In production, call the API
-    console.log('Resending invite:', invite.email)
   }
 
   const handleRevoke = async () => {

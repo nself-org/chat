@@ -6,6 +6,9 @@ import { useAuth } from '@/contexts/auth-context'
 import { Sidebar } from '@/components/layout/sidebar'
 import { DevModeBanner } from '@/components/dev-mode-banner'
 import { ChatLayoutProvider } from '@/components/layout/chat-layout'
+import { CallInvitation } from '@/components/calls/CallInvitation'
+import { VideoCallModal } from '@/components/calls/VideoCallModal'
+import { useCallStore, selectHasIncomingCall, selectIsInCall } from '@/stores/call-store'
 import { cn } from '@/lib/utils'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import {
@@ -75,6 +78,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter()
   const isMobile = useMediaQuery('(max-width: 1023px)')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Call state
+  const hasIncomingCall = useCallStore(selectHasIncomingCall)
+  const isInCall = useCallStore(selectIsInCall)
 
   useEffect(() => {
     if (!loading && !user) {
@@ -184,6 +191,24 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             </PanelGroup>
           )}
         </div>
+
+        {/* Call Invitation Overlay */}
+        {hasIncomingCall && (
+          <CallInvitation
+            userId={user.id}
+            userName={user.displayName || user.username || 'User'}
+            userAvatarUrl={user.avatarUrl}
+          />
+        )}
+
+        {/* Video Call Modal */}
+        {isInCall && (
+          <VideoCallModal
+            userId={user.id}
+            userName={user.displayName || user.username || 'User'}
+            userAvatarUrl={user.avatarUrl}
+          />
+        )}
       </div>
     </ChatLayoutProvider>
   )

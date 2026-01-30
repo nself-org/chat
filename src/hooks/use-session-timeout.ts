@@ -140,6 +140,11 @@ export function useSessionTimeout(
     return () => clearInterval(interval)
   }, [])
 
+  // Getter for minutes since activity
+  const getMinutesSinceActivity = useCallback(() => {
+    return minutesSinceActivity
+  }, [minutesSinceActivity])
+
   return {
     // Timeout state
     hasTimedOut,

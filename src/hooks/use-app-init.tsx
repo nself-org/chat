@@ -135,7 +135,6 @@ export function useAppInit(options: UseAppInitOptions = {}): UseAppInitReturn {
     if (initRef.current || skip) return;
     initRef.current = true;
 
-    console.log('[AppInit] Starting initialization...');
 
     // Set up timeout
     timeoutRef.current = setTimeout(() => {
@@ -263,7 +262,6 @@ export function useAppInit(options: UseAppInitOptions = {}): UseAppInitReturn {
           // Check if already connected
           const connectionTimeout = setTimeout(() => {
             window.removeEventListener('nchat:connected', handleConnect);
-            console.log('[AppInit] Socket connection timeout, continuing...');
             resolve();
           }, 5000);
 
@@ -306,7 +304,6 @@ export function useAppInit(options: UseAppInitOptions = {}): UseAppInitReturn {
         clearTimeout(timeoutRef.current);
       }
 
-      console.log('[AppInit] Initialization complete!');
       onComplete?.();
     } catch (err) {
       console.error('[AppInit] Initialization failed:', err);
@@ -374,7 +371,6 @@ export function useAppInit(options: UseAppInitOptions = {}): UseAppInitReturn {
   // Handle logout
   useEffect(() => {
     const handleLogout = () => {
-      console.log('[AppInit] Handling logout...');
       resetAllStores();
       appStore.clearSession();
       setAuthToken(null);

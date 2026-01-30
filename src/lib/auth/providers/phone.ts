@@ -154,7 +154,6 @@ export class PhoneAuthProvider implements AuthProvider {
           break;
         default:
           // Development mode - log code to console
-          console.log(`[Phone Auth] Verification code for ${formattedPhone}: ${code}`);
       }
 
       // Store verification state
@@ -230,7 +229,6 @@ export class PhoneAuthProvider implements AuthProvider {
    */
   private async sendViaAwsSns(phone: string, code: string): Promise<void> {
     // In production, use AWS SDK
-    console.log(`[AWS SNS] Would send code ${code} to ${phone}`);
     throw new Error('AWS SNS integration requires @aws-sdk/client-sns');
   }
 

@@ -29,6 +29,19 @@ export const SOCKET_EVENTS = {
   // Reactions
   REACTION_ADD: 'reaction:add',
   REACTION_REMOVE: 'reaction:remove',
+
+  // Live Streaming
+  STREAM_START: 'stream:start',
+  STREAM_END: 'stream:end',
+  STREAM_QUALITY_UPDATE: 'stream:quality-update',
+  STREAM_VIEWER_JOINED: 'stream:viewer-joined',
+  STREAM_VIEWER_LEFT: 'stream:viewer-left',
+  STREAM_VIEWER_COUNT: 'stream:viewer-count',
+  STREAM_CHAT_MESSAGE: 'stream:chat-message',
+  STREAM_CHAT_DELETED: 'stream:chat-deleted',
+  STREAM_CHAT_PINNED: 'stream:chat-pinned',
+  STREAM_REACTION: 'stream:reaction',
+  STREAM_ERROR: 'stream:error',
 } as const
 
 export type SocketEvent = typeof SOCKET_EVENTS[keyof typeof SOCKET_EVENTS]

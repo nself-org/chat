@@ -449,7 +449,6 @@ export class InstallPromptManager {
    */
   private log(message: string): void {
     if (this.config.debug) {
-      console.log(`[InstallPromptManager] ${message}`);
     }
   }
 }

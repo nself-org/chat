@@ -96,6 +96,7 @@ export async function pollAccount(apolloClient: any, account: SocialAccount): Pr
 
   try {
     // Get client for this platform
+    const clients = getClients()
     const client = clients[account.platform]
     if (!client) {
       throw new Error(`No client for platform: ${account.platform}`)

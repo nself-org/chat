@@ -231,7 +231,6 @@ export async function reindexAllMessages(fetchMessages: () => Promise<MessageDoc
   try {
     const messages = await fetchMessages()
     await indexMessages(messages)
-    console.log(`Reindexed ${messages.length} messages`)
   } catch (error) {
     console.error('Error reindexing messages:', error)
     throw error
@@ -245,7 +244,6 @@ export async function reindexAllFiles(fetchFiles: () => Promise<FileDocument[]>)
   try {
     const files = await fetchFiles()
     await indexFiles(files)
-    console.log(`Reindexed ${files.length} files`)
   } catch (error) {
     console.error('Error reindexing files:', error)
     throw error
@@ -259,7 +257,6 @@ export async function reindexAllUsers(fetchUsers: () => Promise<UserDocument[]>)
   try {
     const users = await fetchUsers()
     await indexUsers(users)
-    console.log(`Reindexed ${users.length} users`)
   } catch (error) {
     console.error('Error reindexing users:', error)
     throw error
@@ -273,7 +270,6 @@ export async function reindexAllChannels(fetchChannels: () => Promise<ChannelDoc
   try {
     const channels = await fetchChannels()
     await indexChannels(channels)
-    console.log(`Reindexed ${channels.length} channels`)
   } catch (error) {
     console.error('Error reindexing channels:', error)
     throw error

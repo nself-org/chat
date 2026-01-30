@@ -207,6 +207,5 @@ export class LinkedInClient implements SocialAPIClient {
   async revokeAccess(accessToken: string): Promise<void> {
     // LinkedIn doesn't provide a token revocation endpoint
     // Tokens expire automatically after 60 days
-    console.log('LinkedIn access revocation not supported - tokens expire after 60 days')
   }
 }

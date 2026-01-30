@@ -94,6 +94,21 @@ export interface AppConfig {
     stickers: boolean
     messageScheduling: boolean
     videoConferencing: boolean
+    endToEndEncryption: boolean
+    // Voice & Video Calls
+    voiceCalls: boolean
+    videoCalls: boolean
+    groupCalls: boolean
+    screenSharing: boolean
+    callRecording: boolean
+    maxCallParticipants: number
+    // Live Streaming
+    liveStreaming: boolean
+    streamRecording: boolean
+    streamChat: boolean
+    streamReactions: boolean
+    streamScheduling: boolean
+    maxStreamDuration: number // minutes, 0 = unlimited
   }
   
   // Integrations
@@ -131,7 +146,19 @@ export interface AppConfig {
     moderatorRoles: string[]
     reportingSystem: boolean
   }
-  
+
+  // End-to-End Encryption (E2EE)
+  encryption: {
+    enabled: boolean
+    enforceForPrivateChannels: boolean
+    enforceForDirectMessages: boolean
+    allowUnencryptedPublicChannels: boolean
+    enableSafetyNumbers: boolean
+    requireDeviceVerification: boolean
+    automaticKeyRotation: boolean
+    keyRotationDays: number
+  }
+
   // Theme & Customization
   theme: {
     preset?: 'nself' | 'slack' | 'discord' | 'sunset' | 'emerald' | 'rose' | 'purple' | 'custom'
@@ -269,8 +296,22 @@ export const defaultAppConfig: AppConfig = {
     stickers: true,
     messageScheduling: false,
     videoConferencing: false,
+    endToEndEncryption: false,
+    voiceCalls: true,
+    videoCalls: true,
+    groupCalls: true,
+    screenSharing: true,
+    callRecording: false,
+    maxCallParticipants: 50,
+    // Live Streaming
+    liveStreaming: true,
+    streamRecording: true,
+    streamChat: true,
+    streamReactions: true,
+    streamScheduling: true,
+    maxStreamDuration: 0, // unlimited
   },
-  
+
   integrations: {
     slack: {
       enabled: false,
@@ -304,7 +345,18 @@ export const defaultAppConfig: AppConfig = {
     moderatorRoles: ['admin', 'moderator'],
     reportingSystem: true,
   },
-  
+
+  encryption: {
+    enabled: false,
+    enforceForPrivateChannels: false,
+    enforceForDirectMessages: true,
+    allowUnencryptedPublicChannels: true,
+    enableSafetyNumbers: true,
+    requireDeviceVerification: false,
+    automaticKeyRotation: true,
+    keyRotationDays: 7,
+  },
+
   theme: {
     preset: 'nself',
     primaryColor: '#38BDF8',

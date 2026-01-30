@@ -64,13 +64,11 @@ export function createPollBot() {
 
     // Initialization and periodic tasks
     .onInit((instance, api) => {
-      console.log(`[PollBot] Initialized`)
 
       // Check for expired polls periodically (every minute)
       const checkInterval = setInterval(() => {
         const expired = checkExpiredPolls()
         if (expired.length > 0) {
-          console.log(`[PollBot] ${expired.length} poll(s) expired`)
           // Could send results to channels here
         }
       }, 60 * 1000)
@@ -79,7 +77,6 @@ export function createPollBot() {
       const cleanupInterval = setInterval(() => {
         const deleted = cleanupOldPolls()
         if (deleted > 0) {
-          console.log(`[PollBot] Cleaned up ${deleted} old poll(s)`)
         }
       }, 24 * 60 * 60 * 1000)
 

@@ -151,7 +151,6 @@ export async function initializeIndexes(): Promise<void> {
       ]),
     ])
 
-    console.log('MeiliSearch indexes initialized successfully')
   } catch (error) {
     console.error('Error initializing MeiliSearch indexes:', error)
     throw error

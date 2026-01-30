@@ -23,7 +23,6 @@ export default function TestEnvPage() {
       }
     }
     setClientInfo(info)
-    console.log('Environment Test:', info)
   }, [])
 
   if (!clientInfo) {

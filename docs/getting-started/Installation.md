@@ -1,454 +1,737 @@
 # Installation Guide
 
-This guide covers all installation options for nchat, from development setup to production deployment.
+Complete installation guide for nself-chat v0.3.0. This guide covers all installation methods from quick development setup to production deployment.
+
+---
 
 ## Table of Contents
 
-- [System Requirements](#system-requirements)
-- [Quick Install](#quick-install)
-- [Manual Installation](#manual-installation)
-- [Docker Installation](#docker-installation)
-- [Production Setup](#production-setup)
+- [Quick Install (Development)](#quick-install-development)
+- [Full Install (Production)](#full-install-production)
+- [Backend Setup (nself CLI)](#backend-setup-nself-cli)
+- [Database Migrations](#database-migrations)
+- [Environment Variables](#environment-variables)
+- [Platform-Specific Install](#platform-specific-install)
 - [Verification](#verification)
 - [Troubleshooting](#troubleshooting)
 
-## System Requirements
+---
 
-### Minimum Requirements
+## Quick Install (Development)
 
-| Component | Minimum | Recommended |
-|-----------|---------|-------------|
-| CPU | 2 cores | 4+ cores |
-| RAM | 4 GB | 8+ GB |
-| Storage | 10 GB | 50+ GB |
-| Node.js | 18.x | 20.x LTS |
-| Docker | 20.x | Latest |
+For local development with test users. **Fastest way to get started.**
 
-### Supported Operating Systems
+### Prerequisites
 
-| OS | Support Level |
-|----|---------------|
-| macOS 12+ | Full |
-| Ubuntu 20.04+ | Full |
-| Debian 11+ | Full |
-| Windows 10+ (WSL2) | Full |
-| Other Linux | Community |
+- Node.js >= 20.0.0
+- pnpm >= 9.0.0
+- Git
 
-## Quick Install
-
-For a quick development setup:
+### Steps
 
 ```bash
-# Clone repository
-git clone https://github.com/nself/nself-chat.git
+# 1. Clone repository
+git clone https://github.com/acamarata/nself-chat.git
 cd nself-chat
 
-# Run setup script
-./scripts/setup.sh
-```
-
-The setup script will:
-1. Check system requirements
-2. Install dependencies
-3. Initialize the backend
-4. Create configuration files
-5. Start development services
-
-## Manual Installation
-
-### Step 1: Install nself CLI
-
-The nself CLI provides the backend infrastructure.
-
-```bash
-# Install via curl
-curl -fsSL https://nself.io/install.sh | bash
-
-# Or via npm
-npm install -g @nself/cli
-
-# Verify installation
-nself --version
-```
-
-### Step 2: Clone Repository
-
-```bash
-git clone https://github.com/nself/nself-chat.git
-cd nself-chat
-```
-
-### Step 3: Install Node Dependencies
-
-```bash
-# Using npm
-npm install
-
-# Or using pnpm
+# 2. Install dependencies
 pnpm install
 
-# Or using yarn
-yarn install
+# 3. Create development environment file
+cp .env.example .env.local
+
+# 4. Start development server
+pnpm dev
+
+# 5. Open browser
+open http://localhost:3000
 ```
 
-### Step 4: Initialize Backend
+**Development mode features:**
+- 8 pre-configured test users
+- Auto-login as owner@nself.org
+- No backend setup required initially
+- Hot module reloading
+
+**[See Quick Start Guide for more details →](QUICK-START)**
+
+---
+
+## Full Install (Production)
+
+For production deployment with real authentication and database.
+
+### Prerequisites
+
+- Node.js >= 20.0.0
+- pnpm >= 9.0.0
+- Docker & Docker Compose (for backend)
+- PostgreSQL (if not using Docker)
+- Domain name (for production)
+- SSL certificate (Let's Encrypt recommended)
+
+### Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│  nself-chat Frontend (Next.js)                       │
+│  Port: 3000                                          │
+└──────────────────────────────────────────────────────┘
+                       ↓ GraphQL
+┌──────────────────────────────────────────────────────┐
+│  nself Backend (Hasura + Auth + Storage)             │
+│  Hasura: 8080, Auth: 4000, Storage: 9000            │
+└──────────────────────────────────────────────────────┘
+                       ↓
+┌──────────────────────────────────────────────────────┐
+│  PostgreSQL Database                                 │
+│  Port: 5432                                          │
+└──────────────────────────────────────────────────────┘
+```
+
+### Step 1: Clone Repository
 
 ```bash
-# Create backend directory
-mkdir -p .backend
-cd .backend
+git clone https://github.com/acamarata/nself-chat.git
+cd nself-chat
+```
 
-# Initialize with demo mode (all services enabled)
-nself init --demo
+### Step 2: Setup Backend with nself CLI
 
-# Or interactive mode for custom configuration
+The backend uses [nself CLI](https://github.com/acamarata/nself) v0.4.2+ for complete backend infrastructure.
+
+```bash
+# Install nself CLI globally
+npm install -g @nself/cli
+
+# Initialize backend (in project root)
 nself init
 
-# Build Docker configuration
-nself build
+# Follow prompts:
+# - Project name: nself-chat-backend
+# - Environment: production
+# - Enable services: PostgreSQL, Hasura, Auth, MinIO, MeiliSearch
+# - Enable monitoring: Yes (recommended)
 
-# Start services
-nself start
-
-# Return to project root
-cd ..
+# This creates a .backend/ directory
 ```
 
-### Step 5: Configure Environment
-
-Create `.env.local` from the example:
+**Alternative: Use Docker Compose directly**
 
 ```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` with your settings:
-
-```env
-# Backend URLs
-NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
-NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
-NEXT_PUBLIC_STORAGE_URL=http://storage.localhost/v1/storage
-
-# Authentication
-NEXT_PUBLIC_USE_DEV_AUTH=true
-NEXT_PUBLIC_ENV=development
-
-# Branding (optional)
-NEXT_PUBLIC_APP_NAME=nchat
-NEXT_PUBLIC_PRIMARY_COLOR=#6366f1
-```
-
-### Step 6: Run Database Migrations
-
-```bash
+# If you don't want to use nself CLI
 cd .backend
-nself migrations apply
-cd ..
-```
-
-### Step 7: Start Development Server
-
-```bash
-npm run dev
-```
-
-## Docker Installation
-
-### Full Docker Setup
-
-For a complete Docker-based installation:
-
-```bash
-# Clone repository
-git clone https://github.com/nself/nself-chat.git
-cd nself-chat
-
-# Build frontend image
-docker build -t nchat-frontend .
-
-# Start all services
 docker-compose up -d
 ```
 
-### Docker Compose Configuration
+### Step 3: Configure Environment Variables
 
-Create `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-
-services:
-  frontend:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
-      - NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
-    depends_on:
-      - backend
-
-  backend:
-    image: nself/backend:latest
-    ports:
-      - "8080:8080"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=secret
-
-volumes:
-  postgres_data:
-```
-
-## Production Setup
-
-### Step 1: Clone and Build
+Create `.env.local` in the project root:
 
 ```bash
-git clone https://github.com/nself/nself-chat.git
-cd nself-chat
+# Production mode (real authentication)
+NEXT_PUBLIC_USE_DEV_AUTH=false
+NEXT_PUBLIC_ENV=production
 
-# Install production dependencies
-npm ci --production
-
-# Build for production
-npm run build
-```
-
-### Step 2: Configure Production Environment
-
-Create `.env.production.local`:
-
-```env
-# Production Backend URLs
+# Backend URLs (adjust to your domain)
 NEXT_PUBLIC_GRAPHQL_URL=https://api.yourdomain.com/v1/graphql
 NEXT_PUBLIC_AUTH_URL=https://auth.yourdomain.com/v1/auth
 NEXT_PUBLIC_STORAGE_URL=https://storage.yourdomain.com/v1/storage
 
-# Disable development mode
-NEXT_PUBLIC_USE_DEV_AUTH=false
-NEXT_PUBLIC_ENV=production
+# App configuration
+NEXT_PUBLIC_APP_NAME=YourTeamName
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
 
-# Security
-NEXTAUTH_SECRET=your-secure-secret-here
-NEXTAUTH_URL=https://yourdomain.com
+# Search (MeiliSearch)
+NEXT_PUBLIC_MEILISEARCH_URL=https://search.yourdomain.com
+MEILISEARCH_API_KEY=your-master-key-here
 
-# OAuth Providers (if enabled)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
+# GIFs (Tenor API - optional)
+NEXT_PUBLIC_TENOR_API_KEY=your-tenor-api-key
+
+# Social Media (optional)
+TWITTER_CLIENT_ID=your-twitter-client-id
+TWITTER_CLIENT_SECRET=your-twitter-client-secret
+INSTAGRAM_APP_ID=your-instagram-app-id
+INSTAGRAM_APP_SECRET=your-instagram-app-secret
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
+
+# Social Media Encryption Key (generate with: openssl rand -hex 32)
+SOCIAL_MEDIA_ENCRYPTION_KEY=your-32-byte-hex-key
+
+# Sentry (Error tracking - optional)
+NEXT_PUBLIC_SENTRY_DSN=your-sentry-dsn
+SENTRY_ORG=your-org-slug
+SENTRY_PROJECT=your-project-slug
+SENTRY_AUTH_TOKEN=your-auth-token
+
+# Database (for backend)
+POSTGRES_PASSWORD=secure-password-here
+HASURA_GRAPHQL_ADMIN_SECRET=another-secure-password
 ```
 
-### Step 3: Set Up Production Backend
+**[See Environment Variables Guide for all options →](configuration/Environment-Variables)**
+
+### Step 4: Install Dependencies
+
+```bash
+pnpm install
+```
+
+### Step 5: Run Database Migrations
 
 ```bash
 cd .backend
 
-# Initialize with production settings
-nself init --production
+# Option 1: Using nself CLI
+nself db migrate up
 
-# Configure email
-nself email setup
+# Option 2: Using psql directly
+psql -U postgres -d nchat_production -f migrations/001_initial_schema.sql
+psql -U postgres -d nchat_production -f migrations/002_rbac_system.sql
+# ... repeat for all migrations
+```
 
-# Configure monitoring (optional)
-nself metrics enable standard
+**v0.3.0 migrations to apply:**
+- `012_advanced_messaging_features.sql`
+- `012_gifs_stickers.sql`
+- `012_polls_system.sql`
+- `012_2fa_system.sql`
+- `012_pin_lock_security.sql`
+- `007_search_features.sql`
+- `012_bot_infrastructure.sql`
+- `012_social_media_integration.sql`
 
-# Build and start
-nself build
+### Step 6: Build for Production
+
+```bash
+# Build the Next.js application
+pnpm build
+
+# Test production build locally
+pnpm start
+```
+
+### Step 7: Deploy
+
+Choose your deployment method:
+
+- **[Docker Deployment →](deployment/Deployment-Docker)**
+- **[Kubernetes Deployment →](deployment/Deployment-Kubernetes)**
+- **[Vercel Deployment →](#vercel-deployment)**
+- **[Traditional VPS →](#traditional-vps-deployment)**
+
+---
+
+## Backend Setup (nself CLI)
+
+### What is nself CLI?
+
+nself CLI is a complete backend-as-a-service toolkit that provides:
+- PostgreSQL with 60+ extensions
+- Hasura GraphQL engine
+- Nhost authentication
+- MinIO object storage
+- MeiliSearch full-text search
+- Redis caching
+- Monitoring stack (optional)
+
+### Installation
+
+```bash
+# Install globally
+npm install -g @nself/cli
+
+# Verify installation
+nself --version
+# Should show: 0.4.2 or higher
+```
+
+### Initialize Project
+
+```bash
+# In your nself-chat root directory
+nself init
+
+# Interactive prompts:
+# ✓ Project name: nself-chat-backend
+# ✓ Environment: production
+# ✓ Database name: nchat_production
+# ✓ Enable PostgreSQL: Yes
+# ✓ Enable Hasura: Yes
+# ✓ Enable Auth: Yes
+# ✓ Enable MinIO: Yes
+# ✓ Enable MeiliSearch: Yes
+# ✓ Enable Redis: Yes
+# ✓ Enable Monitoring: Yes (recommended)
+```
+
+### Start Services
+
+```bash
+cd .backend
+
+# Start all services
 nself start
+
+# Check status
+nself status
+
+# View service URLs
+nself urls
+
+# View logs
+nself logs hasura
 ```
 
-### Step 4: Configure SSL/TLS
+### Service Ports
 
-Using Let's Encrypt with Nginx:
+| Service | Port | Description |
+|---------|------|-------------|
+| Hasura GraphQL | 8080 | GraphQL API endpoint |
+| Auth | 4000 | Authentication service |
+| PostgreSQL | 5432 | Database |
+| MinIO | 9000 | Object storage (S3-compatible) |
+| MinIO Console | 9001 | MinIO web UI |
+| MeiliSearch | 7700 | Search engine |
+| Redis | 6379 | Cache and job queue |
+| nself Admin | 3021 | Admin dashboard |
+| Grafana | 3000 | Monitoring dashboards |
+
+### Configuration
+
+Edit `.backend/.env` for backend configuration:
 
 ```bash
-# Install certbot
-sudo apt install certbot python3-certbot-nginx
+# Database
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=secure-password
+POSTGRES_DB=nchat_production
 
-# Generate certificates
-sudo certbot --nginx -d yourdomain.com -d api.yourdomain.com
+# Hasura
+HASURA_GRAPHQL_ADMIN_SECRET=admin-secret-key
+HASURA_GRAPHQL_JWT_SECRET={"type":"HS256","key":"jwt-secret-key"}
+
+# Auth
+AUTH_JWT_SECRET_KEY=jwt-secret-key
+AUTH_SMTP_HOST=smtp.sendgrid.net
+AUTH_SMTP_USER=apikey
+AUTH_SMTP_PASS=your-sendgrid-api-key
+
+# MinIO
+MINIO_ROOT_USER=admin
+MINIO_ROOT_PASSWORD=secure-password
+
+# MeiliSearch
+MEILI_MASTER_KEY=master-key-at-least-16-chars
 ```
 
-### Step 5: Start Production Server
+---
 
-```bash
-npm start
+## Database Migrations
+
+### Migration Files
+
+All migration files are located in `.backend/migrations/`:
+
+```
+.backend/migrations/
+├── 001_initial_schema.sql
+├── 002_rbac_system.sql
+├── 003_channels_messages.sql
+├── 004_reactions_threads.sql
+├── 005_file_uploads.sql
+├── 006_notifications.sql
+├── 007_search_features.sql         # v0.3.0
+├── 012_advanced_messaging_features.sql  # v0.3.0
+├── 012_gifs_stickers.sql           # v0.3.0
+├── 012_polls_system.sql            # v0.3.0
+├── 012_2fa_system.sql              # v0.3.0
+├── 012_pin_lock_security.sql       # v0.3.0
+├── 012_bot_infrastructure.sql      # v0.3.0
+└── 012_social_media_integration.sql # v0.3.0
 ```
 
-Or with PM2 for process management:
+### Running Migrations
+
+**Method 1: Using nself CLI (Recommended)**
 
 ```bash
-# Install PM2
+cd .backend
+
+# Run all pending migrations
+nself db migrate up
+
+# Check migration status
+nself db migrate status
+
+# Rollback last migration (if needed)
+nself db migrate down
+```
+
+**Method 2: Using psql**
+
+```bash
+cd .backend
+
+# Connect to database
+psql -U postgres -d nchat_production
+
+# Run migrations manually
+\i migrations/001_initial_schema.sql
+\i migrations/002_rbac_system.sql
+# ... etc
+```
+
+**Method 3: Using Docker exec**
+
+```bash
+# If database is in Docker
+docker exec -i nself-postgres psql -U postgres -d nchat_production < migrations/001_initial_schema.sql
+```
+
+### Verify Migrations
+
+```bash
+# Check tables exist
+psql -U postgres -d nchat_production -c "\dt"
+
+# Should show all nchat_* tables:
+# - nchat_users
+# - nchat_channels
+# - nchat_messages
+# - nchat_reactions
+# - nchat_polls
+# - nchat_2fa_settings
+# - ... etc
+```
+
+---
+
+## Environment Variables
+
+### Frontend (.env.local)
+
+```bash
+# ============================================
+# ENVIRONMENT
+# ============================================
+NEXT_PUBLIC_ENV=production
+NEXT_PUBLIC_USE_DEV_AUTH=false
+
+# ============================================
+# BACKEND URLS
+# ============================================
+NEXT_PUBLIC_GRAPHQL_URL=https://api.yourdomain.com/v1/graphql
+NEXT_PUBLIC_AUTH_URL=https://auth.yourdomain.com/v1/auth
+NEXT_PUBLIC_STORAGE_URL=https://storage.yourdomain.com/v1/storage
+
+# ============================================
+# APP CONFIGURATION
+# ============================================
+NEXT_PUBLIC_APP_NAME=YourTeamName
+NEXT_PUBLIC_APP_URL=https://yourdomain.com
+NEXT_PUBLIC_PRIMARY_COLOR=#6366f1
+
+# ============================================
+# FEATURES (v0.3.0)
+# ============================================
+NEXT_PUBLIC_FEATURE_GIF_PICKER=true
+NEXT_PUBLIC_FEATURE_STICKERS=true
+NEXT_PUBLIC_FEATURE_POLLS=true
+NEXT_PUBLIC_FEATURE_2FA=true
+NEXT_PUBLIC_FEATURE_PIN_LOCK=true
+NEXT_PUBLIC_FEATURE_ENHANCED_SEARCH=true
+NEXT_PUBLIC_FEATURE_BOT_API=true
+NEXT_PUBLIC_FEATURE_SOCIAL_INTEGRATION=true
+
+# ============================================
+# SEARCH (MeiliSearch)
+# ============================================
+NEXT_PUBLIC_MEILISEARCH_URL=https://search.yourdomain.com
+MEILISEARCH_API_KEY=your-master-key
+
+# ============================================
+# GIFS (Tenor API)
+# ============================================
+NEXT_PUBLIC_TENOR_API_KEY=your-tenor-api-key
+
+# ============================================
+# SOCIAL MEDIA INTEGRATION
+# ============================================
+# Twitter/X
+TWITTER_CLIENT_ID=your-twitter-client-id
+TWITTER_CLIENT_SECRET=your-twitter-client-secret
+
+# Instagram
+INSTAGRAM_APP_ID=your-instagram-app-id
+INSTAGRAM_APP_SECRET=your-instagram-app-secret
+
+# LinkedIn
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
+
+# Encryption key for social tokens (32 bytes hex)
+SOCIAL_MEDIA_ENCRYPTION_KEY=generate-with-openssl-rand-hex-32
+
+# ============================================
+# MONITORING (Sentry)
+# ============================================
+NEXT_PUBLIC_SENTRY_DSN=https://key@org.ingest.sentry.io/project
+SENTRY_ORG=your-org-slug
+SENTRY_PROJECT=your-project-slug
+SENTRY_AUTH_TOKEN=your-auth-token
+NEXT_PUBLIC_RELEASE_VERSION=0.3.0
+```
+
+**[Complete Environment Variables Reference →](configuration/Environment-Variables)**
+
+---
+
+## Platform-Specific Install
+
+### Docker Deployment
+
+```bash
+# Build Docker image
+docker build -t nself-chat:0.3.0 .
+
+# Run with docker-compose
+docker-compose up -d
+
+# Check logs
+docker-compose logs -f nself-chat
+```
+
+**[Full Docker Guide →](deployment/Deployment-Docker)**
+
+### Kubernetes Deployment
+
+```bash
+# Apply Kubernetes manifests
+kubectl apply -f deploy/k8s/
+
+# Or use Helm
+helm install nself-chat deploy/helm/nself-chat/
+```
+
+**[Full Kubernetes Guide →](deployment/Deployment-Kubernetes)**
+
+### Vercel Deployment
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Login
+vercel login
+
+# Deploy
+vercel --prod
+```
+
+### Traditional VPS Deployment
+
+```bash
+# On your VPS
+git clone https://github.com/acamarata/nself-chat.git
+cd nself-chat
+pnpm install
+pnpm build
+
+# Use PM2 for process management
 npm install -g pm2
-
-# Start with PM2
-pm2 start npm --name "nchat" -- start
-
-# Enable startup script
-pm2 startup
+pm2 start npm --name "nself-chat" -- start
 pm2 save
+pm2 startup
 ```
+
+---
 
 ## Verification
 
-### Check Frontend
-
-Visit [http://localhost:3000](http://localhost:3000) (or your domain).
-
-You should see either:
-- The setup wizard (first run)
-- The login page
-- The chat interface (if auto-login is enabled)
-
-### Check Backend Services
+### Frontend Verification
 
 ```bash
+# Check dev server is running
+curl http://localhost:3000
+
+# Check production build
+pnpm build && pnpm start
+curl http://localhost:3000
+```
+
+### Backend Verification
+
+```bash
+# Check all services are running
 cd .backend
 nself status
-```
 
-Expected output:
-```
-Service          Status    Port
-───────────────────────────────
-postgres         running   5432
-hasura           running   8080
-auth             running   4000
-nginx            running   80
-minio            running   9000
-```
-
-### Check API Connectivity
-
-```bash
 # Test GraphQL endpoint
-curl -X POST http://api.localhost/v1/graphql \
+curl http://localhost:8080/v1/graphql \
   -H "Content-Type: application/json" \
-  -d '{"query": "{ __typename }"}'
+  -d '{"query": "{ __schema { types { name } } }"}'
 
-# Expected response
-{"data":{"__typename":"query_root"}}
+# Test Auth endpoint
+curl http://localhost:4000/v1/auth/status
 ```
 
-### Check Database
+### Database Verification
 
 ```bash
-cd .backend
-nself exec postgres psql -U postgres -c "SELECT version();"
+# Connect to database
+psql -U postgres -d nchat_production
+
+# Check tables
+\dt nchat_*
+
+# Check users table
+SELECT COUNT(*) FROM nchat_users;
 ```
+
+### MeiliSearch Verification
+
+```bash
+# Check MeiliSearch is running
+curl http://localhost:7700/health
+
+# Check indexes
+curl -H "Authorization: Bearer YOUR_KEY" \
+  http://localhost:7700/indexes
+```
+
+---
 
 ## Troubleshooting
 
-### Installation Issues
-
-#### npm install fails
+### Port Already in Use
 
 ```bash
-# Clear npm cache
-npm cache clean --force
-
-# Remove node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-#### nself CLI not found
-
-```bash
-# Add to PATH (bash)
-echo 'export PATH="$HOME/.nself/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-
-# Add to PATH (zsh)
-echo 'export PATH="$HOME/.nself/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-### Docker Issues
-
-#### Docker daemon not running
-
-```bash
-# macOS
-open -a Docker
-
-# Linux
-sudo systemctl start docker
-```
-
-#### Port conflicts
-
-```bash
-# Find process using port
+# Check what's using port 3000
 lsof -i :3000
 
-# Kill process
+# Kill the process
 kill -9 <PID>
 
-# Or use different port
-PORT=3001 npm run dev
+# Or use a different port
+PORT=3001 pnpm dev
 ```
 
-#### Container not starting
+### pnpm Version Mismatch
 
 ```bash
-# View container logs
-docker logs <container-name>
+# Enable corepack
+corepack enable
 
-# Rebuild containers
-cd .backend && nself stop && nself build && nself start
+# Use specific pnpm version
+corepack prepare pnpm@9.15.4 --activate
+
+# Verify
+pnpm --version
 ```
 
-### Database Issues
+### Backend Services Not Starting
 
-#### Connection refused
+```bash
+# Check Docker is running
+docker ps
+
+# Check logs
+cd .backend
+nself logs
+
+# Restart services
+nself stop
+nself start
+```
+
+### Database Connection Failed
 
 ```bash
 # Check PostgreSQL is running
 docker ps | grep postgres
 
-# Check logs
-cd .backend && nself logs postgres
+# Check connection string
+echo $NEXT_PUBLIC_GRAPHQL_URL
+
+# Test direct connection
+psql -U postgres -d nchat_production
 ```
 
-#### Migration failed
+### TypeScript Errors
 
 ```bash
-# Reset database (WARNING: destroys data)
-cd .backend
-nself exec postgres dropdb -U postgres nchat
-nself exec postgres createdb -U postgres nchat
-nself migrations apply
+# Run type checking
+pnpm type-check
+
+# Fix linting issues
+pnpm lint:fix
+
+# Clean and rebuild
+rm -rf .next node_modules
+pnpm install
+pnpm build
 ```
 
-### Network Issues
+### Build Failures
 
-#### Cannot reach localhost subdomains
+```bash
+# Clear Next.js cache
+rm -rf .next
 
-Add to `/etc/hosts`:
-```
-127.0.0.1 api.localhost
-127.0.0.1 auth.localhost
-127.0.0.1 storage.localhost
-```
+# Clear node_modules
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
 
-#### CORS errors
-
-Ensure your environment URLs match the actual service URLs:
-
-```env
-NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
+# Try building again
+pnpm build
 ```
 
-### Getting Help
+---
 
-If you're still having issues:
+## Post-Installation
 
-1. Run the diagnostic tool: `cd .backend && nself doctor`
-2. Check the [GitHub Issues](https://github.com/nself/nself-chat/issues)
-3. Join our [Discord community](https://discord.gg/nself)
-4. Search the [FAQ](https://nself.io/faq)
+### Initial Configuration
+
+1. **Complete Setup Wizard**: Visit `/setup` to configure branding, themes, and features
+2. **Create First User**: Register with the owner email specified in setup
+3. **Enable Features**: Configure which v0.3.0 features to enable
+4. **Setup Integrations**: Configure GIFs, search, social media
+
+### Security Checklist
+
+- [ ] Change default passwords
+- [ ] Enable 2FA for all admin accounts
+- [ ] Configure allowed email domains
+- [ ] Set up SSL certificates
+- [ ] Enable rate limiting
+- [ ] Configure CORS properly
+- [ ] Review audit logs regularly
+
+**[Full Production Checklist →](deployment/Production-Deployment-Checklist)**
+
+---
+
+## Next Steps
+
+- [Configuration Guide](CONFIGURATION) - Configure all features
+- [User Guide](guides/USER-GUIDE) - Learn how to use nself-chat
+- [Admin Guide](deployment/DEPLOYMENT#administration) - Manage your instance
+- [API Reference](API-REFERENCE) - Build integrations
+
+---
+
+## Getting Help
+
+- [Troubleshooting Guide](TROUBLESHOOTING)
+- [FAQ](troubleshooting/FAQ)
+- [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
+- [Email Support](mailto:support@nself.org)
+
+---
+
+**Installation complete!** 🎉 You're ready to use nself-chat.
+
+**[Back to Documentation →](README)**

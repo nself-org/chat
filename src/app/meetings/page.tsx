@@ -172,7 +172,7 @@ export default function MeetingsPage() {
             <MeetingCalendar
               meetings={meetings}
               onMeetingClick={handleMeetingClick}
-              onDateSelect={(date) => console.log('Selected date:', date)}
+              onDateSelect={() => {}}
               onScheduleClick={handleScheduleClick}
             />
           )}
@@ -191,7 +191,6 @@ export default function MeetingsPage() {
             onDelete={() => handleDeleteMeeting(selectedMeeting)}
             onCancel={() => {
               // Would cancel the meeting
-              console.log('Cancel meeting');
             }}
           />
         </div>

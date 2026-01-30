@@ -60,14 +60,6 @@ export async function POST(request: NextRequest) {
 
     const user = result.rows[0]
 
-    // Debug logging
-    console.log('User query result:', {
-      email: user.email,
-      username: user.username,
-      role: user.role,
-      role_priority: user.role_priority
-    })
-
     // Verify password using bcrypt
     const isValidPassword = await bcrypt.compare(password, user.encrypted_password)
 
@@ -112,8 +104,6 @@ export async function POST(request: NextRequest) {
       accessToken,
       refreshToken,
     }
-
-    console.log('Sending response with role:', responseData.user.role)
 
     return NextResponse.json(responseData)
   } catch (error) {

@@ -6,83 +6,72 @@
 
 ## 🚀 Getting Started
 
-- [⚡ Quick Start](QUICK-START)
-- [📦 Installation](INSTALLATION)
+- [⚡ Quick Start](getting-started/QUICK-START)
+- [📦 Installation](getting-started/INSTALLATION)
 - [🎯 Getting Started Guide](getting-started/Getting-Started)
-- [📖 User Guide](guides/USER-GUIDE)
 
 ---
 
-## ✨ Features (v0.3.0)
+## ✨ Features
+
+### 💬 Communication
+- [📞 Voice Calling](features/VOICE-CALLING-COMPLETE)
+- [📹 Video Calling](guides/Video-Calling-Implementation)
+- [📺 Live Streaming](features/LIVE_STREAMING_IMPLEMENTATION_SUMMARY)
+- [🖥️ Screen Sharing](features/SCREEN-SHARING-SUMMARY)
+- [📱 Mobile Calls](features/MOBILE-CALLS-IMPLEMENTATION)
 
 ### 💬 Advanced Messaging
-- [📝 Overview](advanced-messaging-implementation-summary)
-- [⚡ Quick Reference](advanced-messaging-quick-reference)
-- [Message Editing & History](advanced-messaging-implementation-summary#message-editing)
-- [Pin & Star Messages](advanced-messaging-implementation-summary#pin-star-messages)
-- [Forward Messages](advanced-messaging-implementation-summary#forward-messages)
-- [Read Receipts](advanced-messaging-implementation-summary#read-receipts)
-- [Typing Indicators](advanced-messaging-implementation-summary#typing-indicators)
+- [📝 Implementation](guides/advanced-messaging-implementation-summary)
+- [⚡ Quick Reference](reference/advanced-messaging-quick-reference)
 
 ### 🎨 GIFs & Stickers
-- [📝 Implementation Guide](GIF-Sticker-Implementation)
-- [GIF Picker (Tenor)](GIF-Sticker-Implementation#gif-integration)
-- [Sticker Packs](GIF-Sticker-Implementation#sticker-packs)
-- [Custom Stickers](GIF-Sticker-Implementation#custom-stickers)
+- [📝 Implementation](features/GIF-Sticker-Implementation)
 
-### 📊 Polls & Voting
-- [📝 Implementation Guide](Polls-Implementation)
-- [⚡ Quick Start](Polls-Quick-Start)
-- [Creating Polls](Polls-Implementation#creating-polls)
-- [Poll Types](Polls-Implementation#poll-types)
-- [Voting & Results](Polls-Implementation#voting)
-
-### 🔒 Security
-
-#### Two-Factor Authentication (2FA)
-- [📝 Implementation Guide](2FA-Implementation-Summary)
-- [⚡ Quick Reference](2FA-Quick-Reference)
-- [Setup 2FA](2FA-Implementation-Summary#setup)
-- [Backup Codes](2FA-Implementation-Summary#backup-codes)
-- [Trusted Devices](2FA-Implementation-Summary#trusted-devices)
-- [Admin Enforcement](2FA-Implementation-Summary#enforcement)
-
-#### PIN Lock & Biometrics
-- [📝 System Overview](PIN-LOCK-SYSTEM)
-- [📝 Implementation Guide](PIN-LOCK-IMPLEMENTATION-SUMMARY)
-- [⚡ Quick Start](PIN-LOCK-QUICK-START)
-- [PIN Setup](PIN-LOCK-SYSTEM#setup)
-- [Biometric Unlock](PIN-LOCK-SYSTEM#biometric)
-- [Auto-Lock Settings](PIN-LOCK-SYSTEM#auto-lock)
+### 📊 Polls & Interactive
+- [📝 Implementation](features/Polls-Implementation)
+- [⚡ Quick Reference](reference/Polls-Quick-Start)
 
 ### 🔍 Enhanced Search
-- [📝 Implementation Guide](Search-Implementation)
-- [⚡ Quick Start](Search-Quick-Start)
-- [Search Operators](Search-Implementation#operators)
-- [Advanced Filters](Search-Implementation#filters)
-- [Saved Searches](Search-Implementation#saved-searches)
-- [Keyboard Shortcuts](Search-Implementation#shortcuts)
+- [📝 Implementation](guides/Search-Implementation)
+- [⚡ Quick Reference](reference/Search-Quick-Start)
 
-### 🤖 Bot API
-- [📝 Implementation Guide](BOT_API_IMPLEMENTATION)
+### 🌐 Social Media
+- [📝 Implementation](features/Social-Media-Integration)
+- [⚡ Quick Reference](reference/Social-Media-Quick-Reference)
+
+### 🤖 Bots & Automation
 - [🤖 Bot Development](features/Bots)
-- [API Endpoints](BOT_API_IMPLEMENTATION#endpoints)
-- [Bot Permissions](BOT_API_IMPLEMENTATION#permissions)
-- [Webhooks](BOT_API_IMPLEMENTATION#webhooks)
-- [Interactive Docs](/api-docs/bots)
+- [📝 Bot API](api/BOT_API_IMPLEMENTATION)
 
-### 🌐 Social Media Integration
-- [📝 Implementation Guide](Social-Media-Integration)
-- [⚡ Quick Reference](Social-Media-Quick-Reference)
-- [Twitter/X Integration](Social-Media-Integration#twitter)
-- [Instagram Integration](Social-Media-Integration#instagram)
-- [LinkedIn Integration](Social-Media-Integration#linkedin)
-- [Auto-Posting](Social-Media-Integration#auto-posting)
+### 🔌 Plugins & Extensions
+- [📝 Plugin System](features/Plugins)
+- [📋 Plugin List](features/Plugins-List)
 
-### 📋 Complete Feature List
-- [All Features](features/Features)
-- [Messaging Features](features/Features-Messaging)
-- [Feature Completion Matrix](features/Features-Complete)
+### 🎨 Customization
+- [🎨 White-Label Guide](features/White-Label-Guide)
+- [📋 Complete Features](features/Features)
+- [💬 Messaging Features](features/Features-Messaging)
+
+---
+
+## 🔒 Security
+
+### Authentication
+- [📝 2FA Implementation](security/2FA-Implementation-Summary)
+- [⚡ 2FA Quick Reference](reference/2FA-Quick-Reference)
+- [📝 PIN Lock System](security/PIN-LOCK-SYSTEM)
+- [⚡ PIN Lock Quick Start](reference/PIN-LOCK-QUICK-START)
+
+### Encryption
+- [📝 E2EE Implementation](guides/E2EE-Implementation)
+- [⚡ E2EE Quick Reference](reference/E2EE-Quick-Reference)
+- [🛡️ E2EE Security Audit](security/E2EE-Security-Audit)
+
+### Security Overview
+- [🔐 Security Overview](security/SECURITY)
+- [🛡️ Security Audit](security/SECURITY-AUDIT)
+- [⚡ Performance](security/PERFORMANCE-OPTIMIZATION)
 
 ---
 
@@ -91,42 +80,30 @@
 - [📝 Configuration Guide](configuration/Configuration)
 - [🔐 Authentication Setup](configuration/Authentication)
 - [🔧 Environment Variables](configuration/Environment-Variables)
-- [🎨 White-Label Customization](features/White-Label-Guide)
-- [⚙️ Settings Quick Start](guides/Settings-Quick-Start)
 
 ---
 
 ## 🚢 Deployment
 
 - [📝 Deployment Overview](deployment/DEPLOYMENT)
-- [🐳 Docker Deployment](deployment/Deployment-Docker)
-- [☸️ Kubernetes Deployment](deployment/Deployment-Kubernetes)
+- [🐳 Docker](deployment/Deployment-Docker)
+- [☸️ Kubernetes](deployment/Deployment-Kubernetes)
 - [⎈ Helm Charts](deployment/Deployment-Helm)
 - [✅ Production Checklist](deployment/Production-Deployment-Checklist)
 - [🔍 Production Validation](deployment/Production-Validation)
 
 ---
 
-## 📚 API Reference
+## 📚 API & Reference
 
+### API Documentation
 - [📝 API Overview](api/API)
 - [📖 API Documentation](api/API-DOCUMENTATION)
-- [🤖 Bot API](/api-docs/bots)
-- [GraphQL Schema](api/API-DOCUMENTATION#graphql)
-
----
-
-## 🔧 Development
-
-### Guides
-- [🛠️ Utilities & Hooks](guides/README)
-- [🧪 Testing Guide](guides/testing-guide)
-- [🔌 Integration Examples](guides/integration-examples)
-- [🔌 Plugins System](features/Plugins)
-- [📋 Plugin List](features/Plugins-List)
+- [💻 API Examples](api/API-EXAMPLES)
 
 ### Reference
 - [🏗️ Architecture](reference/Architecture)
+- [📐 Architecture Diagrams](reference/ARCHITECTURE-DIAGRAMS)
 - [🗄️ Database Schema](reference/Database-Schema)
 - [📁 Project Structure](reference/Project-Structure)
 - [📘 TypeScript Types](reference/Types)
@@ -134,43 +111,54 @@
 
 ---
 
-## 🔒 Security
+## 📖 Guides
 
-- [🔐 Security Overview](security/SECURITY)
-- [🛡️ Security Audit](security/SECURITY-AUDIT)
-- [⚡ Performance Optimization](security/PERFORMANCE-OPTIMIZATION)
+### Implementation Guides
+- [📞 Call Management](guides/Call-Management-Guide)
+- [📹 Video Calling](guides/Video-Calling-Implementation)
+- [🎙️ Voice Calling](guides/Voice-Calling-Implementation)
+- [📺 Live Streaming](guides/Live-Streaming-Implementation)
+- [🖥️ Screen Sharing](guides/Screen-Sharing-Implementation)
+- [📱 Mobile Optimizations](guides/Mobile-Call-Optimizations)
+- [🔐 E2EE Setup](guides/E2EE-Implementation)
+- [🔍 Search Setup](guides/Search-Implementation)
+- [💬 Advanced Messaging](guides/advanced-messaging-implementation-summary)
+
+### User Guides
+- [📖 User Guide](guides/USER-GUIDE)
+- [⚙️ Settings](guides/Settings-Quick-Start)
+- [🧪 Testing](guides/testing-guide)
+- [🔌 Integrations](guides/integration-examples)
+- [🛠️ Utilities](guides/README)
 
 ---
 
 ## 🆘 Troubleshooting
 
 - [❓ FAQ](troubleshooting/FAQ)
+- [🔧 Troubleshooting](troubleshooting/TROUBLESHOOTING)
 - [📖 Operations Runbook](troubleshooting/RUNBOOK)
 
 ---
 
 ## ℹ️ About
 
+### Release Information
 - [📋 Changelog](about/Changelog)
-- [🤝 Contributing](../CONTRIBUTING)
+- [🎉 Release Notes v0.3.0](about/RELEASE-NOTES-v0.3.0)
+- [✅ Release Checklist](about/RELEASE-CHECKLIST-v0.3.0)
+- [📊 Implementation Status](about/IMPLEMENTATION_COMPLETE)
+
+### Planning
 - [🗺️ Roadmap](about/Roadmap)
-- [📈 v0.2 Planning](about/Roadmap-v0.2)
+- [📈 Roadmap v0.2](about/Roadmap-v0.2)
 - [⬆️ Upgrade Guide](about/UPGRADE-GUIDE)
+- [🤝 Contributing](about/Contributing)
 
----
-
-## 📢 Release Notes
-
-- [🎉 v0.3.0 Release Notes](RELEASE-NOTES-v0.3.0)
-- [✅ v0.3.0 Release Checklist](RELEASE-CHECKLIST-v0.3.0)
-- [📊 Implementation Complete](IMPLEMENTATION_COMPLETE)
-
----
-
-## 📖 Documentation
-
-- [📚 README](README)
-- [📋 Documentation Audit](DOCUMENTATION-AUDIT)
+### Documentation
+- [📚 Documentation Audit](about/DOCUMENTATION-AUDIT)
+- [🗺️ Documentation Map](about/DOCUMENTATION-MAP)
+- [📝 Documentation Improvements](about/DOCUMENTATION-IMPROVEMENT-SUMMARY)
 
 ---
 

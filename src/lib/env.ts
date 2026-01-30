@@ -505,7 +505,6 @@ export function logEnvConfig(): void {
     ENABLE_ANALYTICS: env.ENABLE_ANALYTICS,
   };
 
-  console.log('Environment Configuration:', safeConfig);
 }
 
 /**

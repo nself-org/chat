@@ -457,12 +457,12 @@ export default function ChannelPage({ params }: ChannelPageProps) {
           isStarred={isStarred}
           onToggleMute={handleToggleMute}
           onToggleStar={handleToggleStar}
-          onOpenSettings={() => console.log('Open settings')}
-          onOpenSearch={() => console.log('Open search')}
+          onOpenSettings={() => {}}
+          onOpenSearch={() => {}}
           onOpenPinnedMessages={() => setShowPinnedMessages(!showPinnedMessages)}
           onOpenMemberList={() => setShowMemberList(!showMemberList)}
-          onStartCall={() => console.log('Start call')}
-          onStartVideoCall={() => console.log('Start video call')}
+          onStartCall={() => {}}
+          onStartVideoCall={() => {}}
         />
 
         {/* Chat Container */}
@@ -499,8 +499,8 @@ export default function ChannelPage({ params }: ChannelPageProps) {
         <MemberList
           members={mockMembers}
           onClose={() => setShowMemberList(false)}
-          onMemberClick={(member) => console.log('View profile:', member.id)}
-          onStartDM={(member) => console.log('Start DM with:', member.id)}
+          onMemberClick={(member) => {}}
+          onStartDM={(member) => {}}
           className="w-64"
         />
       )}

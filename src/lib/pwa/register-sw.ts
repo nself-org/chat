@@ -66,7 +66,6 @@ export async function registerServiceWorker(
     const registration = await navigator.serviceWorker.register(swPath, { scope });
     swRegistration = registration;
 
-    console.log('[SW] Service worker registered successfully');
 
     // Handle initial registration
     if (registration.active) {
@@ -83,11 +82,9 @@ export async function registerServiceWorker(
             if (navigator.serviceWorker.controller) {
               // New update available
               updateAvailable = true;
-              console.log('[SW] New update available');
               onUpdate?.(registration);
             } else {
               // First install
-              console.log('[SW] Service worker installed for the first time');
               onSuccess?.(registration);
             }
           }
@@ -97,7 +94,6 @@ export async function registerServiceWorker(
 
     // Listen for controller change (after skipWaiting)
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('[SW] Controller changed, reloading...');
       // Optionally reload the page when the new service worker takes control
       // window.location.reload();
     });
@@ -153,7 +149,6 @@ export async function unregisterServiceWorker(): Promise<boolean> {
     }
 
     swRegistration = null;
-    console.log('[SW] Service worker unregistered');
     return true;
   } catch (error) {
     console.error('[SW] Unregister failed:', error);
@@ -278,7 +273,6 @@ function handleServiceWorkerMessage(event: MessageEvent): void {
   const { type, ...data } = event.data || {};
 
   if (type) {
-    console.log('[SW] Message received:', type, data);
 
     const handlers = messageHandlers.get(type);
     if (handlers) {

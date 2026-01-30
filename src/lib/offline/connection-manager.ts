@@ -169,7 +169,6 @@ class ConnectionManager {
     // Network restored - try to reconnect socket
     if (!wasOnline && this.wasOnline && this.options.reconnectOnNetworkRestore) {
       if (!this.manualDisconnect && !socketIsConnected()) {
-        console.log('[ConnectionManager] Network restored, reconnecting socket...');
         this.resetRetryState();
         this.connect();
       }
@@ -177,7 +176,6 @@ class ConnectionManager {
 
     // Network lost
     if (wasOnline && !this.wasOnline) {
-      console.log('[ConnectionManager] Network lost');
       this.clearRetryTimeout();
     }
 
@@ -240,7 +238,6 @@ class ConnectionManager {
    */
   public connect(token?: string): void {
     if (!this.isNetworkOnline()) {
-      console.log('[ConnectionManager] Cannot connect - network offline');
       return;
     }
 
@@ -278,7 +275,6 @@ class ConnectionManager {
     if (!this.retryState.shouldRetry) return;
     if (this.retryState.attempt >= this.options.retryConfig.maxRetries) {
       this.retryState.shouldRetry = false;
-      console.log('[ConnectionManager] Max retry attempts reached');
       return;
     }
 

@@ -465,7 +465,6 @@ class OfflineSync {
     });
 
     if (message) {
-      console.log(`[OfflineSync] ${message} (${Math.round(progress)}%)`);
     }
 
     this.emit({ type: 'sync_progress', state: this.state });

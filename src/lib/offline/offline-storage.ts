@@ -124,7 +124,6 @@ function openDatabase(): Promise<IDBDatabase> {
 
       // Handle connection close
       db.onclose = () => {
-        console.log('[OfflineStorage] Database connection closed');
         db = null;
         dbPromise = null;
       };
@@ -134,7 +133,6 @@ function openDatabase(): Promise<IDBDatabase> {
         db?.close();
         db = null;
         dbPromise = null;
-        console.log('[OfflineStorage] Database version changed, connection closed');
       };
 
       resolve(db);

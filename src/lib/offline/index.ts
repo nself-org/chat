@@ -231,7 +231,6 @@ export function initializeOfflineSystem(options: OfflineSystemOptions = {}): voi
     initializeOfflineSync(options.fetchers);
   }
 
-  console.log('[Offline] System initialized');
 }
 
 /**
@@ -243,5 +242,4 @@ export function cleanupOfflineSystem(): void {
   cleanupOfflineCache();
   cleanupConnectionManager();
 
-  console.log('[Offline] System cleaned up');
 }

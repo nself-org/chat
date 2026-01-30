@@ -1,0 +1,31 @@
+
+> nself-chat@0.4.0 build /Users/admin/Sites/nself-chat
+> next build
+
+   ▲ Next.js 15.5.10
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, stat '/Users/admin/Sites/nself-chat/.next/cache/webpack/server-production/3.pack'
+Failed to compile.
+
+./src/app/api/calls/accept/route.ts
+Module not found: Can't resolve 'next-auth'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/api/calls/decline/route.ts
+Module not found: Can't resolve 'next-auth'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/api/calls/end/route.ts
+Module not found: Can't resolve 'next-auth'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.

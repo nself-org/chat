@@ -48,17 +48,14 @@ export function UserManagement({ initialUsers = [], initialTotal = 0 }: UserMana
 
   const handleRefresh = async () => {
     // Trigger refetch - in production this would call the API
-    console.log('Refreshing users...')
   }
 
   const handleExport = () => {
     // Open export dialog or trigger export
-    console.log('Exporting users...')
   }
 
   const handleImport = () => {
     // Open import dialog
-    console.log('Opening import dialog...')
   }
 
   const handleTabChange = (value: string) => {

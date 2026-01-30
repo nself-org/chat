@@ -94,7 +94,6 @@ export default function DraftsPage() {
     // 1. Navigate to the context
     // 2. Populate the composer
     // 3. Trigger send
-    console.log('Send draft:', draft);
     // For now, just navigate
     handleSelect(draft);
   }, [handleSelect]);

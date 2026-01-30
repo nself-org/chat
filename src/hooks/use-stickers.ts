@@ -2,7 +2,7 @@
  * Hook for fetching and managing stickers
  */
 
-import { useQuery, useMutation, useQueryClient } from '@apollo/client'
+import { useQuery, useMutation, useApolloClient } from '@apollo/client'
 import { gql } from '@apollo/client'
 
 // GraphQL queries

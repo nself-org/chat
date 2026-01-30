@@ -25,12 +25,9 @@ export function ThemeToggle() {
 
   const toggleTheme = () => {
     const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
-    console.log('Theme toggle clicked:', resolvedTheme, '->', newTheme)
-    console.log('HTML classes before:', document.documentElement.classList.toString())
     setTheme(newTheme)
     // Check classes after a brief delay
     setTimeout(() => {
-      console.log('HTML classes after:', document.documentElement.classList.toString())
     }, 100)
   }
 

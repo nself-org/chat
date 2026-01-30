@@ -79,7 +79,6 @@ export async function POST(request: NextRequest) {
       // await sendToMonitoring(logEntry)
     } else {
       // In development, log with more context
-      console.log('[CSP VIOLATION] Development mode:', logEntry)
     }
 
     // Return 204 No Content (standard for CSP reporting)

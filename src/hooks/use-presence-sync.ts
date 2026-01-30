@@ -364,7 +364,6 @@ export function usePresenceSync(options: UsePresenceSyncOptions = {}): UsePresen
       setConnected(state === 'connected');
 
       if (state === 'connected') {
-        console.log('[PresenceSync] Connected, starting heartbeat');
         setReconnectAttempts(0);
         startHeartbeat();
         resetStaleTimer();
@@ -376,7 +375,6 @@ export function usePresenceSync(options: UsePresenceSyncOptions = {}): UsePresen
           });
         }
       } else if (state === 'disconnected') {
-        console.log('[PresenceSync] Disconnected, stopping heartbeat');
         stopHeartbeat();
 
         if (staleTimerRef.current) {
@@ -417,7 +415,6 @@ export function usePresenceSync(options: UsePresenceSyncOptions = {}): UsePresen
   useEffect(() => {
     if (!enabled || !user || isInitializedRef.current) return;
 
-    console.log('[PresenceSync] Initializing presence manager for user:', user.id);
 
     // Initialize the presence manager
     initializePresenceManager({
@@ -428,7 +425,6 @@ export function usePresenceSync(options: UsePresenceSyncOptions = {}): UsePresen
       onOwnPresenceChange: (presence) => {
         // This is called when our own presence changes (e.g., from idle detection)
         // The store is already updated by the manager
-        console.log('[PresenceSync] Own presence changed:', presence.status);
       },
       onUserPresenceChange: (userId, presence) => {
         // Update store when other users' presence changes
@@ -446,7 +442,6 @@ export function usePresenceSync(options: UsePresenceSyncOptions = {}): UsePresen
     connect();
 
     return () => {
-      console.log('[PresenceSync] Cleaning up presence manager');
       destroyPresenceManager();
       isInitializedRef.current = false;
     };

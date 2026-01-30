@@ -73,7 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true)
       const response = await authService.signIn(email, password)
-      console.log('AuthContext: Setting user with role:', response.user.role)
       setUser(response.user)
       // Set user context in Sentry
       setSentryUser({

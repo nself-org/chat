@@ -254,7 +254,7 @@ export function MeetingControls({
           <DropdownMenuContent align="center" className="w-56">
             {isHost && meeting.settings.allowRecording && (
               <>
-                <DropdownMenuItem onClick={() => console.log('Toggle recording')}>
+                <DropdownMenuItem onClick={() => {}}>
                   {isRecording ? (
                     <>
                       <StopCircle className="h-4 w-4 mr-2 text-red-500" />

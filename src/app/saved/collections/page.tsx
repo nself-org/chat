@@ -56,7 +56,6 @@ export default function CollectionsPage() {
 
   const handleEditCollection = (collection: SavedCollection) => {
     // Would open an edit modal - for now just log
-    console.log('Edit collection:', collection);
   };
 
   const handleDeleteCollection = (collection: SavedCollection) => {
@@ -67,7 +66,6 @@ export default function CollectionsPage() {
 
   const handleShareCollection = (collection: SavedCollection) => {
     // Would open a share modal
-    console.log('Share collection:', collection);
   };
 
   return (

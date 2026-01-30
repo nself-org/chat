@@ -422,7 +422,6 @@ export class UpdateHandler {
    */
   private log(message: string): void {
     if (this.config.debug) {
-      console.log(`[UpdateHandler] ${message}`);
     }
   }
 }

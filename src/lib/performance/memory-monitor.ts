@@ -60,7 +60,6 @@ export class MemoryMonitor {
       this.takeSnapshot()
     }, intervalMs)
 
-    console.log('[MemoryMonitor] Started monitoring')
   }
 
   /**
@@ -72,7 +71,6 @@ export class MemoryMonitor {
       this.interval = undefined
     }
     this.enabled = false
-    console.log('[MemoryMonitor] Stopped monitoring')
   }
 
   /**
@@ -284,7 +282,6 @@ export class MemoryMonitor {
   forceGC(): void {
     if ('gc' in global && typeof (global as any).gc === 'function') {
       ;(global as any).gc()
-      console.log('[MemoryMonitor] Forced garbage collection')
     } else {
       console.warn('[MemoryMonitor] GC not available (run with --expose-gc)')
     }
@@ -426,14 +423,12 @@ export const MEMORY_LEAK_PATTERNS = {
     bad: `
       const handler = () => {
         // Holds reference to entire largeArray
-        console.log(largeArray.length)
       }
     `,
     good: `
       const length = largeArray.length
       const handler = () => {
         // Only holds reference to length
-        console.log(length)
       }
     `,
   },

@@ -1,0 +1,213 @@
+
+> nself-chat@0.4.0 type-check /Users/admin/Sites/nself-chat
+> tsc --noEmit
+
+.next/types/app/api/streams/[id]/chat/route.ts(49,7): error TS2344: Type '{ __tag__: "GET"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/chat/route.ts(166,7): error TS2344: Type '{ __tag__: "POST"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/end/route.ts(166,7): error TS2344: Type '{ __tag__: "POST"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/reactions/route.ts(166,7): error TS2344: Type '{ __tag__: "POST"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/route.ts(49,7): error TS2344: Type '{ __tag__: "GET"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/route.ts(244,7): error TS2344: Type '{ __tag__: "DELETE"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/route.ts(283,7): error TS2344: Type '{ __tag__: "PATCH"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/streams/[id]/start/route.ts(166,7): error TS2344: Type '{ __tag__: "POST"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/validator.ts(1215,31): error TS2344: Type 'typeof import("/Users/admin/Sites/nself-chat/src/app/api/streams/[id]/chat/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/streams/[id]/chat">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(1224,31): error TS2344: Type 'typeof import("/Users/admin/Sites/nself-chat/src/app/api/streams/[id]/end/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/streams/[id]/end">'.
+  Types of property 'POST' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(1233,31): error TS2344: Type 'typeof import("/Users/admin/Sites/nself-chat/src/app/api/streams/[id]/reactions/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/streams/[id]/reactions">'.
+  Types of property 'POST' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(1242,31): error TS2344: Type 'typeof import("/Users/admin/Sites/nself-chat/src/app/api/streams/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/streams/[id]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(1251,31): error TS2344: Type 'typeof import("/Users/admin/Sites/nself-chat/src/app/api/streams/[id]/start/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/streams/[id]/start">'.
+  Types of property 'POST' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+src/app/api/calls/accept/route.ts(8,34): error TS2307: Cannot find module 'next-auth' or its corresponding type declarations.
+src/app/api/calls/decline/route.ts(8,34): error TS2307: Cannot find module 'next-auth' or its corresponding type declarations.
+src/app/api/calls/end/route.ts(8,34): error TS2307: Cannot find module 'next-auth' or its corresponding type declarations.
+src/app/chat/layout.tsx(198,13): error TS2322: Type '{ userId: string; userName: string; userAvatarUrl: string | undefined; }' is not assignable to type 'IntrinsicAttributes & CallInvitationProps'.
+  Property 'userId' does not exist on type 'IntrinsicAttributes & CallInvitationProps'.
+src/components/calls/mobile/MobileCallScreen.tsx(122,32): error TS2554: Expected 1 arguments, but got 0.
+src/components/calls/mobile/MobilePiPOverlay.tsx(171,7): error TS2322: Type '{ children: Element[]; drag: true; dragMomentum: false; dragElastic: number; dragConstraints: { top: number; left: number; right: number; bottom: number; }; onDragEnd: (_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) => void; ... 7 more ...; whileTap: { ...; }; }' is not assignable to type 'IntrinsicAttributes & Omit<HTMLMotionProps<"div">, "ref"> & RefAttributes<HTMLDivElement>'.
+  Property 'onDoubleTap' does not exist on type 'IntrinsicAttributes & Omit<HTMLMotionProps<"div">, "ref"> & RefAttributes<HTMLDivElement>'.
+src/components/calls/VideoCallModal.tsx(75,7): error TS2322: Type 'RefObject<HTMLDivElement | null>' is not assignable to type 'RefObject<HTMLElement>'.
+  Type 'HTMLDivElement | null' is not assignable to type 'HTMLElement'.
+    Type 'null' is not assignable to type 'HTMLElement'.
+src/components/chat/StickerUpload.tsx(181,32): error TS2304: Cannot find name 'handleUploadAll'.
+src/components/security/PinManage.tsx(122,39): error TS2345: Argument of type 'Partial<PinSettings | null>' is not assignable to parameter of type 'Partial<Omit<PinSettings, "createdAt" | "pinHash" | "pinSalt">>'.
+  Type 'null' is not assignable to type 'Partial<Omit<PinSettings, "createdAt" | "pinHash" | "pinSalt">>'.
+src/hooks/use-call-invitation.ts(84,11): error TS2353: Object literal may only specify known properties, and 'duration' does not exist in type 'Toast'.
+src/hooks/use-camera.ts(215,70): error TS2559: Type 'false' has no properties in common with type 'AudioConstraints'.
+src/hooks/use-e2ee.ts(92,13): error TS2353: Object literal may only specify known properties, and 'duration' does not exist in type 'Toast'.
+src/hooks/use-mobile-call-optimization.ts(13,32): error TS2307: Cannot find module '@/platforms/capacitor/src/native/call-kit' or its corresponding type declarations.
+src/hooks/use-mobile-call-optimization.ts(190,11): error TS2322: Type '"warning"' is not assignable to type '"default" | "destructive" | undefined'.
+src/hooks/use-mobile-orientation.ts(87,35): error TS2339: Property 'lock' does not exist on type 'ScreenOrientation'.
+src/hooks/use-mobile-orientation.ts(93,39): error TS2339: Property 'lock' does not exist on type 'ScreenOrientation'.
+src/hooks/use-pin-lock.ts(195,17): error TS2345: Argument of type '"timeout" | "manual" | "close" | "background" | "failed_attempts" | null' is not assignable to parameter of type '"timeout" | "manual" | "close" | "background" | "failed_attempts" | undefined'.
+  Type 'null' is not assignable to type '"timeout" | "manual" | "close" | "background" | "failed_attempts" | undefined'.
+src/hooks/use-search.ts(102,32): error TS2345: Argument of type 'SearchFilters' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'SearchFilters'.
+src/hooks/use-session-timeout.ts(153,5): error TS2552: Cannot find name 'getMinutesSinceActivity'. Did you mean 'setMinutesSinceActivity'?
+src/hooks/use-sticker-packs.ts(5,23): error TS2305: Module '"@apollo/client"' has no exported member 'useQueryClient'.
+src/hooks/use-sticker-packs.ts(174,35): error TS2345: Argument of type '"manage_stickers"' is not assignable to parameter of type 'Permission'.
+src/hooks/use-stickers.ts(5,33): error TS2305: Module '"@apollo/client"' has no exported member 'useQueryClient'.
+src/lib/bots/webhooks.ts(111,27): error TS2304: Cannot find name 'success'.
+src/lib/calls/background-blur.ts(207,26): error TS2345: Argument of type 'GpuBuffer' is not assignable to parameter of type 'HTMLCanvasElement | ImageBitmap'.
+  Type 'HTMLImageElement' is not assignable to type 'HTMLCanvasElement | ImageBitmap'.
+    Type 'HTMLImageElement' is missing the following properties from type 'HTMLCanvasElement': captureStream, getContext, toBlob, toDataURL, transferControlToOffscreen
+src/lib/calls/call-events.ts(301,20): error TS2345: Argument of type 'CallEventHandler<CallCreatedEvent> | CallEventHandler<CallEvent> | CallEventHandler<CallEndedEvent> | ... 7 more ... | undefined' is not assignable to parameter of type '(...args: any[]) => void'.
+  Type 'undefined' is not assignable to type '(...args: any[]) => void'.
+src/lib/calls/call-events.ts(311,22): error TS2345: Argument of type 'CallEventHandler<CallCreatedEvent> | CallEventHandler<CallEvent> | CallEventHandler<CallEndedEvent> | ... 7 more ... | undefined' is not assignable to parameter of type '(...args: any[]) => void'.
+  Type 'undefined' is not assignable to type '(...args: any[]) => void'.
+src/lib/calls/call-events.ts(321,21): error TS2345: Argument of type 'CallEventHandler<CallCreatedEvent> | CallEventHandler<CallEvent> | CallEventHandler<CallEndedEvent> | ... 7 more ... | undefined' is not assignable to parameter of type '(...args: any[]) => void'.
+  Type 'undefined' is not assignable to type '(...args: any[]) => void'.
+src/lib/calls/call-quality-monitor.ts(646,7): error TS2322: Type 'number' is not assignable to type 'undefined'.
+src/lib/calls/group-call-manager.ts(12,60): error TS2307: Cannot find module 'mediasoup-client/lib/types' or its corresponding type declarations.
+src/lib/calls/group-call-manager.ts(195,47): error TS7031: Binding element 'dtlsParameters' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(195,65): error TS7006: Parameter 'callback' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(195,75): error TS7006: Parameter 'errback' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(204,47): error TS7031: Binding element 'kind' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(204,53): error TS7031: Binding element 'rtpParameters' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(204,70): error TS7006: Parameter 'callback' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(204,80): error TS7006: Parameter 'errback' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(217,47): error TS7031: Binding element 'dtlsParameters' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(217,65): error TS7006: Parameter 'callback' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(217,75): error TS7006: Parameter 'errback' implicitly has an 'any' type.
+src/lib/calls/group-call-manager.ts(384,45): error TS7006: Parameter 'layers' implicitly has an 'any' type.
+src/lib/calls/virtual-background.ts(286,39): error TS2345: Argument of type 'GpuBuffer' is not assignable to parameter of type 'HTMLCanvasElement | ImageBitmap'.
+  Type 'HTMLImageElement' is not assignable to type 'HTMLCanvasElement | ImageBitmap'.
+    Type 'HTMLImageElement' is missing the following properties from type 'HTMLCanvasElement': captureStream, getContext, toBlob, toDataURL, transferControlToOffscreen
+src/lib/e2ee/crypto.ts(133,5): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/lib/e2ee/crypto.ts(142,7): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/lib/e2ee/crypto.ts(169,5): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/lib/e2ee/crypto.ts(178,7): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/lib/e2ee/key-manager.ts(214,30): error TS2339: Property 'PBKDF2_ITERATIONS' does not exist on type '{ generateRandomBytes: (length: number) => Uint8Array<ArrayBufferLike>; generateDeviceId: () => string; generateRegistrationId: () => number; hash256: (data: Uint8Array<...>) => Uint8Array<...>; ... 19 more ...; deriveRecoveryKey: (recoveryCode: string, salt: Uint8Array<...>) => Promise<...>; }'.
+src/lib/e2ee/session-manager.ts(288,57): error TS2339: Property 'new' does not exist on type 'typeof IdentityKeyPair'.
+src/lib/e2ee/session-manager.ts(289,42): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/session-manager.ts(290,43): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/session-manager.ts(295,9): error TS2416: Property 'getIdentityKey' in type 'DatabaseIdentityKeyStore' is not assignable to the same property in base type 'IdentityKeyStore'.
+  Type '() => Promise<IdentityKeyPair>' is not assignable to type '() => Promise<PrivateKey>'.
+    Type 'Promise<IdentityKeyPair>' is not assignable to type 'Promise<PrivateKey>'.
+      Type 'IdentityKeyPair' is missing the following properties from type 'PrivateKey': _nativeHandle, sign, agree, getPublicKey
+src/lib/e2ee/session-manager.ts(368,58): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/session-manager.ts(369,60): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/session-manager.ts(411,7): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/session-manager.ts(414,7): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/session-manager.ts(580,7): error TS2345: Argument of type 'DatabaseIdentityKeyStore' is not assignable to parameter of type 'IdentityKeyStore'.
+  The types returned by 'getIdentityKey()' are incompatible between these types.
+    Type 'Promise<IdentityKeyPair>' is not assignable to type 'Promise<PrivateKey>'.
+      Type 'IdentityKeyPair' is missing the following properties from type 'PrivateKey': _nativeHandle, sign, agree, getPublicKey
+src/lib/e2ee/session-manager.ts(616,7): error TS2345: Argument of type 'DatabaseIdentityKeyStore' is not assignable to parameter of type 'IdentityKeyStore'.
+  The types returned by 'getIdentityKey()' are incompatible between these types.
+    Type 'Promise<IdentityKeyPair>' is not assignable to type 'Promise<PrivateKey>'.
+      Type 'IdentityKeyPair' is missing the following properties from type 'PrivateKey': _nativeHandle, sign, agree, getPublicKey
+src/lib/e2ee/signal-client.ts(97,5): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(159,5): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(164,5): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(173,7): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(186,5): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(191,57): error TS2339: Property 'new' does not exist on type 'typeof IdentityKeyPair'.
+src/lib/e2ee/signal-client.ts(192,40): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(193,41): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Buffer<ArrayBufferLike>'.
+  Type 'Uint8Array<ArrayBufferLike>' is missing the following properties from type 'Buffer<ArrayBufferLike>': write, toJSON, equals, compare, and 66 more.
+src/lib/e2ee/signal-client.ts(201,5): error TS2345: Argument of type 'InMemoryIdentityKeyStore' is not assignable to parameter of type 'IdentityKeyStore'.
+  The types returned by 'getIdentityKey()' are incompatible between these types.
+    Type 'Promise<IdentityKeyPair>' is not assignable to type 'Promise<PrivateKey>'.
+      Type 'IdentityKeyPair' is missing the following properties from type 'PrivateKey': _nativeHandle, sign, agree, getPublicKey
+src/lib/e2ee/signal-client.ts(249,36): error TS2554: Expected 7 arguments, but got 6.
+src/lib/e2ee/signal-client.ts(348,9): error TS2416: Property 'getIdentityKey' in type 'InMemoryIdentityKeyStore' is not assignable to the same property in base type 'IdentityKeyStore'.
+  Type '() => Promise<IdentityKeyPair>' is not assignable to type '() => Promise<PrivateKey>'.
+    Type 'Promise<IdentityKeyPair>' is not assignable to type 'Promise<PrivateKey>'.
+      Type 'IdentityKeyPair' is missing the following properties from type 'PrivateKey': _nativeHandle, sign, agree, getPublicKey
+src/lib/e2ee/signal-client.ts(381,5): error TS2322: Type 'number' is not assignable to type 'boolean'.
+src/lib/search/query-parser.ts(81,25): error TS2367: This comparison appears to be unintentional because the types '"file" | "link" | "image"' and '"attachment"' have no overlap.
+src/lib/security/pin.ts(161,7): error TS2322: Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+src/lib/security/session.ts(438,15): error TS2345: Argument of type '"timeout" | "manual" | "close" | "background" | "failed_attempts" | null' is not assignable to parameter of type '"timeout" | "manual" | "close" | "background" | "failed_attempts" | undefined'.
+  Type 'null' is not assignable to type '"timeout" | "manual" | "close" | "background" | "failed_attempts" | undefined'.
+src/lib/social/filters.ts(85,3): error TS2322: Type 'boolean | undefined' is not assignable to type 'boolean'.
+  Type 'undefined' is not assignable to type 'boolean'.
+src/lib/social/poller.ts(99,20): error TS2552: Cannot find name 'clients'. Did you mean 'client'?
+src/lib/social/poller.ts(105,46): error TS2339: Property 'access_token_encrypted' does not exist on type 'SocialAccount'.
+src/lib/social/poller.ts(380,9): error TS2783: 'account_id' is specified more than once, so this usage will be overwritten.
+src/lib/voip-push.ts(8,66): error TS2307: Cannot find module '@capacitor/push-notifications' or its corresponding type declarations.
+src/lib/voip-push.ts(9,32): error TS2307: Cannot find module '@/platforms/capacitor/src/native/call-kit' or its corresponding type declarations.
+src/lib/webrtc/screen-annotator.ts(381,12): error TS2678: Type '"eraser"' is not comparable to type '"text" | "circle" | "line" | "pen" | "arrow" | "rectangle"'.
+src/lib/webrtc/screen-annotator.ts(397,35): error TS2367: This comparison appears to be unintentional because the types '"text" | "circle" | "line" | "pen" | "arrow" | "rectangle"' and '"eraser"' have no overlap.
+src/lib/webrtc/screen-recorder.ts(505,20): error TS2869: Right operand of ?? is unreachable because the left operand is never nullish.
+src/lib/webrtc/screen-recorder.ts(506,17): error TS2869: Right operand of ?? is unreachable because the left operand is never nullish.
+ ELIFECYCLE  Command failed with exit code 2.
