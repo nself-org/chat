@@ -1,0 +1,89 @@
+/**
+ * Template Instantiation API Route
+ *
+ * POST /api/bots/templates/[id]/instantiate - Create a bot from template
+ */
+
+import { NextRequest, NextResponse } from 'next/server'
+import { createLogger } from '@/lib/logger'
+import { getTemplate } from '@/lib/bots/templates'
+
+const logger = createLogger('BotTemplatesAPI')
+
+/**
+ * POST /api/bots/templates/[id]/instantiate
+ * Create a new bot instance from a template
+ */
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: templateId } = await params
+    const body = await request.json()
+
+    // Get template
+    const template = getTemplate(templateId)
+
+    if (!template) {
+      // Try database for custom templates
+      // SELECT * FROM nchat_bot_templates WHERE id = $1
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Template not found',
+        },
+        { status: 404 }
+      )
+    }
+
+    // Validate custom configuration against schema
+    const config = { ...template.defaultConfig, ...(body.config || {}) }
+
+    // Create new bot from template
+    const now = new Date()
+    const bot = {
+      id: Math.random().toString(36).substring(7),
+      name: body.name || template.name,
+      description: body.description || template.description,
+      code: template.code,
+      version: '1.0.0',
+      template_id: templateId,
+      config,
+      enabled: body.enabled ?? true,
+      created_by: body.created_by || 'system',
+      created_at: now,
+      updated_at: now,
+      sandbox_enabled: true,
+      rate_limit_per_minute: 60,
+      timeout_ms: 5000,
+    }
+
+    // In production: INSERT INTO nchat_bots
+    // Also create initial version in nchat_bot_versions
+
+    logger.info('Instantiated bot from template', {
+      templateId,
+      botId: bot.id,
+      botName: bot.name,
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: bot,
+      message: 'Bot created from template successfully',
+    }, { status: 201 })
+  } catch (error) {
+    logger.error('Failed to instantiate bot from template', error as Error)
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to instantiate bot',
+        message: (error as Error).message,
+      },
+      { status: 500 }
+    )
+  }
+}

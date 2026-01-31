@@ -158,3 +158,55 @@ export {
   type SavedSearchesListProps,
   type CompactAdvancedSearchProps,
 } from './advanced-search';
+
+// ============================================================================
+// Advanced Search Builder (v0.7.0)
+// ============================================================================
+
+export {
+  AdvancedSearchBuilder,
+  type AdvancedSearchBuilderProps,
+  type QueryPart,
+  type BooleanOperator,
+  type QueryField,
+} from './AdvancedSearchBuilder';
+
+// ============================================================================
+// Search Result Card (v0.7.0)
+// ============================================================================
+
+export {
+  SearchResultCard,
+  CompactSearchResultCard,
+  type SearchResultCardProps,
+  type CompactSearchResultCardProps,
+} from './SearchResultCard';
+
+// ============================================================================
+// Search History (v0.7.0)
+// ============================================================================
+
+export {
+  SearchHistory,
+  CompactSearchHistory,
+  type SearchHistoryProps,
+  type CompactSearchHistoryProps,
+} from './SearchHistory';
+
+// ============================================================================
+// Saved Searches (v0.7.0)
+// ============================================================================
+
+export {
+  SavedSearches,
+  type SavedSearchesProps,
+} from './SavedSearches';
+
+// ============================================================================
+// Smart Search (AI-powered)
+// ============================================================================
+
+export {
+  SmartSearch,
+  type SmartSearchProps,
+} from './SmartSearch';

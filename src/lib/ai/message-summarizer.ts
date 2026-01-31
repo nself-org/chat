@@ -52,8 +52,8 @@ export interface AIConfig {
 }
 
 // Default AI configurations
-const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini'
-const DEFAULT_ANTHROPIC_MODEL = 'claude-3-5-haiku-20241022'
+const DEFAULT_OPENAI_MODEL = 'gpt-4-turbo-preview' // GPT-4 Turbo as primary
+const DEFAULT_ANTHROPIC_MODEL = 'claude-3-5-haiku-20241022' // Claude 3.5 Haiku as fallback
 
 /**
  * Message Summarizer class
@@ -61,6 +61,9 @@ const DEFAULT_ANTHROPIC_MODEL = 'claude-3-5-haiku-20241022'
 export class MessageSummarizer {
   private config: AIConfig
   private isAvailable: boolean
+  private totalCost: number = 0
+  private requestCount: number = 0
+  private rateLimitTracker: Map<string, number[]> = new Map()
 
   constructor(config?: Partial<AIConfig>) {
     this.config = {
@@ -135,6 +138,75 @@ export class MessageSummarizer {
    */
   public getProvider(): AIProvider {
     return this.config.provider
+  }
+
+  /**
+   * Get cost tracking stats
+   */
+  public getCostStats(): { totalCost: number; requestCount: number } {
+    return {
+      totalCost: this.totalCost,
+      requestCount: this.requestCount,
+    }
+  }
+
+  /**
+   * Check rate limits
+   */
+  public checkRateLimit(key: string = 'default'): boolean {
+    const now = Date.now()
+    const requests = this.rateLimitTracker.get(key) || []
+
+    // Clean old requests (older than 1 hour)
+    const recentRequests = requests.filter(
+      (timestamp) => now - timestamp < 60 * 60 * 1000
+    )
+
+    // Allow 100 requests per hour
+    if (recentRequests.length >= 100) {
+      return false
+    }
+
+    // Update tracker
+    recentRequests.push(now)
+    this.rateLimitTracker.set(key, recentRequests)
+
+    return true
+  }
+
+  /**
+   * Calculate summary quality score
+   */
+  public calculateQualityScore(summary: string, messages: Message[]): number {
+    let score = 0
+
+    // Length appropriateness (0-30 points)
+    const wordCount = summary.split(/\s+/).length
+    if (wordCount >= 10 && wordCount <= 100) {
+      score += 30
+    } else if (wordCount > 0) {
+      score += 15
+    }
+
+    // Coverage (0-30 points)
+    const messageWords = new Set(
+      messages.flatMap((m) => m.content.toLowerCase().split(/\s+/))
+    )
+    const summaryWords = new Set(summary.toLowerCase().split(/\s+/))
+    const coverage = Array.from(summaryWords).filter((w) => messageWords.has(w)).length
+    score += Math.min((coverage / summaryWords.size) * 30, 30)
+
+    // Coherence (0-20 points)
+    const hasPunctuation = /[.!?]/.test(summary)
+    const hasCapitalization = /^[A-Z]/.test(summary)
+    if (hasPunctuation) score += 10
+    if (hasCapitalization) score += 10
+
+    // Conciseness (0-20 points)
+    const efficiency = messages.length / wordCount
+    score += Math.min(efficiency * 5, 20)
+
+    return Math.min(score, 100)
   }
 
   /**

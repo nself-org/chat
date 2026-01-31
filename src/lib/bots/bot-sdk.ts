@@ -1,6 +1,16 @@
 /**
- * Bot SDK
+ * Bot SDK v0.7.0
  * High-level SDK for building nchat bots
+ *
+ * Features:
+ * - Fluent bot builder API
+ * - Event system (message, command, reaction, etc.)
+ * - Context API for accessing channel/user/message info
+ * - Response builders for rich messages
+ * - State management API
+ * - Webhook integration
+ * - Version management
+ * - Sandbox execution support
  */
 
 // Extend Reflect for metadata support (requires reflect-metadata polyfill)
@@ -17,6 +27,16 @@ declare global {
 interface CommandMetadata {
   definition: BotCommandDefinition
   methodName: string
+}
+
+/**
+ * Bot version information
+ */
+export interface BotVersion {
+  version: string
+  changelog?: string
+  createdAt: Date
+  isPublished: boolean
 }
 
 import type {

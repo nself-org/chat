@@ -9,6 +9,8 @@ import {
   type Message,
   type SummaryOptions,
 } from '@/lib/ai/message-summarizer'
+import { getThreadSummarizer } from '@/lib/ai/thread-summarizer'
+import { getMeetingNotesGenerator } from '@/lib/ai/meeting-notes'
 import { captureError } from '@/lib/sentry-utils'
 
 export const runtime = 'nodejs'
@@ -16,8 +18,9 @@ export const dynamic = 'force-dynamic'
 
 interface SummarizeRequest {
   messages: Message[]
-  type?: 'brief' | 'digest' | 'thread' | 'catchup'
+  type?: 'brief' | 'digest' | 'thread' | 'catchup' | 'meeting-notes'
   options?: SummaryOptions
+  meetingOptions?: any
 }
 
 interface SummarizeResponse {
@@ -105,6 +108,17 @@ export async function POST(request: NextRequest) {
         break
       }
 
+      case 'meeting-notes': {
+        const meetingGen = getMeetingNotesGenerator()
+        const notes = await meetingGen.generateNotes(
+          body.messages,
+          body.meetingOptions
+        )
+        result.summary = notes.formattedNotes
+        result.meetingNotes = notes
+        break
+      }
+
       case 'brief':
       default: {
         const summary = await summarizer.summarizeMessages(
@@ -112,7 +126,23 @@ export async function POST(request: NextRequest) {
           body.options || { style: 'brief' }
         )
         result.summary = summary
+
+        // Add quality score
+        const qualityScore = summarizer.calculateQualityScore(
+          summary,
+          body.messages
+        )
+        result.qualityScore = qualityScore
         break
+      }
+    }
+
+    // Add cost tracking info if available
+    const costStats = summarizer.getCostStats()
+    if (costStats.requestCount > 0) {
+      result.costInfo = {
+        totalCost: costStats.totalCost,
+        requestCount: costStats.requestCount,
       }
     }
 

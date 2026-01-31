@@ -66,7 +66,13 @@
     "electron:build": "electron-builder",
     "cap": "cap",
     "cap:sync": "cap sync",
-    "cap:build": "cap build"
+    "cap:build": "cap build",
+    "worker:embeddings": "tsx src/workers/embedding-worker.ts",
+    "worker:maintenance": "tsx src/workers/embedding-maintenance-worker.ts",
+    "workers:start": "pm2 start src/workers/embedding-worker.ts --name embedding-worker && pm2 start src/workers/embedding-maintenance-worker.ts --name embedding-maintenance",
+    "workers:stop": "pm2 stop embedding-worker embedding-maintenance",
+    "workers:restart": "pm2 restart embedding-worker embedding-maintenance",
+    "workers:logs": "pm2 logs"
   },
   "dependencies": {
     "@apollo/client": "^3.14.0",
@@ -170,6 +176,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
     "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^15.5.9",
     "@playwright/test": "^1.50.1",
