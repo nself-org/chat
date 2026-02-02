@@ -78,6 +78,7 @@ function groupMembersByRole(members: UserProfile[]): Record<UserRole, UserProfil
       online: 0,
       away: 1,
       dnd: 2,
+      invisible: 3,
       offline: 3,
     }
     const presenceDiff = presenceOrder[a.presence] - presenceOrder[b.presence]

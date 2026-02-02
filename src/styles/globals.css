@@ -256,7 +256,8 @@
   .skip-link {
     @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999];
     @apply focus:block focus:rounded-md focus:bg-primary focus:px-4 focus:py-2;
-    @apply focus:text-primary-foreground focus:shadow-lg focus:outline-none;
+    @apply focus:shadow-lg focus:outline-none;
+    &:focus { color: var(--primary-foreground); }
     @apply focus:ring-2 focus:ring-ring focus:ring-offset-2;
   }
 }

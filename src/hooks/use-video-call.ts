@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useCallStore } from '@/stores/call-store'
+import { useCallStore, type CallEndReason } from '@/stores/call-store'
 import {
   PeerConnectionManager,
   createPeerConnection,
@@ -345,7 +345,7 @@ export function useVideoCall(options: UseVideoCallOptions): UseVideoCallReturn {
       },
       onCallEnded: (payload) => {
         if (activeCall?.id === payload.callId) {
-          endCallAction(payload.reason)
+          endCallAction(payload.reason as CallEndReason)
           onCallEnded?.(payload.callId, payload.reason)
           cleanup()
         }

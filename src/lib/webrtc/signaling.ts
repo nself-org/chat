@@ -65,6 +65,9 @@ export type CallEndReason =
   | 'cancelled'
   | 'failed'
   | 'no_answer'
+  | 'error'
+  | 'missed'
+  | 'network'
 
 export interface CallParticipant {
   id: string

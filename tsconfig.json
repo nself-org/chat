@@ -68,7 +68,11 @@
     "platforms/**/*",
     "deploy/**/*",
     "**/examples/**/*",
+    "**/*.example.tsx",
+    "**/*.example.ts",
     "src/lib/bots/examples/**/*",
-    "src/lib/workflows/examples/**/*"
+    "src/lib/workflows/examples/**/*",
+    "src/components/**/examples.tsx",
+    "src/components/**/*.example.tsx"
   ]
 }

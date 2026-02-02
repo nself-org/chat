@@ -1,0 +1,228 @@
+{
+  "errors": {
+    "general": "エラーが発生しました",
+    "unknown": "不明なエラーが発生しました",
+    "tryAgain": "もう一度お試しください",
+    "contactSupport": "問題が解決しない場合は、サポートにお問い合わせください"
+  },
+  "network": {
+    "offline": "オフラインです",
+    "connectionLost": "接続が失われました",
+    "reconnecting": "再接続中...",
+    "reconnected": "接続が復元されました",
+    "slowConnection": "低速接続が検出されました",
+    "timeout": "リクエストがタイムアウトしました",
+    "noInternet": "インターネット接続がありません",
+    "checkConnection": "インターネット接続を確認してください"
+  },
+  "http": {
+    "400": "不正なリクエスト",
+    "401": "未認証",
+    "403": "禁止",
+    "404": "見つかりません",
+    "405": "メソッドが許可されていません",
+    "408": "リクエストタイムアウト",
+    "409": "競合",
+    "410": "削除済み",
+    "422": "バリデーション失敗",
+    "429": "リクエストが多すぎます",
+    "500": "内部サーバーエラー",
+    "502": "不正なゲートウェイ",
+    "503": "サービス利用不可",
+    "504": "ゲートウェイタイムアウト"
+  },
+  "auth": {
+    "notAuthenticated": "サインインが必要です",
+    "sessionExpired": "セッションが期限切れです",
+    "invalidCredentials": "無効な認証情報",
+    "accountLocked": "アカウントがロックされています",
+    "accountDisabled": "アカウントが無効です",
+    "insufficientPermissions": "権限が不足しています",
+    "tokenInvalid": "無効なトークン",
+    "tokenExpired": "トークンが期限切れです"
+  },
+  "validation": {
+    "required": "このフィールドは必須です",
+    "invalid": "無効な値",
+    "email": "無効なメールアドレス",
+    "url": "無効なURL",
+    "minLength": "{{min}}文字以上である必要があります",
+    "maxLength": "{{max}}文字以下である必要があります",
+    "min": "{{min}}以上である必要があります",
+    "max": "{{max}}以下である必要があります",
+    "pattern": "無効な形式",
+    "match": "フィールドが一致しません",
+    "unique": "この値は既に存在します",
+    "invalidDate": "無効な日付",
+    "futureDate": "日付は未来である必要があります",
+    "pastDate": "日付は過去である必要があります",
+    "fileSize": "ファイルサイズが制限の{{size}}を超えています",
+    "fileType": "ファイルタイプが許可されていません",
+    "imageOnly": "画像のみ許可されています",
+    "videoOnly": "動画のみ許可されています"
+  },
+  "messages": {
+    "sendFailed": "メッセージの送信に失敗しました",
+    "deleteFailed": "メッセージの削除に失敗しました",
+    "editFailed": "メッセージの編集に失敗しました",
+    "loadFailed": "メッセージの読み込みに失敗しました",
+    "tooLong": "メッセージが長すぎます（最大{{max}}文字）",
+    "empty": "メッセージを空にすることはできません",
+    "attachmentFailed": "添付ファイルのアップロードに失敗しました",
+    "attachmentTooLarge": "添付ファイルが大きすぎます（最大{{size}}）",
+    "tooManyAttachments": "添付ファイルが多すぎます（最大{{max}}）"
+  },
+  "channels": {
+    "notFound": "チャンネルが見つかりません",
+    "createFailed": "チャンネルの作成に失敗しました",
+    "updateFailed": "チャンネルの更新に失敗しました",
+    "deleteFailed": "チャンネルの削除に失敗しました",
+    "joinFailed": "チャンネルへの参加に失敗しました",
+    "leaveFailed": "チャンネルからの退出に失敗しました",
+    "archiveFailed": "チャンネルのアーカイブに失敗しました",
+    "loadFailed": "チャンネルの読み込みに失敗しました",
+    "noAccess": "このチャンネルへのアクセス権がありません",
+    "alreadyMember": "既にメンバーです",
+    "notMember": "メンバーではありません",
+    "private": "これはプライベートチャンネルです",
+    "archived": "このチャンネルはアーカイブされています"
+  },
+  "users": {
+    "notFound": "ユーザーが見つかりません",
+    "updateFailed": "ユーザーの更新に失敗しました",
+    "deleteFailed": "ユーザーの削除に失敗しました",
+    "inviteFailed": "招待の送信に失敗しました",
+    "blockFailed": "ユーザーのブロックに失敗しました",
+    "unblockFailed": "ユーザーのブロック解除に失敗しました",
+    "loadFailed": "ユーザーの読み込みに失敗しました",
+    "alreadyBlocked": "ユーザーは既にブロックされています",
+    "cannotBlockSelf": "自分自身をブロックすることはできません",
+    "cannotDeleteSelf": "ここで自分のアカウントを削除することはできません"
+  },
+  "files": {
+    "uploadFailed": "ファイルのアップロードに失敗しました",
+    "downloadFailed": "ファイルのダウンロードに失敗しました",
+    "deleteFailed": "ファイルの削除に失敗しました",
+    "notFound": "ファイルが見つかりません",
+    "tooLarge": "ファイルが大きすぎます（最大{{size}}）",
+    "invalidType": "ファイルタイプが許可されていません",
+    "corruptedFile": "ファイルが破損しているようです",
+    "quotaExceeded": "ストレージクォータを超えています",
+    "scanFailed": "ファイルのセキュリティスキャンに失敗しました",
+    "virusDetected": "ファイルにウイルスが検出されました"
+  },
+  "permissions": {
+    "denied": "権限が拒否されました",
+    "notAuthorized": "このアクションを実行する権限がありません",
+    "roleRequired": "{{role}}ロールが必要です",
+    "adminOnly": "管理者のみがこのアクションを実行できます",
+    "ownerOnly": "オーナーのみがこのアクションを実行できます",
+    "moderatorOnly": "モデレーターのみがこのアクションを実行できます",
+    "readOnly": "読み取り専用アクセス権があります",
+    "writeRequired": "書き込み権限が必要です",
+    "deleteRequired": "削除権限が必要です"
+  },
+  "rate": {
+    "limitExceeded": "レート制限を超えました",
+    "tooManyRequests": "リクエストが多すぎます",
+    "slowDown": "速度を落としてください",
+    "tryAgainIn": "{{time}}後にもう一度お試しください",
+    "dailyLimitReached": "日次制限に達しました",
+    "hourlyLimitReached": "時間制限に達しました"
+  },
+  "storage": {
+    "quotaExceeded": "ストレージクォータを超えました",
+    "notEnoughSpace": "十分なストレージスペースがありません",
+    "upgradeRequired": "より多くのストレージを利用するにはプランをアップグレードしてください",
+    "clearSpace": "スペースを空けて再試行してください"
+  },
+  "subscription": {
+    "inactive": "サブスクリプションが非アクティブです",
+    "expired": "サブスクリプションが期限切れです",
+    "canceled": "サブスクリプションがキャンセルされました",
+    "paymentFailed": "支払いに失敗しました",
+    "featureNotAvailable": "この機能はプランに含まれていません",
+    "upgradeRequired": "この機能にアクセスするにはプランをアップグレードしてください",
+    "trialExpired": "トライアル期間が終了しました"
+  },
+  "integration": {
+    "notConfigured": "統合が設定されていません",
+    "connectionFailed": "{{service}}への接続に失敗しました",
+    "authFailed": "認証に失敗しました",
+    "invalidApiKey": "無効なAPIキー",
+    "serviceUnavailable": "{{service}}は現在利用できません",
+    "quotaExceeded": "APIクォータを超えました",
+    "webhookFailed": "Webhook配信に失敗しました"
+  },
+  "search": {
+    "failed": "検索に失敗しました",
+    "noResults": "結果が見つかりません",
+    "queryTooShort": "検索クエリが短すぎます（最小{{min}}文字）",
+    "queryTooLong": "検索クエリが長すぎます（最大{{max}}文字）",
+    "invalidQuery": "無効な検索クエリ",
+    "serviceUnavailable": "検索サービスは現在利用できません"
+  },
+  "sync": {
+    "failed": "同期に失敗しました",
+    "conflict": "同期の競合が検出されました",
+    "outdated": "データが古くなっています",
+    "retrying": "同期を再試行中...",
+    "offline": "オフライン時は同期できません"
+  },
+  "import": {
+    "failed": "インポートに失敗しました",
+    "invalidFormat": "無効なファイル形式",
+    "corruptedData": "データが破損しているようです",
+    "partialImport": "エラーを伴う部分的なインポートが完了しました",
+    "tooLarge": "インポートファイルが大きすぎます"
+  },
+  "export": {
+    "failed": "エクスポートに失敗しました",
+    "noData": "エクスポートするデータがありません",
+    "generating": "エクスポートを生成中...",
+    "timeout": "エクスポートがタイムアウトしました"
+  },
+  "backup": {
+    "failed": "バックアップに失敗しました",
+    "restoreFailed": "復元に失敗しました",
+    "corruptedBackup": "バックアップファイルが破損しています",
+    "incompatibleVersion": "互換性のないバックアップバージョン"
+  },
+  "cache": {
+    "clearFailed": "キャッシュのクリアに失敗しました",
+    "corruptedCache": "キャッシュが破損しています",
+    "rebuilding": "キャッシュを再構築中..."
+  },
+  "browser": {
+    "unsupported": "お使いのブラウザはサポートされていません",
+    "updateRequired": "ブラウザを更新してください",
+    "cookiesDisabled": "Cookieを有効にしてください",
+    "jsDisabled": "JavaScriptを有効にする必要があります",
+    "storageDisabled": "ローカルストレージが無効になっています"
+  },
+  "media": {
+    "loadFailed": "メディアの読み込みに失敗しました",
+    "playbackFailed": "再生に失敗しました",
+    "recordingFailed": "録音に失敗しました",
+    "permissionDenied": "権限が拒否されました",
+    "deviceNotFound": "デバイスが見つかりません",
+    "deviceBusy": "デバイスは別のアプリケーションで使用中です",
+    "unsupportedFormat": "メディア形式がサポートされていません"
+  },
+  "notification": {
+    "permissionDenied": "通知の権限が拒否されました",
+    "sendFailed": "通知の送信に失敗しました",
+    "unsupported": "通知はサポートされていません"
+  },
+  "clipboard": {
+    "copyFailed": "クリップボードへのコピーに失敗しました",
+    "pasteFailed": "クリップボードからの貼り付けに失敗しました",
+    "permissionDenied": "クリップボードの権限が拒否されました"
+  },
+  "geolocation": {
+    "unavailable": "ジオロケーションは利用できません",
+    "permissionDenied": "位置情報の権限が拒否されました",
+    "timeout": "位置情報リクエストがタイムアウトしました",
+    "error": "位置情報の取得に失敗しました"
+  }
+}

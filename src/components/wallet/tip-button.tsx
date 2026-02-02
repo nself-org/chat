@@ -46,12 +46,7 @@ export function TipButton({
   const [isSending, setIsSending] = React.useState(false);
   const [gasEstimate, setGasEstimate] = React.useState<string | null>(null);
 
-  // Don't show tip button for your own messages
-  if (address?.toLowerCase() === recipientAddress.toLowerCase()) {
-    return null;
-  }
-
-  // Estimate gas when amount changes
+  // Estimate gas when amount changes - must be before early return
   React.useEffect(() => {
     const estimateTipGas = async () => {
       if (!amount || !isOpen) {
@@ -76,6 +71,11 @@ export function TipButton({
     const debounce = setTimeout(estimateTipGas, 500);
     return () => clearTimeout(debounce);
   }, [amount, recipientAddress, estimateGas, isOpen]);
+
+  // Don't show tip button for your own messages
+  if (address?.toLowerCase() === recipientAddress.toLowerCase()) {
+    return null;
+  }
 
   const handleTip = async () => {
     if (!amount || parseFloat(amount) <= 0) {

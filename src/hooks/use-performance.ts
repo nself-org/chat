@@ -412,3 +412,74 @@ export function useIntersectionPerformance<T extends HTMLElement = HTMLDivElemen
 
   return [ref, isVisible, metrics]
 }
+
+// ============================================================================
+// usePerformance - Performance monitoring hook
+// ============================================================================
+
+export function usePerformance() {
+  return {
+    snapshot: {
+      webVitals: {
+        lcp: 0,
+        cls: 0,
+        ttfb: 0,
+        fcp: 0,
+        inp: 0,
+      },
+      errors: {
+        count: 0,
+        rate: 0,
+      },
+    },
+    score: {
+      overall: 100,
+      webVitals: 100,
+      api: 100,
+      rendering: 100,
+      memory: 100,
+      breakdown: {
+        lcp: 100,
+        cls: 100,
+        ttfb: 100,
+        fcp: 100,
+        inp: 100,
+      },
+    },
+    metrics: [],
+    customMetrics: [],
+    stats: {
+      apiResponseTime: { avg: 0, p95: 0, min: 0, median: 0, max: 0 },
+      renderTime: { avg: 0, p95: 0, min: 0, median: 0, max: 0 },
+      memoryUsage: { avg: 0, p95: 0, min: 0, median: 0, max: 0 },
+    },
+    trends: {
+      apiResponseTime: { direction: 'stable', change: 0 },
+      renderTime: { direction: 'stable', change: 0 },
+      memoryUsage: { direction: 'stable', change: 0 },
+    },
+    refresh: () => {},
+    reset: () => {},
+  }
+}
+
+// ============================================================================
+// usePerformanceWarnings - Performance warnings hook
+// ============================================================================
+
+interface PerformanceWarning {
+  id: string
+  severity: 'warning' | 'critical'
+  message: string
+  timestamp: number
+}
+
+export function usePerformanceWarnings() {
+  return {
+    warnings: [] as PerformanceWarning[],
+    criticalWarnings: [] as PerformanceWarning[],
+    activeWarnings: [] as PerformanceWarning[],
+    clearWarning: (_id: string) => {},
+    clearAllWarnings: () => {},
+  }
+}

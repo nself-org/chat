@@ -114,7 +114,7 @@ export interface DMCommandData extends BaseCommand {
   userName: string;
   userDisplayName: string;
   avatarUrl?: string;
-  presence?: 'online' | 'away' | 'dnd' | 'offline';
+  presence?: 'online' | 'away' | 'dnd' | 'offline' | 'invisible';
   unreadCount?: number;
 }
 
@@ -129,7 +129,7 @@ export interface UserCommandData extends BaseCommand {
   userDisplayName: string;
   avatarUrl?: string;
   role?: string;
-  presence?: 'online' | 'away' | 'dnd' | 'offline';
+  presence?: 'online' | 'away' | 'dnd' | 'offline' | 'invisible';
 }
 
 // ============================================================================

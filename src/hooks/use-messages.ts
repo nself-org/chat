@@ -993,3 +993,17 @@ export function useMessageMutations() {
     togglingReaction,
   }
 }
+
+/**
+ * Hook for jumping to a specific message in a channel.
+ * Navigates to the channel and scrolls to the target message.
+ */
+export function useJumpToMessage() {
+  const jumpToMessage = useCallback((messageId: string, channelId: string) => {
+    if (typeof window !== 'undefined') {
+      window.location.href = `/chat/${channelId}?messageId=${messageId}`
+    }
+  }, [])
+
+  return { jumpToMessage }
+}

@@ -7,6 +7,9 @@
 
 import type { Emoji, EmojiCategory, EmojiCategoryInfo, SkinToneInfo, SkinTone } from './emoji-types';
 
+// Re-export types for convenience
+export type { Emoji, EmojiCategory, EmojiCategoryInfo, SkinToneInfo, SkinTone } from './emoji-types';
+
 // ============================================================================
 // Category Definitions
 // ============================================================================
@@ -381,3 +384,17 @@ export function getCategoriesWithCounts(): Array<EmojiCategoryInfo & { count: nu
     count: EMOJI_DATA.filter(emoji => emoji.category === category.id).length
   }));
 }
+
+/**
+ * Quick reaction emojis for common reactions
+ */
+export const QUICK_REACTIONS: Emoji[] = [
+  getEmojiByChar('\u{1F44D}')!, // Thumbs up
+  getEmojiByChar('\u{1F44E}')!, // Thumbs down
+  getEmojiByChar('\u{2764}\u{FE0F}')!, // Red heart
+  getEmojiByChar('\u{1F604}')!, // Grinning face
+  getEmojiByChar('\u{1F622}')!, // Crying face
+  getEmojiByChar('\u{1F389}')!, // Party popper
+  getEmojiByChar('\u{1F525}')!, // Fire
+  getEmojiByChar('\u{2705}')!, // Check mark
+].filter(Boolean);

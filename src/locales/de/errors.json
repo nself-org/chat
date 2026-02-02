@@ -1,0 +1,228 @@
+{
+  "errors": {
+    "general": "Ein Fehler ist aufgetreten",
+    "unknown": "Ein unbekannter Fehler ist aufgetreten",
+    "tryAgain": "Bitte versuchen Sie es erneut",
+    "contactSupport": "Bitte kontaktieren Sie den Support, wenn das Problem weiterhin besteht"
+  },
+  "network": {
+    "offline": "Sie sind offline",
+    "connectionLost": "Verbindung verloren",
+    "reconnecting": "Verbindung wird wiederhergestellt...",
+    "reconnected": "Verbindung wiederhergestellt",
+    "slowConnection": "Langsame Verbindung erkannt",
+    "timeout": "Anfrage-Zeitüberschreitung",
+    "noInternet": "Keine Internetverbindung",
+    "checkConnection": "Bitte überprüfen Sie Ihre Internetverbindung"
+  },
+  "http": {
+    "400": "Ungültige Anfrage",
+    "401": "Nicht authentifiziert",
+    "403": "Verboten",
+    "404": "Nicht gefunden",
+    "405": "Methode nicht erlaubt",
+    "408": "Anfrage-Zeitüberschreitung",
+    "409": "Konflikt",
+    "410": "Nicht mehr verfügbar",
+    "422": "Validierung fehlgeschlagen",
+    "429": "Zu viele Anfragen",
+    "500": "Interner Serverfehler",
+    "502": "Ungültiges Gateway",
+    "503": "Dienst nicht verfügbar",
+    "504": "Gateway-Zeitüberschreitung"
+  },
+  "auth": {
+    "notAuthenticated": "Sie müssen angemeldet sein",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen",
+    "invalidCredentials": "Ungültige Anmeldedaten",
+    "accountLocked": "Konto gesperrt",
+    "accountDisabled": "Konto deaktiviert",
+    "insufficientPermissions": "Unzureichende Berechtigungen",
+    "tokenInvalid": "Ungültiges Token",
+    "tokenExpired": "Token abgelaufen"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalid": "Ungültiger Wert",
+    "email": "Ungültige E-Mail-Adresse",
+    "url": "Ungültige URL",
+    "minLength": "Muss mindestens {{min}} Zeichen lang sein",
+    "maxLength": "Darf nicht mehr als {{max}} Zeichen haben",
+    "min": "Muss mindestens {{min}} sein",
+    "max": "Darf nicht mehr als {{max}} sein",
+    "pattern": "Ungültiges Format",
+    "match": "Felder stimmen nicht überein",
+    "unique": "Dieser Wert existiert bereits",
+    "invalidDate": "Ungültiges Datum",
+    "futureDate": "Datum muss in der Zukunft liegen",
+    "pastDate": "Datum muss in der Vergangenheit liegen",
+    "fileSize": "Dateigröße überschreitet Limit von {{size}}",
+    "fileType": "Dateityp nicht erlaubt",
+    "imageOnly": "Nur Bilder sind erlaubt",
+    "videoOnly": "Nur Videos sind erlaubt"
+  },
+  "messages": {
+    "sendFailed": "Nachricht konnte nicht gesendet werden",
+    "deleteFailed": "Nachricht konnte nicht gelöscht werden",
+    "editFailed": "Nachricht konnte nicht bearbeitet werden",
+    "loadFailed": "Nachrichten konnten nicht geladen werden",
+    "tooLong": "Nachricht ist zu lang (max {{max}} Zeichen)",
+    "empty": "Nachricht kann nicht leer sein",
+    "attachmentFailed": "Anhang konnte nicht hochgeladen werden",
+    "attachmentTooLarge": "Anhang ist zu groß (max {{size}})",
+    "tooManyAttachments": "Zu viele Anhänge (max {{max}})"
+  },
+  "channels": {
+    "notFound": "Kanal nicht gefunden",
+    "createFailed": "Kanal konnte nicht erstellt werden",
+    "updateFailed": "Kanal konnte nicht aktualisiert werden",
+    "deleteFailed": "Kanal konnte nicht gelöscht werden",
+    "joinFailed": "Kanal konnte nicht beigetreten werden",
+    "leaveFailed": "Kanal konnte nicht verlassen werden",
+    "archiveFailed": "Kanal konnte nicht archiviert werden",
+    "loadFailed": "Kanal konnte nicht geladen werden",
+    "noAccess": "Sie haben keinen Zugriff auf diesen Kanal",
+    "alreadyMember": "Sie sind bereits Mitglied",
+    "notMember": "Sie sind kein Mitglied",
+    "private": "Dies ist ein privater Kanal",
+    "archived": "Dieser Kanal ist archiviert"
+  },
+  "users": {
+    "notFound": "Benutzer nicht gefunden",
+    "updateFailed": "Benutzer konnte nicht aktualisiert werden",
+    "deleteFailed": "Benutzer konnte nicht gelöscht werden",
+    "inviteFailed": "Einladung konnte nicht gesendet werden",
+    "blockFailed": "Benutzer konnte nicht blockiert werden",
+    "unblockFailed": "Benutzer konnte nicht entsperrt werden",
+    "loadFailed": "Benutzer konnte nicht geladen werden",
+    "alreadyBlocked": "Benutzer ist bereits blockiert",
+    "cannotBlockSelf": "Sie können sich nicht selbst blockieren",
+    "cannotDeleteSelf": "Sie können Ihr eigenes Konto hier nicht löschen"
+  },
+  "files": {
+    "uploadFailed": "Datei konnte nicht hochgeladen werden",
+    "downloadFailed": "Datei konnte nicht heruntergeladen werden",
+    "deleteFailed": "Datei konnte nicht gelöscht werden",
+    "notFound": "Datei nicht gefunden",
+    "tooLarge": "Datei ist zu groß (max {{size}})",
+    "invalidType": "Dateityp nicht erlaubt",
+    "corruptedFile": "Datei scheint beschädigt zu sein",
+    "quotaExceeded": "Speicherkontingent überschritten",
+    "scanFailed": "Datei-Sicherheitsscan fehlgeschlagen",
+    "virusDetected": "Virus in Datei erkannt"
+  },
+  "permissions": {
+    "denied": "Berechtigung verweigert",
+    "notAuthorized": "Sie sind nicht berechtigt, diese Aktion durchzuführen",
+    "roleRequired": "{{role}}-Rolle erforderlich",
+    "adminOnly": "Nur Administratoren können diese Aktion durchführen",
+    "ownerOnly": "Nur der Eigentümer kann diese Aktion durchführen",
+    "moderatorOnly": "Nur Moderatoren können diese Aktion durchführen",
+    "readOnly": "Sie haben nur Lesezugriff",
+    "writeRequired": "Schreibberechtigung erforderlich",
+    "deleteRequired": "Löschberechtigung erforderlich"
+  },
+  "rate": {
+    "limitExceeded": "Ratenlimit überschritten",
+    "tooManyRequests": "Zu viele Anfragen",
+    "slowDown": "Bitte verlangsamen",
+    "tryAgainIn": "Versuchen Sie es erneut in {{time}}",
+    "dailyLimitReached": "Tageslimit erreicht",
+    "hourlyLimitReached": "Stundenlimit erreicht"
+  },
+  "storage": {
+    "quotaExceeded": "Speicherkontingent überschritten",
+    "notEnoughSpace": "Nicht genügend Speicherplatz",
+    "upgradeRequired": "Bitte aktualisieren Sie Ihren Plan für mehr Speicher",
+    "clearSpace": "Bitte schaffen Sie Platz und versuchen Sie es erneut"
+  },
+  "subscription": {
+    "inactive": "Abonnement inaktiv",
+    "expired": "Abonnement abgelaufen",
+    "canceled": "Abonnement gekündigt",
+    "paymentFailed": "Zahlung fehlgeschlagen",
+    "featureNotAvailable": "Diese Funktion ist in Ihrem Plan nicht verfügbar",
+    "upgradeRequired": "Bitte aktualisieren Sie Ihren Plan, um auf diese Funktion zuzugreifen",
+    "trialExpired": "Testzeitraum abgelaufen"
+  },
+  "integration": {
+    "notConfigured": "Integration nicht konfiguriert",
+    "connectionFailed": "Verbindung zu {{service}} fehlgeschlagen",
+    "authFailed": "Autorisierung fehlgeschlagen",
+    "invalidApiKey": "Ungültiger API-Schlüssel",
+    "serviceUnavailable": "{{service}} ist derzeit nicht verfügbar",
+    "quotaExceeded": "API-Kontingent überschritten",
+    "webhookFailed": "Webhook-Zustellung fehlgeschlagen"
+  },
+  "search": {
+    "failed": "Suche fehlgeschlagen",
+    "noResults": "Keine Ergebnisse gefunden",
+    "queryTooShort": "Suchanfrage ist zu kurz (min {{min}} Zeichen)",
+    "queryTooLong": "Suchanfrage ist zu lang (max {{max}} Zeichen)",
+    "invalidQuery": "Ungültige Suchanfrage",
+    "serviceUnavailable": "Suchdienst ist derzeit nicht verfügbar"
+  },
+  "sync": {
+    "failed": "Synchronisierung fehlgeschlagen",
+    "conflict": "Synchronisierungskonflikt erkannt",
+    "outdated": "Ihre Daten sind veraltet",
+    "retrying": "Synchronisierung wird wiederholt...",
+    "offline": "Synchronisierung im Offline-Modus nicht möglich"
+  },
+  "import": {
+    "failed": "Import fehlgeschlagen",
+    "invalidFormat": "Ungültiges Dateiformat",
+    "corruptedData": "Daten scheinen beschädigt zu sein",
+    "partialImport": "Teilimport mit Fehlern abgeschlossen",
+    "tooLarge": "Importdatei ist zu groß"
+  },
+  "export": {
+    "failed": "Export fehlgeschlagen",
+    "noData": "Keine Daten zum Exportieren",
+    "generating": "Export wird generiert...",
+    "timeout": "Export-Zeitüberschreitung"
+  },
+  "backup": {
+    "failed": "Sicherung fehlgeschlagen",
+    "restoreFailed": "Wiederherstellung fehlgeschlagen",
+    "corruptedBackup": "Sicherungsdatei ist beschädigt",
+    "incompatibleVersion": "Inkompatible Sicherungsversion"
+  },
+  "cache": {
+    "clearFailed": "Cache konnte nicht gelöscht werden",
+    "corruptedCache": "Cache ist beschädigt",
+    "rebuilding": "Cache wird neu erstellt..."
+  },
+  "browser": {
+    "unsupported": "Ihr Browser wird nicht unterstützt",
+    "updateRequired": "Bitte aktualisieren Sie Ihren Browser",
+    "cookiesDisabled": "Bitte aktivieren Sie Cookies",
+    "jsDisabled": "JavaScript muss aktiviert sein",
+    "storageDisabled": "Lokaler Speicher ist deaktiviert"
+  },
+  "media": {
+    "loadFailed": "Medien konnten nicht geladen werden",
+    "playbackFailed": "Wiedergabe fehlgeschlagen",
+    "recordingFailed": "Aufnahme fehlgeschlagen",
+    "permissionDenied": "Berechtigung verweigert",
+    "deviceNotFound": "Gerät nicht gefunden",
+    "deviceBusy": "Gerät wird von einer anderen Anwendung verwendet",
+    "unsupportedFormat": "Medienformat nicht unterstützt"
+  },
+  "notification": {
+    "permissionDenied": "Benachrichtigungsberechtigung verweigert",
+    "sendFailed": "Benachrichtigung konnte nicht gesendet werden",
+    "unsupported": "Benachrichtigungen werden nicht unterstützt"
+  },
+  "clipboard": {
+    "copyFailed": "Kopieren in die Zwischenablage fehlgeschlagen",
+    "pasteFailed": "Einfügen aus der Zwischenablage fehlgeschlagen",
+    "permissionDenied": "Zwischenablage-Berechtigung verweigert"
+  },
+  "geolocation": {
+    "unavailable": "Geolokalisierung nicht verfügbar",
+    "permissionDenied": "Standortberechtigung verweigert",
+    "timeout": "Standortanfrage-Zeitüberschreitung",
+    "error": "Standort konnte nicht abgerufen werden"
+  }
+}

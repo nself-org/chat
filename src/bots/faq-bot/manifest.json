@@ -1,0 +1,63 @@
+{
+  "id": "faq-bot",
+  "name": "FAQ Bot",
+  "description": "Automatically answer frequently asked questions with a searchable knowledge base",
+  "version": "1.0.0",
+  "author": "nself",
+  "icon": "❓",
+  "permissions": ["read_messages", "send_messages"],
+  "commands": [
+    {
+      "name": "faq",
+      "description": "Search the FAQ knowledge base",
+      "aliases": ["ask", "help"],
+      "examples": ["/faq how to reset password", "/faq what is the refund policy"]
+    },
+    {
+      "name": "addfaq",
+      "description": "Add a new FAQ to the knowledge base",
+      "examples": ["/addfaq \"How to reset password?\" \"Go to Settings > Reset\""]
+    },
+    {
+      "name": "removefaq",
+      "description": "Remove an FAQ from the knowledge base",
+      "examples": ["/removefaq faq_abc123"]
+    },
+    {
+      "name": "editfaq",
+      "description": "Edit an existing FAQ",
+      "examples": ["/editfaq faq_abc123 --answer \"Updated answer\""]
+    },
+    {
+      "name": "listfaqs",
+      "description": "List all FAQs",
+      "aliases": ["faqs"],
+      "examples": ["/listfaqs", "/listfaqs General"]
+    }
+  ],
+  "settings": [
+    {
+      "key": "auto_answer",
+      "label": "Auto-Answer Questions",
+      "description": "Automatically detect and answer questions in chat",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "key": "min_confidence",
+      "label": "Minimum Confidence",
+      "description": "Minimum confidence score (0-1) to auto-answer",
+      "type": "number",
+      "default": 0.7,
+      "validation": { "min": 0, "max": 1 }
+    }
+  ],
+  "triggers": [
+    {
+      "id": "question-detection",
+      "name": "Question Detection",
+      "event": "message_created",
+      "description": "Detect questions in messages and provide answers"
+    }
+  ]
+}

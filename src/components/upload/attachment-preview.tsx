@@ -370,15 +370,7 @@ export function AttachmentPreview({
   showNames = false,
   readOnly = false,
 }: AttachmentPreviewProps) {
-  if (attachments.length === 0) {
-    return null;
-  }
-
-  // Determine visible attachments
-  const visibleAttachments = attachments.slice(0, maxVisible);
-  const overflowCount = attachments.length - maxVisible;
-
-  // Grid columns class
+  // Grid columns class - must be before early return
   const gridColumnsClass = useMemo(() => {
     if (columns === 'auto') {
       return 'grid-cols-[repeat(auto-fill,minmax(6rem,1fr))]';
@@ -390,6 +382,14 @@ export function AttachmentPreview({
       5: 'grid-cols-5',
     }[columns];
   }, [columns]);
+
+  if (attachments.length === 0) {
+    return null;
+  }
+
+  // Determine visible attachments
+  const visibleAttachments = attachments.slice(0, maxVisible);
+  const overflowCount = attachments.length - maxVisible;
 
   return (
     <div className={cn('rounded-lg border bg-muted/30 p-3', className)}>

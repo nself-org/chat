@@ -66,8 +66,10 @@ export default function SetupStepPage({ params }: { params: Promise<{ step: stri
       const completedConfig = {
         ...finalConfig,
         setup: {
+          ...finalConfig.setup,
           isCompleted: true,
           currentStep: setupSteps.length - 1,
+          visitedSteps: finalConfig.setup?.visitedSteps || Array.from({ length: setupSteps.length }, (_, i) => i),
           completedAt: new Date()
         }
       }

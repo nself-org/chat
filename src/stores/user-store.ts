@@ -14,7 +14,7 @@ import { immer } from 'zustand/middleware/immer'
 
 export type UserRole = 'owner' | 'admin' | 'moderator' | 'member' | 'guest'
 
-export type PresenceStatus = 'online' | 'away' | 'dnd' | 'offline'
+export type PresenceStatus = 'online' | 'away' | 'dnd' | 'invisible' | 'offline'
 
 export interface CustomStatus {
   emoji?: string

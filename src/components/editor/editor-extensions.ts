@@ -34,7 +34,7 @@ export interface MentionUser {
   username: string
   displayName: string
   avatarUrl?: string
-  presence?: 'online' | 'away' | 'dnd' | 'offline'
+  presence?: 'online' | 'away' | 'dnd' | 'offline' | 'invisible'
 }
 
 export interface MentionChannel {

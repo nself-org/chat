@@ -125,7 +125,7 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
 
       // Sort: online users first, then by name
       result.sort((a, b) => {
-        const presenceOrder = { online: 0, away: 1, dnd: 2, offline: 3 }
+        const presenceOrder: Record<string, number> = { online: 0, away: 1, dnd: 2, invisible: 3, offline: 3 }
         const presenceDiff = presenceOrder[a.presence] - presenceOrder[b.presence]
         if (presenceDiff !== 0) return presenceDiff
         return a.displayName.localeCompare(b.displayName)

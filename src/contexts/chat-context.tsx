@@ -40,7 +40,7 @@ export interface OnlineUser {
   username: string;
   displayName: string;
   avatarUrl?: string;
-  presence: 'online' | 'away' | 'dnd' | 'offline';
+  presence: 'online' | 'away' | 'dnd' | 'offline' | 'invisible';
   lastSeenAt?: Date;
 }
 
@@ -77,7 +77,7 @@ export interface ChatContextValue {
   // Online Users
   onlineUsers: OnlineUser[];
   isUserOnline: (userId: string) => boolean;
-  getUserPresence: (userId: string) => 'online' | 'away' | 'dnd' | 'offline';
+  getUserPresence: (userId: string) => 'online' | 'away' | 'dnd' | 'offline' | 'invisible';
 
   // Typing Indicators
   typingUsers: Record<string, TypingUser[]>;
@@ -268,7 +268,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
   );
 
   const getUserPresence = useCallback(
-    (userId: string): 'online' | 'away' | 'dnd' | 'offline' => {
+    (userId: string): 'online' | 'away' | 'dnd' | 'offline' | 'invisible' => {
       const user = userStore.getUser(userId);
       return user?.presence || 'offline';
     },

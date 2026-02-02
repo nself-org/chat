@@ -290,6 +290,11 @@ export interface TenorGif {
       dims: [number, number];
       size: number;
     };
+    tinymp4?: {
+      url: string;
+      dims: [number, number];
+      size: number;
+    };
     webp?: {
       url: string;
       dims: [number, number];

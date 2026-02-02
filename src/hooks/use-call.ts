@@ -9,7 +9,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useMutation, useSubscription } from '@apollo/client'
-import { useCallStore } from '@/stores/call-store'
+import { useCallStore, type CallEndReason } from '@/stores/call-store'
 import { useAuth } from '@/contexts/auth-context'
 import {
   PeerConnectionManager,
@@ -223,7 +223,7 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
           endCallStore('declined')
         },
         onCallEnded: (payload) => {
-          endCallStore(payload.reason)
+          endCallStore(payload.reason as CallEndReason)
           cleanup()
         },
         onOffer: async (payload) => {

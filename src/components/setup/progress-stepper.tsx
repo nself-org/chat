@@ -1,6 +1,6 @@
 'use client'
 
-import { Info, User, Palette, Layout, Shield, Users, Settings, CheckCircle, Brush } from 'lucide-react'
+import { Info, Monitor, Server, User, Palette, Layout, Shield, Users, Settings, CheckCircle, Brush, Rocket } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface ProgressStepperProps {
@@ -11,19 +11,24 @@ interface ProgressStepperProps {
 }
 
 const stepLabels = [
-  'Intro',
-  'Owner', 
+  'Welcome',
+  'Environment',
+  'Backend',
+  'Owner',
   'Brand',
   'Theme',
   'Landing',
   'Auth',
   'Access',
   'Features',
+  'Deploy',
   'Review'
 ]
 
 const stepIcons = [
   Info,
+  Monitor,
+  Server,
   User,
   Palette,
   Brush,
@@ -31,6 +36,7 @@ const stepIcons = [
   Shield,
   Users,
   Settings,
+  Rocket,
   CheckCircle
 ]
 

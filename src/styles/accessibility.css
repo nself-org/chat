@@ -1,0 +1,528 @@
+/**
+ * Accessibility Styles
+ *
+ * CSS for accessibility features:
+ * - Screen reader only content
+ * - Focus indicators
+ * - High contrast mode
+ * - Reduced motion
+ * - Font size scaling
+ * - Color blind modes
+ * - Skip links
+ */
+
+/* ============================================================================
+ * Screen Reader Only
+ * ============================================================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ============================================================================
+ * Skip Links
+ * ============================================================================ */
+
+.skip-link {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  z-index: 9999;
+  padding: 1rem 1.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0.5rem;
+  transition: left 0.3s ease;
+}
+
+.skip-link:focus {
+  left: 0;
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.skip-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+/* ============================================================================
+ * Focus Indicators
+ * ============================================================================ */
+
+/* Base focus styles */
+:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Enhanced focus for keyboard-only mode */
+.keyboard-only :focus,
+.show-focus-outline :focus {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+}
+
+/* Using keyboard navigation */
+.using-keyboard *:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Hide focus outline on mouse interaction */
+:not(.keyboard-only) *:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Interactive element focus */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[role="link"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Custom focus for specific components */
+.focus-ring {
+  @apply ring-2 ring-ring ring-offset-2 ring-offset-background;
+}
+
+/* ============================================================================
+ * High Contrast Mode
+ * ============================================================================ */
+
+.high-contrast {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 5%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  --primary: 220 100% 30%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 10% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 20%;
+  --accent: 220 100% 40%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 100% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 220 100% 40%;
+}
+
+.high-contrast.dark {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 95%;
+  --popover: 0 0% 0%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 220 100% 60%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 220 10% 80%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 80%;
+  --accent: 220 100% 70%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 100% 60%;
+  --destructive-foreground: 0 0% 0%;
+  --border: 0 0% 80%;
+  --input: 0 0% 80%;
+  --ring: 220 100% 70%;
+}
+
+/* Increase contrast for text */
+.high-contrast * {
+  font-weight: 500;
+}
+
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast h5,
+.high-contrast h6,
+.high-contrast strong,
+.high-contrast b {
+  font-weight: 700;
+}
+
+/* Remove transparency in high contrast */
+.high-contrast [style*="opacity"] {
+  opacity: 1 !important;
+}
+
+/* ============================================================================
+ * Font Size Scaling
+ * ============================================================================ */
+
+:root {
+  --font-size-multiplier: 1;
+}
+
+[data-font-size="small"] {
+  --font-size-multiplier: 0.875;
+}
+
+[data-font-size="medium"] {
+  --font-size-multiplier: 1;
+}
+
+[data-font-size="large"] {
+  --font-size-multiplier: 1.125;
+}
+
+[data-font-size="x-large"] {
+  --font-size-multiplier: 1.25;
+}
+
+/* Apply font size multiplier */
+html {
+  font-size: calc(16px * var(--font-size-multiplier));
+}
+
+/* Adjust specific elements */
+[data-font-size="large"] button,
+[data-font-size="x-large"] button {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+}
+
+[data-font-size="large"] input,
+[data-font-size="x-large"] input,
+[data-font-size="large"] textarea,
+[data-font-size="x-large"] textarea {
+  font-size: 1rem;
+  padding: 0.75rem;
+}
+
+/* ============================================================================
+ * Reduced Motion
+ * ============================================================================ */
+
+/* Disable animations when reduce motion is enabled */
+.reduce-motion *,
+[data-animation-level="none"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Reduced animations (keep some subtle motion) */
+[data-animation-level="reduced"] * {
+  animation-duration: 0.15s !important;
+  transition-duration: 0.15s !important;
+}
+
+/* Respect system preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+ * Color Blind Modes
+ * ============================================================================ */
+
+/* Protanopia (Red-Blind) */
+[data-colorblind-mode="protanopia"] {
+  filter: url(#protanopia-filter);
+}
+
+/* Deuteranopia (Green-Blind) */
+[data-colorblind-mode="deuteranopia"] {
+  filter: url(#deuteranopia-filter);
+}
+
+/* Tritanopia (Blue-Blind) */
+[data-colorblind-mode="tritanopia"] {
+  filter: url(#tritanopia-filter);
+}
+
+/* Monochrome */
+[data-colorblind-mode="monochrome"] {
+  filter: grayscale(100%);
+}
+
+/* Add pattern/texture indicators for color-coded elements */
+[data-colorblind-mode]:not([data-colorblind-mode="none"]) .status-online {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, currentColor 2px, currentColor 4px);
+}
+
+[data-colorblind-mode]:not([data-colorblind-mode="none"]) .status-away {
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, currentColor 2px, currentColor 4px);
+}
+
+[data-colorblind-mode]:not([data-colorblind-mode="none"]) .status-busy {
+  background-image: repeating-linear-gradient(135deg, transparent, transparent 2px, currentColor 2px, currentColor 4px);
+}
+
+/* ============================================================================
+ * Keyboard Navigation Indicators
+ * ============================================================================ */
+
+/* Highlight keyboard focus path */
+.keyboard-only [tabindex="0"]:not(:focus) {
+  position: relative;
+}
+
+.keyboard-only [tabindex="0"]:not(:focus)::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 1px dashed var(--muted-foreground);
+  border-radius: 0.25rem;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ============================================================================
+ * Screen Reader Mode
+ * ============================================================================ */
+
+/* Optimize for screen readers */
+.screen-reader-mode {
+  /* Disable animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Simplify layout */
+  [data-decorative="true"] {
+    display: none;
+  }
+
+  /* Ensure all interactive elements are keyboard accessible */
+  [role="button"],
+  [role="link"],
+  [role="menuitem"] {
+    cursor: pointer;
+  }
+}
+
+/* ============================================================================
+ * ARIA Live Regions
+ * ============================================================================ */
+
+[aria-live] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Visible live regions (like status messages) */
+[aria-live][data-visible="true"] {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+/* ============================================================================
+ * Contrast Helpers
+ * ============================================================================ */
+
+/* Ensure text contrast ratios meet WCAG AA */
+.contrast-text {
+  --tw-text-opacity: 1;
+  color: var(--foreground);
+}
+
+.contrast-bg {
+  --tw-bg-opacity: 1;
+  background-color: var(--background);
+}
+
+/* High contrast borders */
+.high-contrast .border,
+.high-contrast [class*="border"] {
+  border-width: 2px;
+  border-color: var(--border);
+}
+
+/* ============================================================================
+ * Touch Target Sizes
+ * ============================================================================ */
+
+/* Ensure touch targets are at least 44x44px (WCAG 2.5.5) */
+button,
+a,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[role="button"],
+[role="link"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Icon-only buttons */
+button:has(svg:only-child),
+[role="button"]:has(svg:only-child) {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem;
+}
+
+/* ============================================================================
+ * Error and Status Indicators
+ * ============================================================================ */
+
+/* Ensure errors are not indicated by color alone */
+[aria-invalid="true"],
+.error {
+  border: 2px solid var(--destructive);
+  padding-left: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.5rem center;
+}
+
+[role="alert"],
+[role="status"] {
+  padding: 0.75rem;
+  border-left: 4px solid var(--primary);
+  background: var(--muted);
+}
+
+/* ============================================================================
+ * Loading States
+ * ============================================================================ */
+
+[aria-busy="true"] {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+[aria-busy="true"]::after {
+  content: "Loading...";
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* ============================================================================
+ * Responsive Typography
+ * ============================================================================ */
+
+@media (max-width: 768px) {
+  [data-font-size="small"] {
+    --font-size-multiplier: 1;
+  }
+
+  [data-font-size="medium"] {
+    --font-size-multiplier: 1.125;
+  }
+
+  [data-font-size="large"] {
+    --font-size-multiplier: 1.25;
+  }
+
+  [data-font-size="x-large"] {
+    --font-size-multiplier: 1.375;
+  }
+}
+
+/* ============================================================================
+ * Print Styles
+ * ============================================================================ */
+
+@media print {
+  .no-print,
+  [aria-hidden="true"],
+  [role="complementary"],
+  nav {
+    display: none !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+
+  abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+}
+
+/* ============================================================================
+ * Utilities
+ * ============================================================================ */
+
+/* Ensure proper spacing for screen readers */
+.sr-space::after {
+  content: " ";
+}
+
+/* Force show focus (for testing) */
+.force-focus-visible *:focus {
+  outline: 3px solid red !important;
+  outline-offset: 2px !important;
+}
+
+/* Keyboard help indicator */
+.keyboard-help {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.keyboard-only .keyboard-help {
+  opacity: 1;
+}

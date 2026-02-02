@@ -86,6 +86,7 @@ export interface Thread {
   message_count: number
   last_reply_at: string
   created_at: string
+  is_locked?: boolean
   parent_message: ThreadMessage
   participants: ThreadParticipant[]
 }

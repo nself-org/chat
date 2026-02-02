@@ -491,7 +491,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                 )}
                 {formData.companyName && (
                   <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-3">
-                    © 2024 {formData.companyName}
+                    © {new Date().getFullYear()} {formData.companyName}
                   </div>
                 )}
               </div>

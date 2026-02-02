@@ -452,6 +452,7 @@ export interface SendMessageInput {
   channelId: string
   content: string
   replyToId?: string
+  threadId?: string
   attachments?: unknown[]
   mentions?: { userId: string; displayName: string }[]
   metadata?: Record<string, unknown>

@@ -18,10 +18,12 @@ export function AuthMethodsStep({ config, onUpdate, onValidate }: AuthMethodsSte
 
   useEffect(() => {
     // At least one auth provider must be enabled
-    const hasProvider = authProviders.emailPassword || 
-                       authProviders.magicLinks || 
-                       authProviders.google || 
-                       authProviders.github
+    const hasProvider = authProviders.emailPassword ||
+                       authProviders.magicLinks ||
+                       authProviders.google ||
+                       authProviders.github ||
+                       authProviders.facebook ||
+                       (authProviders.idme && authProviders.idme.enabled)
     onValidate(hasProvider)
   }, [authProviders, onValidate])
 

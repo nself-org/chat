@@ -213,7 +213,7 @@ export class CommandRegistry {
       username: string;
       displayName: string;
       avatarUrl?: string;
-      presence?: 'online' | 'away' | 'dnd' | 'offline';
+      presence?: 'online' | 'away' | 'dnd' | 'offline' | 'invisible';
       role?: string;
     }>
   ): void {

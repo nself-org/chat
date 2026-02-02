@@ -50,17 +50,22 @@ export function SetupWizard({ initialConfig, onComplete, initialStep, visitedSte
   }, [initialStep])
 
   const updateConfig = (updates: Partial<AppConfig>) => {
-    const newConfig = {
-      ...config,
-      ...updates,
-      setup: {
-        ...config.setup,
-        currentStep: currentStep,
-        visitedSteps: Array.from(visitedSteps)
+    // Deep merge known nested sections to avoid losing fields
+    const newConfig = { ...config }
+    for (const [key, value] of Object.entries(updates)) {
+      if (value && typeof value === 'object' && !Array.isArray(value) && key in config) {
+        (newConfig as any)[key] = { ...(config as any)[key], ...value }
+      } else {
+        (newConfig as any)[key] = value
       }
     }
+    newConfig.setup = {
+      ...config.setup,
+      currentStep: currentStep,
+      visitedSteps: Array.from(visitedSteps)
+    }
     setConfig(newConfig)
-    
+
     // Also update the global config
     if (onConfigUpdate) {
       onConfigUpdate(newConfig)
