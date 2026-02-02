@@ -34,11 +34,11 @@ jobs:
     steps:
       - name: Check for Kubernetes secrets
         id: check
+        env:
+          HAS_KUBECONFIG: ${{ secrets.PRODUCTION_KUBECONFIG != '' }}
         run: |
-          if [ -n "${{ secrets.PRODUCTION_KUBECONFIG }}" ]; then
-            echo "has-kubeconfig=true" >> $GITHUB_OUTPUT
-          else
-            echo "has-kubeconfig=false" >> $GITHUB_OUTPUT
+          echo "has-kubeconfig=${HAS_KUBECONFIG}" >> $GITHUB_OUTPUT
+          if [ "${HAS_KUBECONFIG}" != "true" ]; then
             echo "::warning::Production Kubernetes secrets not configured. Deployment will be skipped."
           fi
 

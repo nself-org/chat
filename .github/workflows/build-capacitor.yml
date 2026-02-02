@@ -67,17 +67,18 @@ jobs:
           NEXT_PUBLIC_USE_DEV_AUTH: 'false'
 
       - name: Sync Capacitor
-        run: pnpm cap sync ios
+        working-directory: platforms/capacitor
+        run: npx cap sync ios
 
       - name: Install CocoaPods
         run: |
-          cd ios/App
+          cd platforms/capacitor/ios/App
           pod install
 
       - name: Build iOS (Debug)
         if: inputs.build_type == 'debug'
         run: |
-          cd ios/App
+          cd platforms/capacitor/ios/App
           xcodebuild -workspace App.xcworkspace \
             -scheme App \
             -configuration Debug \
@@ -104,7 +105,7 @@ jobs:
       - name: Build iOS (Release)
         if: inputs.build_type == 'release'
         run: |
-          cd ios/App
+          cd platforms/capacitor/ios/App
           xcodebuild -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
@@ -122,8 +123,8 @@ jobs:
         with:
           name: capacitor-ios-${{ inputs.build_type }}
           path: |
-            ios/App/build/export/*.ipa
-            ios/App/build/Build/Products/Debug-iphonesimulator/*.app
+            platforms/capacitor/ios/App/build/export/*.ipa
+            platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/*.app
           retention-days: 14
 
   build-android:
@@ -162,23 +163,24 @@ jobs:
           NEXT_PUBLIC_USE_DEV_AUTH: 'false'
 
       - name: Sync Capacitor
-        run: pnpm cap sync android
+        working-directory: platforms/capacitor
+        run: npx cap sync android
 
       - name: Build Android (Debug)
         if: inputs.build_type == 'debug'
         run: |
-          cd android
+          cd platforms/capacitor/android
           ./gradlew assembleDebug
 
       - name: Decode Keystore
         if: inputs.build_type == 'release'
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > android/app/release.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > platforms/capacitor/android/app/release.keystore
 
       - name: Build Android (Release)
         if: inputs.build_type == 'release'
         run: |
-          cd android
+          cd platforms/capacitor/android
           ./gradlew assembleRelease bundleRelease
         env:
           KEYSTORE_FILE: release.keystore
@@ -191,8 +193,8 @@ jobs:
         with:
           name: capacitor-android-${{ inputs.build_type }}
           path: |
-            android/app/build/outputs/apk/**/*.apk
-            android/app/build/outputs/bundle/**/*.aab
+            platforms/capacitor/android/app/build/outputs/apk/**/*.apk
+            platforms/capacitor/android/app/build/outputs/bundle/**/*.aab
           retention-days: 14
 
   combine:

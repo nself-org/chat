@@ -33,11 +33,11 @@ jobs:
     steps:
       - name: Check for Vercel secrets
         id: check
+        env:
+          HAS_VERCEL: ${{ secrets.VERCEL_TOKEN != '' }}
         run: |
-          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
-            echo "has-vercel=true" >> $GITHUB_OUTPUT
-          else
-            echo "has-vercel=false" >> $GITHUB_OUTPUT
+          echo "has-vercel=${HAS_VERCEL}" >> $GITHUB_OUTPUT
+          if [ "${HAS_VERCEL}" != "true" ]; then
             echo "::warning::Vercel secrets not configured. Deployment will be skipped."
           fi
 

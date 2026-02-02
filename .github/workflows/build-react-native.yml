@@ -59,7 +59,7 @@ jobs:
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
-          working-directory: mobile/ios
+          working-directory: platforms/react-native/ios
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -69,18 +69,18 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
-          cd mobile && pnpm install --frozen-lockfile
+          cd platforms/react-native && pnpm install --frozen-lockfile
 
       - name: Install CocoaPods
         run: |
-          cd mobile/ios
+          cd platforms/react-native/ios
           bundle install
           bundle exec pod install
 
       - name: Build iOS (Debug)
         if: inputs.build_type == 'debug'
         run: |
-          cd mobile/ios
+          cd platforms/react-native/ios
           xcodebuild -workspace NselfChat.xcworkspace \
             -scheme NselfChat \
             -configuration Debug \
@@ -107,7 +107,7 @@ jobs:
       - name: Build iOS (Release)
         if: inputs.build_type == 'release'
         run: |
-          cd mobile/ios
+          cd platforms/react-native/ios
           xcodebuild -workspace NselfChat.xcworkspace \
             -scheme NselfChat \
             -configuration Release \
@@ -125,8 +125,8 @@ jobs:
         with:
           name: rn-ios-${{ inputs.build_type }}
           path: |
-            mobile/ios/build/export/*.ipa
-            mobile/ios/build/Build/Products/Debug-iphonesimulator/*.app
+            platforms/react-native/ios/build/export/*.ipa
+            platforms/react-native/ios/build/Build/Products/Debug-iphonesimulator/*.app
           retention-days: 14
 
   build-android:
@@ -159,23 +159,23 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
-          cd mobile && pnpm install --frozen-lockfile
+          cd platforms/react-native && pnpm install --frozen-lockfile
 
       - name: Build Android (Debug)
         if: inputs.build_type == 'debug'
         run: |
-          cd mobile/android
+          cd platforms/react-native/android
           ./gradlew assembleDebug
 
       - name: Decode Keystore
         if: inputs.build_type == 'release'
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > mobile/android/app/release.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > platforms/react-native/android/app/release.keystore
 
       - name: Build Android (Release)
         if: inputs.build_type == 'release'
         run: |
-          cd mobile/android
+          cd platforms/react-native/android
           ./gradlew assembleRelease bundleRelease
         env:
           KEYSTORE_FILE: release.keystore
@@ -188,8 +188,8 @@ jobs:
         with:
           name: rn-android-${{ inputs.build_type }}
           path: |
-            mobile/android/app/build/outputs/apk/**/*.apk
-            mobile/android/app/build/outputs/bundle/**/*.aab
+            platforms/react-native/android/app/build/outputs/apk/**/*.apk
+            platforms/react-native/android/app/build/outputs/bundle/**/*.aab
           retention-days: 14
 
   combine:

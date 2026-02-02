@@ -1,10 +1,11 @@
 name: E2E Tests
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'e2e/**'
+      - 'src/**'
   schedule:
     # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
@@ -42,7 +43,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
 
@@ -101,7 +102,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
 
@@ -179,7 +180,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
 
@@ -256,7 +257,7 @@ jobs:
     name: E2E BrowserStack Tests
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && vars.BROWSERSTACK_ENABLED == 'true'
 
     strategy:
       fail-fast: false
@@ -279,7 +280,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
 
@@ -342,7 +343,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
 

@@ -30,13 +30,14 @@ env:
   XCODE_VERSION: '15.2'
   IOS_VERSION: '17.2'
   NODE_VERSION: '20'
-  PNPM_VERSION: '9.15.4'
 
 jobs:
   build-ios:
     name: Build iOS App
     runs-on: macos-14
     timeout-minutes: 60
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
       - name: Checkout code
@@ -50,9 +51,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: ${{ env.PNPM_VERSION }}
+        uses: pnpm/action-setup@v4
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -247,7 +246,7 @@ jobs:
           echo "| iOS Target | ${{ env.IOS_VERSION }}+ |" >> $GITHUB_STEP_SUMMARY
 
       - name: Notify Slack on failure
-        if: failure() && github.event_name != 'pull_request'
+        if: failure() && env.SLACK_WEBHOOK_URL != '' && github.event_name != 'pull_request'
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
@@ -277,11 +276,10 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Notify Slack on success
-        if: success() && github.event.inputs.build_type == 'release' && github.event_name != 'pull_request'
+        if: success() && env.SLACK_WEBHOOK_URL != '' && github.event.inputs.build_type == 'release' && github.event_name != 'pull_request'
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
@@ -298,5 +296,4 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

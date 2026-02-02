@@ -24,9 +24,27 @@ env:
   RELEASE_NAME: nself-chat-staging
 
 jobs:
+  check-secrets:
+    name: Check Staging Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-kubeconfig: ${{ steps.check.outputs.has-kubeconfig }}
+    steps:
+      - name: Check for Kubernetes secrets
+        id: check
+        env:
+          HAS_KUBECONFIG: ${{ secrets.STAGING_KUBECONFIG != '' }}
+        run: |
+          echo "has-kubeconfig=${HAS_KUBECONFIG}" >> $GITHUB_OUTPUT
+          if [ "${HAS_KUBECONFIG}" != "true" ]; then
+            echo "::warning::Staging Kubernetes secrets not configured. Deployment will be skipped."
+          fi
+
   deploy:
     name: Deploy to Staging
     runs-on: ubuntu-latest
+    needs: check-secrets
+    if: needs.check-secrets.outputs.has-kubeconfig == 'true'
     environment:
       name: staging
       url: https://chat-staging.nself.io
@@ -107,14 +125,18 @@ jobs:
 
   notify:
     name: Notify
-    needs: deploy
+    needs: [check-secrets, deploy]
     runs-on: ubuntu-latest
     if: always()
 
     steps:
       - name: Send notification
         run: |
-          if [ "${{ needs.deploy.result }}" == "success" ]; then
+          if [ "${{ needs.check-secrets.outputs.has-kubeconfig }}" != "true" ]; then
+            echo "## Deployment Skipped" >> $GITHUB_STEP_SUMMARY
+            echo "Staging Kubernetes secrets not configured." >> $GITHUB_STEP_SUMMARY
+            echo "To enable staging deployment, add STAGING_KUBECONFIG to repository secrets." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.deploy.result }}" == "success" ]; then
             echo "Staging deployment successful!"
             echo "URL: https://chat-staging.nself.io"
           else

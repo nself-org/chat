@@ -41,9 +41,27 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  check-secrets:
+    name: Check Kubernetes Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has-kubeconfig: ${{ steps.check.outputs.has-kubeconfig }}
+    steps:
+      - name: Check for KUBECONFIG secret
+        id: check
+        env:
+          HAS_KUBECONFIG: ${{ secrets.KUBECONFIG != '' }}
+        run: |
+          echo "has-kubeconfig=${HAS_KUBECONFIG}" >> $GITHUB_OUTPUT
+          if [ "${HAS_KUBECONFIG}" != "true" ]; then
+            echo "::warning::KUBECONFIG secret not configured. Deployment will be skipped."
+          fi
+
   deploy:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
+    needs: check-secrets
+    if: needs.check-secrets.outputs.has-kubeconfig == 'true'
     environment:
       name: ${{ inputs.environment }}
     steps:
